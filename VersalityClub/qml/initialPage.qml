@@ -21,10 +21,10 @@
 ****************************************************************************/
 
 import "../"
+import "../js/toDp.js" as Convert
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
-import "../js/toDipConverter.js" as Covert
 
 Rectangle
 {
@@ -32,23 +32,22 @@ Rectangle
     height: Style.screenHeight
     width: Style.screenWidth
 
-    /*BezierCurve
+    BezierCurve
     {
         id: headerCanvas
         w: parent.width
         h: parent.height
         sY: 0
         eY: 0
-        cp2x: 200
-        cp2y: 150
-    }*/
+        cp2x: Convert.toDp(200, Style.dpi)
+        cp2y: Convert.toDp(150, Style.dpi)
+    }
 
     ColumnLayout
     {
         id: middleButtonsRow
-        spacing: Covert.toDp(Style.screenWidth*0.045, Style.dpi)
-        anchors.left: parent.left
-        anchors.right: parent.right
+        spacing: Style.screenHeight*0.07
+        width: parent.width
         anchors.verticalCenter: parent.verticalCenter
 
         ControlButton
@@ -56,7 +55,6 @@ Rectangle
             id: signUpButton
             Layout.fillWidth: true
             buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
-            onClicked: console.log("singUpButton clicked")
         }
 
         ControlButton
@@ -64,14 +62,13 @@ Rectangle
             id: logInButton
             Layout.fillWidth: true
             buttonText: "ВОЙТИ"
-            onClicked: console.log("logInButton clicked")
         }
     }
 
-    /*BezierCurve
+    BezierCurve
     {
         id: footerCanvas
         w: parent.width
         h: parent.height
-    }*/
+    }
 }

@@ -23,13 +23,19 @@
 pragma Singleton
 import QtQuick 2.11
 import QtQuick.Window 2.11
+import "js/toDp.js" as Convert
 
 QtObject
 {
     readonly property color backgroundWhite: "#FFFFFF"
     readonly property color backgroundBlack: "#000000"
     readonly property color mainPurple: "#631964"
+
     readonly property int dpi: Screen.pixelDensity * 25.4
-    readonly property real screenHeight: Screen.height
-    readonly property real screenWidth: Screen.width
+    readonly property int screenHeight: Qt.platform.os === "windows" ?
+                                        Convert.toDp(480, dpi) :
+                                        Convert.toDp(Screen.height, dpi)
+    readonly property int screenWidth: Qt.platform.os === "windows" ?
+                                       Convert.toDp(320, dpi) :
+                                       Convert.toDp(Screen.width, dpi)
 }

@@ -1,11 +1,11 @@
 import "../"
+import "../js/toDp.js" as Convert
 import QtQuick 2.11
 import QtQuick.Controls 2.4
-import "../js/toDipConverter.js" as Convert
 
 AbstractButton
 {
-    property string buttonText: indefined
+    property string buttonText: undefined
 
     id: controlButton
     text: qsTr(buttonText)
@@ -15,7 +15,7 @@ AbstractButton
         id: labelContent
         clip: true
         text: buttonText
-        font.pixelSize: Convert.toDp(Style.screenWidth*0.015, Style.dpi)
+        font.pixelSize: Convert.toDp(20, Style.dpi)
         color: Style.mainPurple
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter

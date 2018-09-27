@@ -1,5 +1,6 @@
-import QtQuick 2.11
 import "../"
+import QtQuick 2.11
+import "../js/toDp.js" as Convert
 
 Canvas
 {
@@ -9,10 +10,10 @@ Canvas
     property real sY: h
     property real eX: w
     property real eY: h
-    property real cp1x: 100
-    property real cp1y: 100
-    property real cp2x: 1000
-    property real cp2y: 1000
+    property real cp1x: Convert.toDp(100, Style.dpi)
+    property real cp1y: Convert.toDp(100, Style.dpi)
+    property real cp2x: Convert.toDp(1000, Style.dpi)
+    property real cp2y: Convert.toDp(1000, Style.dpi)
 
     id: bezierCanvas
     width: w
@@ -22,7 +23,7 @@ Canvas
         var ctx = getContext("2d");
         ctx.strokeStyle = Style.mainPurple;
         ctx.fillStyle = Style.mainPurple;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = Convert.toDp(1, Style.dpi);
         ctx.beginPath();
         ctx.moveTo(sX, sY);
         ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, eX, eY);
