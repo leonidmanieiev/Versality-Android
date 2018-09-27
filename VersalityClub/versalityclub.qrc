@@ -6,5 +6,8 @@
         <file>js/toDipConverter.js</file>
         <file>qml/initialPage.qml</file>
         <file>qml/mapPage.qml</file>
+        <file>qml/BezierCurve.qml</file>
+        <file>qml/ControlBackground.qml</file>
+        <file>qml/ControlButton.qml</file>
     </qresource>
 </RCC>

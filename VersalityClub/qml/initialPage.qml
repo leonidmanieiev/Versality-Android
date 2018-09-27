@@ -23,33 +23,55 @@
 import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import QtQuick.Layouts 1.3
+import "../js/toDipConverter.js" as Covert
 
 Rectangle
 {
     id: initialPage
-    anchors.fill: parent
+    height: Style.screenHeight
+    width: Style.screenWidth
 
-    Rectangle
+    /*BezierCurve
     {
-        id: headRect
-        anchors.top: initialPage.top
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: -parent.height/8
-        height: parent.width/2
-        width: parent.width
-        radius: 100
-        color: "black"
+        id: headerCanvas
+        w: parent.width
+        h: parent.height
+        sY: 0
+        eY: 0
+        cp2x: 200
+        cp2y: 150
+    }*/
+
+    ColumnLayout
+    {
+        id: middleButtonsRow
+        spacing: Covert.toDp(Style.screenWidth*0.045, Style.dpi)
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+
+        ControlButton
+        {
+            id: signUpButton
+            Layout.fillWidth: true
+            buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
+            onClicked: console.log("singUpButton clicked")
+        }
+
+        ControlButton
+        {
+            id: logInButton
+            Layout.fillWidth: true
+            buttonText: "ВОЙТИ"
+            onClicked: console.log("logInButton clicked")
+        }
     }
 
-    Rectangle
+    /*BezierCurve
     {
-        id: footRect
-        anchors.bottom: initialPage.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: -parent.height/8
-        height: parent.width/2
-        width: parent.width
-        radius: 100
-        color: "black"
-    }
+        id: footerCanvas
+        w: parent.width
+        h: parent.height
+    }*/
 }

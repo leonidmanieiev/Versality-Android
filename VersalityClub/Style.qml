@@ -27,5 +27,9 @@ import QtQuick.Window 2.11
 QtObject
 {
     readonly property color backgroundWhite: "#FFFFFF"
-    readonly property int dpi: Screen.pixelDensity
+    readonly property color backgroundBlack: "#000000"
+    readonly property color mainPurple: "#631964"
+    readonly property int dpi: Screen.pixelDensity * 25.4
+    readonly property real screenHeight: Screen.height
+    readonly property real screenWidth: Screen.width
 }

@@ -1,5 +1,5 @@
 //converts pixels to Density-independent Pixels
-function dip(px, dpi)
+function toDp(px, dpi)
 {
     if(dpi < 120)
         return px;

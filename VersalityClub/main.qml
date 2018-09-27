@@ -30,16 +30,11 @@ ApplicationWindow
 {
     id: appWindow
     visible: true
-    width: appWindowWidth
-    height: appWindowHeight
+    width: Style.screenWidth
+    height: Style.screenHeight
     color: Style.backgroundWhite
 
-    readonly property int appWindowWidth: Qt.platform.os === "windows" ? 360 : Screen.width
-    readonly property int appWindowHeight: Qt.platform.os === "windows" ? 592 : Screen.height
-
     UserSettings { id: userSettings }
-
-    Component.onCompleted: userSettings.remove("userToken")
 
     Loader
     {
