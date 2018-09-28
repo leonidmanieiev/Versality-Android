@@ -41,7 +41,7 @@ ApplicationWindow
         id: depentOnHavingTokenLoader
         anchors.fill: parent
         source: userSettings.value("userToken") === undefined ?
-                                   "qrc:/qml/initialPage.qml" :
-                                   "qrc:/qml/mapPage.qml"
+                                   "qml/initialPage.qml" :
+                                   "qml/mapPage.qml"
     }
 }

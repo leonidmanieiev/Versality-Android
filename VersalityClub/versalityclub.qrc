@@ -9,5 +9,6 @@
         <file>qml/ControlBackground.qml</file>
         <file>qml/ControlButton.qml</file>
         <file>js/toDp.js</file>
+        <file>qml/signUpPage.qml</file>
     </qresource>
 </RCC>
