@@ -1,3 +1,26 @@
+/****************************************************************************
+**
+** Copyright (C) 2018 Leonid Manieiev.
+** Contact: leonid.manieiev@gmail.com
+**
+** This file is part of Versality Club.
+**
+** Versality Club is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
+**
+** Versality Club is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
+//standard button
 import "../"
 import "../js/toDp.js" as Convert
 import QtQuick 2.11
@@ -18,9 +41,8 @@ AbstractButton
     contentItem: Label
     {
         id: labelContent
-        clip: true
         text: buttonText
-        font.pixelSize: Convert.toDp(20, Style.dpi)
+        font.pixelSize: Convert.toDp(15, Style.dpi)
         color: labelContentColor
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter

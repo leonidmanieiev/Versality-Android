@@ -5,10 +5,13 @@
         <file>qmldir</file>
         <file>qml/initialPage.qml</file>
         <file>qml/mapPage.qml</file>
-        <file>qml/BezierCurve.qml</file>
         <file>qml/ControlBackground.qml</file>
         <file>qml/ControlButton.qml</file>
         <file>js/toDp.js</file>
         <file>qml/signUpPage.qml</file>
+        <file>qml/passwordInputPage.qml</file>
+        <file>qml/almostDonePage.qml</file>
+        <file>qml/logInPage.qml</file>
+        <file>qml/xmlHttpRequest.qml</file>
     </qresource>
 </RCC>

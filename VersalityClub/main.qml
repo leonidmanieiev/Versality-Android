@@ -40,7 +40,7 @@ ApplicationWindow
     {
         id: depentOnHavingTokenLoader
         anchors.fill: parent
-        source: userSettings.value("userToken") === undefined ?
+        source: userSettings.value("userHash") === undefined ?
                                    "qml/initialPage.qml" :
                                    "qml/mapPage.qml"
     }

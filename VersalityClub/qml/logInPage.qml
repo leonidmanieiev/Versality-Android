@@ -28,37 +28,55 @@ import QtQuick.Layouts 1.3
 
 Page
 {
-    id: initialPage
+    id: logInPage
     height: Style.screenHeight
     width: Style.screenWidth
 
     ColumnLayout
     {
-        id: middleButtonsColumn
-        spacing: Style.screenHeight*0.07
+        id: middleLayout
         width: parent.width*0.8
         anchors.centerIn: parent
+        spacing: parent.height*0.05
 
-        ControlButton
+        Label
         {
-            id: signUpButton
+            id: emailLabel
+            clip: true
             Layout.fillWidth: true
-            buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
-            onClicked: signLogLoader.source = "signUpPage.qml"
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            text: qsTr("E-mail:")
+            font.pixelSize: Convert.toDp(15, Style.dpi)
+            color: Style.mainPurple
+        }
+
+        TextField
+        {
+            id: emailField
+            implicitWidth: parent.width*0.9
+            horizontalAlignment: Text.AlignHCenter
+            Layout.alignment: Qt.AlignHCenter
+            background: ControlBackground { }
+            font.pixelSize: Convert.toDp(15, Style.dpi)
+            color: Style.backgroundBlack
+            placeholderText: "*********@*****.***"
+            inputMethodHints: Qt.ImhEmailCharactersOnly
         }
 
         ControlButton
         {
-            id: logInButton
+            id: enterButton
+            padding: middleLayout.spacing
             Layout.fillWidth: true
             buttonText: "ВОЙТИ"
-            onClicked: signLogLoader.source = "logInPage.qml"
+            labelContentColor: Style.backgroundWhite
+            backgroundColor: Style.mainPurple
+            onClicked:
+            {
+                signLogLoader.setSource("passwordInputPage.qml",
+                                        { "email": emailField.text});
+            }
         }
-    }
-
-    Loader
-    {
-        id: signLogLoader
-        anchors.fill: parent
     }
 }

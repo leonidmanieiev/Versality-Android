@@ -1,3 +1,25 @@
+/****************************************************************************
+**
+** Copyright (C) 2018 Leonid Manieiev.
+** Contact: leonid.manieiev@gmail.com
+**
+** This file is part of Versality Club.
+**
+** Versality Club is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
+**
+** Versality Club is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 import "../"
 import "../js/toDp.js" as Convert
 import QtQuick 2.11
@@ -8,59 +30,33 @@ import QtQuick.Controls.Styles 1.4
 Page
 {
     id: signUpPage
-    focus: true
     height: Style.screenHeight
     width: Style.screenWidth
 
-    BezierCurve
-    {
-        id: headerCanvas
-        w: parent.width
-        h: parent.height/6
-        sY: 0
-        eY: 0
-        cp1x: 0
-        cp1y: h
-        cp2x: w
-        cp2y: h*0.5
-    }
-
-    Label
-    {
-        id: signUpTextHeader
-        text: qsTr("Регистрация")
-        font.pixelSize: Convert.toDp(14, Style.dpi)
-        color: Style.backgroundWhite
-        anchors.top: headerCanvas.top
-        anchors.topMargin: Convert.toDp(10, Style.dpi)
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
-
     ColumnLayout
     {
-        id: middleFieldsColumn
-        anchors.top: headerCanvas.bottom
-        spacing: Style.screenHeight*0.05
-        width: parent.width
-        anchors.verticalCenter: parent.verticalCenter
+        id: middleFieldsColumns
+        width: parent.width*0.8
+        anchors.centerIn: parent
+        spacing: parent.height*0.05
 
         Label
         {
             id: sexLabel
             clip: true
-            text: qsTr("Пол:")
-            font.pixelSize: Convert.toDp(15, Style.dpi)
-            color: Style.mainPurple
             Layout.fillWidth: true
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
+            text: qsTr("Пол:")
+            font.pixelSize: Convert.toDp(15, Style.dpi)
+            color: Style.mainPurple
         }
 
         ControlButton
         {
             id: sexButton
             Layout.fillWidth: true
-            buttonText: qsTr("Нажми")
+            buttonText: qsTr("М/Ж")
             labelContentColor: Style.backgroundBlack
             onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
         }
@@ -69,12 +65,12 @@ Page
         {
             id: dateofbirthLabel
             clip: true
-            text: qsTr("Дата рождения:")
-            font.pixelSize: Convert.toDp(15, Style.dpi)
-            color: Style.mainPurple
             Layout.fillWidth: true
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
+            text: qsTr("Дата рождения:")
+            font.pixelSize: Convert.toDp(15, Style.dpi)
+            color: Style.mainPurple
         }
 
         TextField
@@ -82,53 +78,55 @@ Page
             id: dateofbirthField
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
-            background: ControlBackground  { }
+            background: ControlBackground { }
             font.pixelSize: Convert.toDp(15, Style.dpi)
             color: Style.backgroundBlack
             inputMask: "00.00.0000"
-            /*Text
-            {
-                id: placeholder
-                text: qsTr("29.08.1997")
-                font.pixelSize: Convert.toDp(15, Style.dpi)
-                color: Style.backgroundBlack
-                anchors.centerIn: dateofbirthField
-                visible: !dateofbirthField.text
-            }*/
+            inputMethodHints: Qt.ImhDigitsOnly
         }
 
         Label
         {
             id: emailLabel
             clip: true
-            text: qsTr("E-mail:")
-            font.pixelSize: Convert.toDp(15, Style.dpi)
-            color: Style.mainPurple
             Layout.fillWidth: true
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
+            text: qsTr("E-mail:")
+            font.pixelSize: Convert.toDp(15, Style.dpi)
+            color: Style.mainPurple
         }
 
         TextField
         {
             id: emailField
-            Layout.fillWidth: true
+            implicitWidth: parent.width*0.9
             horizontalAlignment: Text.AlignHCenter
-            background: ControlBackground  { }
+            Layout.alignment: Qt.AlignHCenter
+            background: ControlBackground { }
             font.pixelSize: Convert.toDp(15, Style.dpi)
             color: Style.backgroundBlack
-            placeholderText: "*********@****.***"
+            placeholderText: "*********@*****.***"
+            inputMethodHints: Qt.ImhEmailCharactersOnly
         }
 
         ControlButton
         {
             id: signUpButton
-            padding: Style.screenHeight*0.08
             Layout.fillWidth: true
+            padding: Style.screenHeight * 0.08
             buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
             labelContentColor: Style.backgroundWhite
             backgroundColor: Style.mainPurple
-            onClicked: signLogLoader.source = "signUpPage.qml"
+            onClicked:
+            {
+                signLogLoader.setSource("xmlHttpRequest.qml",
+                                        { "serverUrl": 'http://patrick.ga:8080/api/register?',
+                                          "email": emailField.text,
+                                          "sex": sexButton.buttonText,
+                                          "birthday": dateofbirthField.text,
+                                          "functionalFlag": 'register' });
+            }
         }
     }
 }

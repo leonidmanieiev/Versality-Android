@@ -20,11 +20,20 @@
 **
 ****************************************************************************/
 
+import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
 Page
 {
     id: mapPage
-    anchors.fill: parent
+    width: Style.screenWidth
+    height: Style.screenHeight
+
+    Rectangle
+    {
+        id: area
+        anchors.fill: parent
+        color: "YELLOW"
+    }
 }
