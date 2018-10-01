@@ -59,6 +59,11 @@ Page
             buttonText: qsTr("М/Ж")
             labelContentColor: Style.backgroundBlack
             onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
+            onFocusChanged:
+            {
+                if(labelContentColor === Style.errorRed)
+                    labelContentColor = Style.backgroundBlack;
+            }
         }
 
         Label
@@ -83,6 +88,14 @@ Page
             color: Style.backgroundBlack
             inputMask: "00.00.0000"
             inputMethodHints: Qt.ImhDigitsOnly
+            onFocusChanged:
+            {
+                if(color === Style.errorRed)
+                {
+                    color = Style.backgroundBlack;
+                    text = ''
+                }
+            }
         }
 
         Label
@@ -97,17 +110,10 @@ Page
             color: Style.mainPurple
         }
 
-        TextField
+        EmailTextField
         {
             id: emailField
-            implicitWidth: parent.width*0.9
-            horizontalAlignment: Text.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
-            background: ControlBackground { }
-            font.pixelSize: Convert.toDp(15, Style.dpi)
-            color: Style.backgroundBlack
-            placeholderText: "*********@*****.***"
-            inputMethodHints: Qt.ImhEmailCharactersOnly
         }
 
         ControlButton
@@ -120,12 +126,29 @@ Page
             backgroundColor: Style.mainPurple
             onClicked:
             {
-                signLogLoader.setSource("xmlHttpRequest.qml",
-                                        { "serverUrl": 'http://patrick.ga:8080/api/register?',
-                                          "email": emailField.text,
-                                          "sex": sexButton.buttonText,
-                                          "birthday": dateofbirthField.text,
-                                          "functionalFlag": 'register' });
+                if(sexButton.text === 'М/Ж')
+                {
+                    sexButton.labelContentColor = Style.errorRed;
+                }
+                else if(dateofbirthField.text === '..')
+                {
+                    dateofbirthField.color = Style.errorRed;
+                    dateofbirthField.text = "Некорректная дата";
+                }
+                else if(emailField.acceptableInput === false)
+                {
+                    emailField.color = Style.errorRed;
+                    emailField.text = "Некорректный E-mail";
+                }
+                else
+                {
+                    signLogLoader.setSource("xmlHttpRequest.qml",
+                                            { "serverUrl": 'http://patrick.ga:8080/api/register?',
+                                              "email": emailField.text.toLowerCase(),
+                                              "sex": sexButton.buttonText,
+                                              "birthday": dateofbirthField.text,
+                                              "functionalFlag": 'register' });
+                }
             }
         }
     }

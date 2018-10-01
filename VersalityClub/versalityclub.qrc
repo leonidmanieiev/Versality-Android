@@ -13,5 +13,7 @@
         <file>qml/almostDonePage.qml</file>
         <file>qml/logInPage.qml</file>
         <file>qml/xmlHttpRequest.qml</file>
+        <file>qml/EmailTextField.qml</file>
+        <file>qml/ToastMessage.qml</file>
     </qresource>
 </RCC>

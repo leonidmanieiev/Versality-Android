@@ -51,17 +51,10 @@ Page
             color: Style.mainPurple
         }
 
-        TextField
+        EmailTextField
         {
             id: emailField
-            implicitWidth: parent.width*0.9
-            horizontalAlignment: Text.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
-            background: ControlBackground { }
-            font.pixelSize: Convert.toDp(15, Style.dpi)
-            color: Style.backgroundBlack
-            placeholderText: "*********@*****.***"
-            inputMethodHints: Qt.ImhEmailCharactersOnly
         }
 
         ControlButton
@@ -74,8 +67,16 @@ Page
             backgroundColor: Style.mainPurple
             onClicked:
             {
-                signLogLoader.setSource("passwordInputPage.qml",
-                                        { "email": emailField.text});
+                if(emailField.acceptableInput === false)
+                {
+                    emailField.color = Style.errorRed;
+                    emailField.text = "Некорректный E-mail";
+                }
+                else
+                {
+                    signLogLoader.setSource("passwordInputPage.qml",
+                                            { "email": emailField.text.toLowerCase()});
+                }
             }
         }
     }

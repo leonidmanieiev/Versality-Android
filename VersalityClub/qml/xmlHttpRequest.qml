@@ -20,7 +20,10 @@
 **
 ****************************************************************************/
 
+import "../"
 import QtQuick 2.11
+import QtQuick.Controls 2.4
+import "../js/toDp.js" as Convert
 
 Item
 {
@@ -38,6 +41,8 @@ Item
     property string title: ''
     property bool adult: false
     property string functionalFlag: ''
+    readonly property int errorFlagBeg: 0
+    readonly property int errorFlagEnd: 5
 
     function makeParams()
     {
@@ -48,6 +53,19 @@ Item
             case 'login': return 'email='+email+'&password='+password;
             case 'promotion': return 'secret='+secret+'&lat='+lat+'&lon='+lon;
             default: return -1;
+        }
+    }
+
+    function responseHandler(responseText)
+    {
+        var errorFlag = responseText.substring(errorFlagBeg, errorFlagEnd);
+
+        switch(errorFlag)
+        {
+            case 'REG-1': return 'REG-1: Некорректная дата';
+            case 'REG-2': return 'REG-2: E-mail уже занят';
+            case 'LIN-1': return 'LIN-1: Неверный e-mail или пароль';
+            default: return 'NO_ERROR';
         }
     }
 
@@ -70,17 +88,30 @@ Item
             {
                 if(request.status === 200)
                 {
-                    console.log(request.responseText);
-                    switch(functionalFlag)
+                    console.log("Response: " + request.responseText);
+                    var errorStatus = responseHandler(request.responseText);
+
+                    if(errorStatus === 'NO_ERROR')
                     {
-                        case 'categories': console.log("categories"); return;
-                        case 'register': signLogLoader.source = "passwordInputPage.qml"; break;
-                        case 'login': signLogLoader.source = "almostDonePage.qml"; break;
-                        case 'promotion': console.log("promotions"); return;
-                        default: console.log("function xhr() faild. Params = -1"); return;
+                        switch(functionalFlag)
+                        {
+                            case 'categories': console.log("categories"); return '';
+                            case 'register': signLogLoader.source = "passwordInputPage.qml"; break;
+                            case 'login': signLogLoader.setSource("almostDonePage.qml",
+                                                                  { "secret": request.responseText }
+                                                                 ); break;
+                            case 'promotion': console.log("promotions"); return '';
+                            default: console.log("Unknown functionalFlag"); return '';
+                        }
+                    }
+                    else
+                    {
+                        toastErrorMessage.messageText = errorStatus;
+                        toastErrorMessage.open();
+                        toastMessageTimer.running = true;
                     }
                 }
-                else console.log("HTTP: ", request.status, request.statusText);
+                else console.log("HTTP error: "+request.status);
             }
             else console.log("Pending...");
         }
@@ -89,9 +120,18 @@ Item
         request.send(params);
     }
 
+    ToastMessage { id: toastErrorMessage }
+
+    Timer
+    {
+        id: toastMessageTimer
+        interval: 3000
+        onTriggered: toastErrorMessage.close()
+    }
+
     Component.onCompleted:
     {
-        console.log(makeParams());
+        console.log("Params: " + makeParams());
         xhr();
     }
 }

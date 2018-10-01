@@ -20,33 +20,43 @@
 **
 ****************************************************************************/
 
-//page where app tells how to use it
 import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import "../js/toDp.js" as Convert
-import org.leonman.versalityclub 1.0
 
-Page
+Popup
 {
-    property string secret: ''
+    property string messageText: ''
 
-    id: almostDonePage
-    width: Style.screenWidth
-    height: Style.screenHeight
-
-    Rectangle
+    id: toastMessage
+    x: (Style.screenWidth - width) / 2
+    y: (Style.screenHeight - height)
+    contentItem: Text
     {
-        id: area
-        anchors.fill: parent
-        color: "RED"
+        id: popupContent
+        clip: true
+        text: messageText
+        anchors.centerIn: popupBackground
+        height: Convert.toDp(15, Style.dpi)
+        width: Convert.toDp(text.length, Style.dpi)
+        font.pixelSize: Convert.toDp(15, Style.dpi)
+        color: Style.backgroundWhite
     }
-
-    UserSettings { id: userSettings }
-
-    Component.onCompleted:
+    background: Rectangle
     {
-        userSettings.setValue("userHash", secret)
-        console.log(secret);
+        id: popupBackground
+        width: popupContent.width*1.2
+        height: popupContent.height*1.2
+        radius: parent.height*0.5
+        color: Style.mainPurple
+    }
+    enter: Transition
+    {
+        NumberAnimation { property: "opacity"; from: 0.0; to: 1.0 }
+    }
+    exit: Transition
+    {
+        NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }
     }
 }

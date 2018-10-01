@@ -20,25 +20,29 @@
 **
 ****************************************************************************/
 
-pragma Singleton
+import "../"
+import "../js/toDp.js" as Convert
 import QtQuick 2.11
-import QtQuick.Window 2.11
-import "js/toDp.js" as Convert
+import QtQuick.Controls 2.4
 
-QtObject
+
+TextField
 {
-    readonly property color backgroundWhite: "#FFFFFF"
-    readonly property color backgroundBlack: "#000000"
-    readonly property color mainPurple: "#631964"
-    readonly property color errorRed: "RED"
-
-    readonly property var emailRegEx: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-
-    readonly property int dpi: Screen.pixelDensity * 25.4
-    readonly property int screenHeight: Qt.platform.os === "windows" ?
-                                        Convert.toDp(480, dpi) :
-                                        Convert.toDp(Screen.height, dpi)
-    readonly property int screenWidth: Qt.platform.os === "windows" ?
-                                       Convert.toDp(320, dpi) :
-                                       Convert.toDp(Screen.width, dpi)
+    id: emailTextField
+    implicitWidth: parent.width*0.9
+    horizontalAlignment: Text.AlignHCenter
+    background: ControlBackground { }
+    font.pixelSize: Convert.toDp(15, Style.dpi)
+    color: Style.backgroundBlack
+    placeholderText: "*********@*****.***"
+    inputMethodHints: Qt.ImhEmailCharactersOnly
+    validator: RegExpValidator { regExp: Style.emailRegEx }
+    onFocusChanged:
+    {
+        if(color === Style.errorRed)
+        {
+            color = Style.backgroundBlack;
+            text = ''
+        }
+    }
 }
