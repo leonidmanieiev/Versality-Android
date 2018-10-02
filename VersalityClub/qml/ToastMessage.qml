@@ -20,6 +20,7 @@
 **
 ****************************************************************************/
 
+//temaplte popup - toast message
 import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
@@ -28,6 +29,7 @@ import "../js/toDp.js" as Convert
 Popup
 {
     property string messageText: ''
+    readonly property alias tmt: toastMessageTimer
 
     id: toastMessage
     x: (Style.screenWidth - width) / 2
@@ -58,5 +60,12 @@ Popup
     exit: Transition
     {
         NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }
+    }
+
+    Timer
+    {
+        id: toastMessageTimer
+        interval: 3000
+        onTriggered: toastMessage.close()
     }
 }

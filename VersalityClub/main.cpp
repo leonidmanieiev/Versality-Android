@@ -22,6 +22,7 @@
 
 #include <QQmlApplicationEngine>
 #include "usersettings.h"
+#include "networkinfo.h"
 
 int main(int argc, char *argv[])
 {
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<UserSettings>("org.leonman.versalityclub", 1, 0, "UserSettings");
+    qmlRegisterType<NetworkInfo>("org.leonman.versalityclub", 1, 0, "NetworkInfo");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

@@ -20,11 +20,10 @@
 **
 ****************************************************************************/
 
-import "." //QTBUG-34418, singletons require explicit import to load qmldir file
+import '.' //QTBUG-34418, singletons require explicit import to load qmldir file
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Window 2.11
-import org.leonman.versalityclub 1.0
 
 ApplicationWindow
 {
@@ -34,14 +33,14 @@ ApplicationWindow
     height: Style.screenHeight
     color: Style.backgroundWhite
 
-    UserSettings { id: userSettings }
+    //Component.onCompleted: UserSettings.remove("userHash")
 
     Loader
     {
         id: depentOnHavingTokenLoader
         anchors.fill: parent
-        source: userSettings.value("userHash") === undefined ?
-                                   "qml/initialPage.qml" :
-                                   "qml/mapPage.qml"
+        source: UserSettings.value("userHash") === undefined ?
+                                       "qml/initialPage.qml" :
+                                       "qml/mapPage.qml"
     }
 }

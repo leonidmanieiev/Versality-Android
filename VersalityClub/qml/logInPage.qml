@@ -20,6 +20,7 @@
 **
 ****************************************************************************/
 
+//log in (email input) page
 import "../"
 import "../js/toDp.js" as Convert
 import QtQuick 2.11
@@ -75,7 +76,7 @@ Page
                 else
                 {
                     signLogLoader.setSource("passwordInputPage.qml",
-                                            { "email": emailField.text.toLowerCase()});
+                                             { "email": emailField.text.toLowerCase()});
                 }
             }
         }

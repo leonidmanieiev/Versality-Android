@@ -1,1 +1,2 @@
 singleton Style 1.0 Style.qml
+singleton UserSettings 1.0 UserSettings.qml

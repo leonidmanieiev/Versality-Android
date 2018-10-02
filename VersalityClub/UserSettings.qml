@@ -20,24 +20,12 @@
 **
 ****************************************************************************/
 
-//page where app tells how to use it
-import "../"
+//place to store sensetive data
+pragma Singleton
 import QtQuick 2.11
-import QtQuick.Controls 2.4
-import "../js/toDp.js" as Convert
+import org.leonman.versalityclub 1.0
 
-Page
+UserSettings
 {
-    property string secret: ''
-
-    id: almostDonePage
-    width: Style.screenWidth
-    height: Style.screenHeight
-
-    Rectangle
-    {
-        id: area
-        anchors.fill: parent
-        color: "RED"
-    }
+    id: usersettings
 }

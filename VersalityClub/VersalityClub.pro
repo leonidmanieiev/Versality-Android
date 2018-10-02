@@ -1,4 +1,4 @@
-QT += quick
+QT += quick network
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -41,4 +41,5 @@ DISTFILES += \
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
 HEADERS += \
-    usersettings.h
+    usersettings.h \
+    networkinfo.h

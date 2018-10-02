@@ -20,11 +20,13 @@
 **
 ****************************************************************************/
 
+//sign up and log in buttons page
 import "../"
 import "../js/toDp.js" as Convert
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
+import org.leonman.versalityclub 1.0
 
 Page
 {
@@ -44,7 +46,17 @@ Page
             id: signUpButton
             Layout.fillWidth: true
             buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
-            onClicked: signLogLoader.source = "signUpPage.qml"
+            onClicked:
+            {
+                if(networkInfo.networkStatus() === 1)
+                    signLogLoader.source = "signUpPage.qml"
+                else
+                {
+                    toastMessage.messageText = "Нет интернет соединение";
+                    toastMessage.open();
+                    toastMessage.tmt.running = true;
+                }
+            }
         }
 
         ControlButton
@@ -52,9 +64,22 @@ Page
             id: logInButton
             Layout.fillWidth: true
             buttonText: "ВОЙТИ"
-            onClicked: signLogLoader.source = "logInPage.qml"
+            onClicked:
+            {
+                if(networkInfo.networkStatus() === 1)
+                    signLogLoader.source = "logInPage.qml"
+                else
+                {
+                    toastMessage.messageText = "Нет интернет соединение";
+                    toastMessage.open();
+                    toastMessage.tmt.running = true;
+                }
+            }
         }
     }
+
+    ToastMessage { id: toastMessage }
+    NetworkInfo {id: networkInfo }
 
     Loader
     {

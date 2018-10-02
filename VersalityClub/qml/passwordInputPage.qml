@@ -20,6 +20,7 @@
 **
 ****************************************************************************/
 
+//password input page
 import "../"
 import "../js/toDp.js" as Convert
 import QtQuick 2.11
@@ -78,10 +79,12 @@ Page
             onClicked:
             {
                 signLogLoader.setSource("xmlHttpRequest.qml",
-                                        { "serverUrl": 'http://patrick.ga:8080/api/login?',
-                                          "email": email,
-                                          "password": passField.text,
-                                          "functionalFlag": 'login' });
+                                         { "serverUrl": 'http://patrick.ga:8080/api/login?',
+                                           "email": email,
+                                           "password": passField.text,
+                                           "functionalFlag": 'login'
+                                         }
+                                       );
             }
         }
     }

@@ -20,6 +20,7 @@
 **
 ****************************************************************************/
 
+//http client
 import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
@@ -97,21 +98,31 @@ Item
                         {
                             case 'categories': console.log("categories"); return '';
                             case 'register': signLogLoader.source = "passwordInputPage.qml"; break;
-                            case 'login': signLogLoader.setSource("almostDonePage.qml",
-                                                                  { "secret": request.responseText }
-                                                                 ); break;
+                            case 'login':
+                                UserSettings.setValue("userHash", request.responseText);
+                                if(UserSettings.value("seenAlmostDonePage") === undefined)
+                                {
+                                    UserSettings.setValue("seenAlmostDonePage", 1);
+                                    signLogLoader.source = "almostDonePage.qml";
+                                }
+                                else signLogLoader.source = "mapPage.qml"; break;
                             case 'promotion': console.log("promotions"); return '';
                             default: console.log("Unknown functionalFlag"); return '';
                         }
                     }
                     else
                     {
-                        toastErrorMessage.messageText = errorStatus;
-                        toastErrorMessage.open();
-                        toastMessageTimer.running = true;
+                        toastMessage.messageText = errorStatus;
+                        toastMessage.open();
+                        toastMessage.tmt.running = true;
                     }
                 }
-                else console.log("HTTP error: "+request.status);
+                else
+                {
+                    toastMessage.messageText = "HTTP error: " + request.status;
+                    toastMessage.open();
+                    toastMessage.tmt.running = true;
+                }
             }
             else console.log("Pending...");
         }
@@ -120,14 +131,7 @@ Item
         request.send(params);
     }
 
-    ToastMessage { id: toastErrorMessage }
-
-    Timer
-    {
-        id: toastMessageTimer
-        interval: 3000
-        onTriggered: toastErrorMessage.close()
-    }
+    ToastMessage { id: toastMessage }
 
     Component.onCompleted:
     {

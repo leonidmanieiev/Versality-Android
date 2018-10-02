@@ -20,6 +20,7 @@
 **
 ****************************************************************************/
 
+//sign up page
 import "../"
 import "../js/toDp.js" as Convert
 import QtQuick 2.11
@@ -149,7 +150,7 @@ Page
                                               "birthday": dateofbirthField.text,
                                               "functionalFlag": 'register' });
                 }
-            }
-        }
-    }
-}
+            }//onClicked
+        }//ControlButton
+    }//ColumnLayout
+}//Page
