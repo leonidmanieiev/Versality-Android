@@ -27,3 +27,16 @@ function toDp(px, dpi)
         return px;
     else return Math.round(px*(dpi/160.0));
 }
+
+//encrypts user password using xor and Base64
+function encryptPassword(pass, strForXor)
+{
+    var result = "";
+
+    //xor each letter of pass with letter of strForXor
+    for(var i = 0; i < pass.length; i++)
+        result += String.fromCharCode(strForXor.charCodeAt(i % strForXor.length)
+                                                           ^ pass.charCodeAt(i));
+    //encrypt xored pass using Base64
+    return Qt.btoa(result);
+}

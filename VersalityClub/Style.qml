@@ -24,7 +24,7 @@
 pragma Singleton
 import QtQuick 2.11
 import QtQuick.Window 2.11
-import "js/toDp.js" as Convert
+import "js/helpFunc.js" as Helper
 
 QtObject
 {
@@ -37,9 +37,9 @@ QtObject
 
     readonly property int dpi: Screen.pixelDensity * 25.4
     readonly property int screenHeight: Qt.platform.os === "windows" ?
-                                        Convert.toDp(480, dpi) :
-                                        Convert.toDp(Screen.height, dpi)
+                                        Helper.toDp(480, dpi) :
+                                        Helper.toDp(Screen.height, dpi)
     readonly property int screenWidth: Qt.platform.os === "windows" ?
-                                       Convert.toDp(320, dpi) :
-                                       Convert.toDp(Screen.width, dpi)
+                                       Helper.toDp(320, dpi) :
+                                       Helper.toDp(Screen.width, dpi)
 }

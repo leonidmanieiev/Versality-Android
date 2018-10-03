@@ -24,7 +24,7 @@
 import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
-import "../js/toDp.js" as Convert
+import "../js/helpFunc.js" as Helper
 
 Popup
 {
@@ -40,9 +40,9 @@ Popup
         clip: true
         text: messageText
         anchors.centerIn: popupBackground
-        height: Convert.toDp(15, Style.dpi)
-        width: Convert.toDp(text.length, Style.dpi)
-        font.pixelSize: Convert.toDp(15, Style.dpi)
+        height: Helper.toDp(15, Style.dpi)
+        width: Helper.toDp(text.length, Style.dpi)
+        font.pixelSize: Helper.toDp(15, Style.dpi)
         color: Style.backgroundWhite
     }
     background: Rectangle
@@ -53,15 +53,18 @@ Popup
         radius: parent.height*0.5
         color: Style.mainPurple
     }
+    //Smoothed show up animation
     enter: Transition
     {
         NumberAnimation { property: "opacity"; from: 0.0; to: 1.0 }
     }
+    //Smoothed hide out animation
     exit: Transition
     {
         NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }
     }
 
+    //defines period of time that popup is visiable
     Timer
     {
         id: toastMessageTimer

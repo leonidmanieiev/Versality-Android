@@ -22,11 +22,12 @@
 
 //sign up and log in buttons page
 import "../"
-import "../js/toDp.js" as Convert
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 import org.leonman.versalityclub 1.0
+import QtQml 2.2
 
 Page
 {
@@ -48,14 +49,14 @@ Page
             buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
             onClicked:
             {
-                if(networkInfo.networkStatus() === 1)
-                    signLogLoader.source = "signUpPage.qml"
-                else
+                //workaround because of testing on windows and having QTBUG-68613
+                if(networkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
                 {
                     toastMessage.messageText = "Нет интернет соединение";
                     toastMessage.open();
                     toastMessage.tmt.running = true;
                 }
+                else signLogLoader.source = "signUpPage.qml"
             }
         }
 
@@ -66,20 +67,20 @@ Page
             buttonText: "ВОЙТИ"
             onClicked:
             {
-                if(networkInfo.networkStatus() === 1)
-                    signLogLoader.source = "logInPage.qml"
-                else
+                //workaround because of testing on windows and having QTBUG-68613
+                if(networkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
                 {
                     toastMessage.messageText = "Нет интернет соединение";
                     toastMessage.open();
                     toastMessage.tmt.running = true;
                 }
+                else signLogLoader.source = "logInPage.qml"
             }
         }
     }
 
     ToastMessage { id: toastMessage }
-    NetworkInfo {id: networkInfo }
+    NetworkInfo { id: networkInfo }
 
     Loader
     {

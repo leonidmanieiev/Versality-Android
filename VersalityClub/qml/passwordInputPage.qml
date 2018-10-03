@@ -20,15 +20,15 @@
 **
 ****************************************************************************/
 
-//password input page
 import "../"
-import "../js/toDp.js" as Convert
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 
 Page
 {
+    //value comes from logInPage
     property string email: ''
 
     id: passInputPage
@@ -50,7 +50,7 @@ Page
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             text: qsTr("Пароль:")
-            font.pixelSize: Convert.toDp(15, Style.dpi)
+            font.pixelSize: Helper.toDp(15, Style.dpi)
             color: Style.mainPurple
         }
 
@@ -61,7 +61,7 @@ Page
             horizontalAlignment: Text.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
             background: ControlBackground { }
-            font.pixelSize: Convert.toDp(15, Style.dpi)
+            font.pixelSize: Helper.toDp(15, Style.dpi)
             color: Style.backgroundBlack
             echoMode: TextInput.Password
             inputMethodHints: Qt.ImhSensitiveData
@@ -78,10 +78,12 @@ Page
             backgroundColor: Style.mainPurple
             onClicked:
             {
+                var encryptedPass = Helper.encryptPassword(passField.text,
+                                                           UserSettings.value("for_xor"));
                 signLogLoader.setSource("xmlHttpRequest.qml",
                                          { "serverUrl": 'http://patrick.ga:8080/api/login?',
                                            "email": email,
-                                           "password": passField.text,
+                                           "password": encryptedPass,
                                            "functionalFlag": 'login'
                                          }
                                        );

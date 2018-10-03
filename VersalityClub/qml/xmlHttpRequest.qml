@@ -24,27 +24,33 @@
 import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
-import "../js/toDp.js" as Convert
 
 Item
 {
     id: httpRequestItem
 
     property string serverUrl: ''
+    //those few become "not empty" depending on request (functionalFlag)
     property string email: ''
     property string sex: ''
     property string birthday: ''
     property string password: ''
+    //to authenticate client request on server side
     property string secret: ''
+    //coords of user
     property real lat: 0.0
     property real lon: 0.0
+    //category params
     property int id: 0
     property string title: ''
     property bool adult: false
+    //flag to determine type of request
     property string functionalFlag: ''
+    //beg and end possition of code of error from server
     readonly property int errorFlagBeg: 0
     readonly property int errorFlagEnd: 5
 
+    //creates params for request
     function makeParams()
     {
         switch(functionalFlag)
@@ -53,10 +59,12 @@ Item
             case 'register': return 'email='+email+'&sex='+sex+'&birthday='+birthday;
             case 'login': return 'email='+email+'&password='+password;
             case 'promotion': return 'secret='+secret+'&lat='+lat+'&lon='+lon;
+            //case 'promotion': return 'secret='+secret+'&lat='+lat+'&lon='+lon;
             default: return -1;
         }
     }
 
+    //dealing with response
     function responseHandler(responseText)
     {
         var errorFlag = responseText.substring(errorFlagBeg, errorFlagEnd);
@@ -75,6 +83,7 @@ Item
         var request = new XMLHttpRequest();
         var params = makeParams();
 
+        //if -1, there was unknown type of request
         if(params === -1)
         {
             console.log("function xhr() faild. Params = -1");
@@ -99,14 +108,20 @@ Item
                             case 'categories': console.log("categories"); return '';
                             case 'register': signLogLoader.source = "passwordInputPage.qml"; break;
                             case 'login':
-                                UserSettings.setValue("userHash", request.responseText);
-                                if(UserSettings.value("seenAlmostDonePage") === undefined)
+                                //saving hash(secret) for further auto authentication
+                                UserSettings.beginGroup("user_security");
+                                UserSettings.setValue("user_hash", request.responseText);
+                                UserSettings.endGroup();
+                                //determine whether user seen app instructions
+                                if(UserSettings.value("seen_almost_done_page") === undefined)
                                 {
-                                    UserSettings.setValue("seenAlmostDonePage", 1);
-                                    signLogLoader.source = "almostDonePage.qml";
+                                    //setting key to 1, so user won't get app instructions anymore
+                                    UserSettings.setValue("seen_almost_done_page", 1);
+                                    signLogLoader.source = "profileSettingsPage.qml";//CHANGE IT
                                 }
-                                else signLogLoader.source = "mapPage.qml"; break;
+                                else signLogLoader.source = "profileSettingsPage.qml"; break;//CHANGE IT
                             case 'promotion': console.log("promotions"); return '';
+                            //case 'promotion': console.log("promotions"); return '';
                             default: console.log("Unknown functionalFlag"); return '';
                         }
                     }
@@ -119,12 +134,13 @@ Item
                 }
                 else
                 {
-                    toastMessage.messageText = "HTTP error: " + request.status;
+                    toastMessage.messageText = "HTTP error: " + request.status +
+                                               ". Проверьте интернет соединение";
                     toastMessage.open();
                     toastMessage.tmt.running = true;
                 }
             }
-            else console.log("Pending...");
+            else console.log("Pending: " + request.readyState);
         }
 
         request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

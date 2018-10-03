@@ -22,7 +22,7 @@
 
 //standard button
 import "../"
-import "../js/toDp.js" as Convert
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
@@ -31,18 +31,20 @@ AbstractButton
     property string buttonText: undefined
     property color labelContentColor: Style.mainPurple
     property color backgroundColor: Style.backgroundWhite
+    property color borderColor: Style.mainPurple
 
     id: controlButton
     text: qsTr(buttonText)
     background: ControlBackground
     {
         color: backgroundColor
+        border.color: borderColor
     }
     contentItem: Label
     {
         id: labelContent
         text: buttonText
-        font.pixelSize: Convert.toDp(15, Style.dpi)
+        font.pixelSize: Helper.toDp(15, Style.dpi)
         color: labelContentColor
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter

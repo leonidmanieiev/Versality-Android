@@ -22,24 +22,32 @@
 
 //template textfiled for email
 import "../"
-import "../js/toDp.js" as Convert
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
 
 TextField
 {
+    property color setFillColor: Style.backgroundWhite
+    property color setBorderColor: Style.backgroundBlack
+
     id: emailTextField
     implicitWidth: parent.width*0.9
     horizontalAlignment: Text.AlignHCenter
-    background: ControlBackground { }
-    font.pixelSize: Convert.toDp(15, Style.dpi)
+    background: ControlBackground
+    {
+        fillColor: setFillColor
+        borderColor: setBorderColor
+    }
+    placeholderText: qsTr("*****@****.**")
+    font.pixelSize: Helper.toDp(15, Style.dpi)
     color: Style.backgroundBlack
-    placeholderText: "*********@*****.***"
     inputMethodHints: Qt.ImhEmailCharactersOnly
     validator: RegExpValidator { regExp: Style.emailRegEx }
     onFocusChanged:
     {
+        //workaround to get default text color after incorrect input
         if(color === Style.errorRed)
         {
             color = Style.backgroundBlack;

@@ -20,14 +20,14 @@
 **
 ****************************************************************************/
 
-//page where app tells how to use it
+//page where app tells how to use itself
 import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
-import "../js/toDp.js" as Convert
 
 Page
 {
+    //authentication code, so user don't have to log in constantly
     property string secret: ''
 
     id: almostDonePage

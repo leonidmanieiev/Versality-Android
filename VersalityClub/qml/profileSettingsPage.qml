@@ -29,9 +29,16 @@ import QtQuick.Controls.Styles 1.4
 
 Page
 {
-    id: signUpPage
+    id: profileSettingsPage
     height: Style.screenHeight
     width: Style.screenWidth
+
+    background: Rectangle
+    {
+        id: background
+        anchors.fill: parent
+        color: Style.mainPurple
+    }
 
     ColumnLayout
     {
@@ -49,22 +56,18 @@ Page
             horizontalAlignment: Text.AlignHCenter
             text: qsTr("Пол:")
             font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.mainPurple
+            color: Style.backgroundWhite
         }
 
         ControlButton
         {
             id: sexButton
             Layout.fillWidth: true
-            buttonText: qsTr("М/Ж")
-            labelContentColor: Style.backgroundBlack
+            buttonText: UserSettings.value("user_sex")
+            labelContentColor: Style.backgroundWhite
+            backgroundColor: Style.mainPurple
+            borderColor: Style.backgroundWhite
             onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
-            onFocusChanged:
-            {
-                //workaround to get default text color after incorrect input
-                if(labelContentColor === Style.errorRed)
-                    labelContentColor = Style.backgroundBlack;
-            }
         }
 
         Label
@@ -76,7 +79,7 @@ Page
             horizontalAlignment: Text.AlignHCenter
             text: qsTr("Дата рождения:")
             font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.mainPurple
+            color: Style.backgroundWhite
         }
 
         TextField
@@ -84,20 +87,16 @@ Page
             id: dateofbirthField
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
-            background: ControlBackground { }
+            background: ControlBackground
+            {
+                fillColor: Style.mainPurple
+                borderColor: Style.backgroundWhite
+            }
             font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.backgroundBlack
+            color: Style.backgroundWhite
             inputMask: "00.00.0000"
             inputMethodHints: Qt.ImhDigitsOnly
-            onFocusChanged:
-            {
-                //workaround to get default text color after incorrect input
-                if(color === Style.errorRed)
-                {
-                    color = Style.backgroundBlack;
-                    text = ''
-                }
-            }
+            placeholderText: UserSettings.value("user_birthday")
         }
 
         Label
@@ -109,18 +108,22 @@ Page
             horizontalAlignment: Text.AlignHCenter
             text: qsTr("E-mail:")
             font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.mainPurple
+            color: Style.backgroundWhite
         }
 
         EmailTextField
         {
             id: emailField
             Layout.alignment: Qt.AlignHCenter
+            color: Style.backgroundWhite
+            setFillColor: Style.mainPurple
+            setBorderColor: Style.backgroundWhite
+            placeholderText: UserSettings.value("user_email")
         }
 
-        ControlButton
+        /*ControlButton
         {
-            id: signUpButton
+            id: saveButton
             Layout.fillWidth: true
             padding: Style.screenHeight * 0.08
             buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
@@ -153,6 +156,6 @@ Page
                                               "functionalFlag": 'register' });
                 }
             }//onClicked
-        }//ControlButton
+        }//ControlButton*/
     }//ColumnLayout
-}//Page
+}

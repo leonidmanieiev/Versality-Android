@@ -20,9 +20,8 @@
 **
 ****************************************************************************/
 
-//log in (email input) page
 import "../"
-import "../js/toDp.js" as Convert
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
@@ -48,7 +47,7 @@ Page
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             text: qsTr("E-mail:")
-            font.pixelSize: Convert.toDp(15, Style.dpi)
+            font.pixelSize: Helper.toDp(15, Style.dpi)
             color: Style.mainPurple
         }
 
@@ -68,10 +67,11 @@ Page
             backgroundColor: Style.mainPurple
             onClicked:
             {
+                //check for input corresponds to regex
                 if(emailField.acceptableInput === false)
                 {
                     emailField.color = Style.errorRed;
-                    emailField.text = "Некорректный E-mail";
+                    emailField.text = "Некорректный e-mail";
                 }
                 else
                 {

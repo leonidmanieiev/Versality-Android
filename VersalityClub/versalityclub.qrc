@@ -7,7 +7,7 @@
         <file>qml/mapPage.qml</file>
         <file>qml/ControlBackground.qml</file>
         <file>qml/ControlButton.qml</file>
-        <file>js/toDp.js</file>
+        <file>js/helpFunc.js</file>
         <file>qml/signUpPage.qml</file>
         <file>qml/passwordInputPage.qml</file>
         <file>qml/almostDonePage.qml</file>
@@ -16,5 +16,6 @@
         <file>qml/EmailTextField.qml</file>
         <file>UserSettings.qml</file>
         <file>qml/ToastMessage.qml</file>
+        <file>qml/profileSettingsPage.qml</file>
     </qresource>
 </RCC>

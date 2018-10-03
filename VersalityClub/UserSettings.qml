@@ -20,12 +20,9 @@
 **
 ****************************************************************************/
 
-//place to store sensetive data
+//place to store user sensetive data and app states for recreation
 pragma Singleton
 import QtQuick 2.11
 import org.leonman.versalityclub 1.0
 
-UserSettings
-{
-    id: usersettings
-}
+UserSettings { }

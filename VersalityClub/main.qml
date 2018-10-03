@@ -33,13 +33,12 @@ ApplicationWindow
     height: Style.screenHeight
     color: Style.backgroundWhite
 
-    //Component.onCompleted: UserSettings.remove("userHash")
-
     Loader
     {
         id: depentOnHavingTokenLoader
         anchors.fill: parent
-        source: UserSettings.value("userHash") === undefined ?
+        //whether user was signed(loged) in
+        source: UserSettings.value("user_hash") === undefined ?
                                        "qml/initialPage.qml" :
                                        "qml/mapPage.qml"
     }

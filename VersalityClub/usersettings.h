@@ -20,6 +20,9 @@
 **
 ****************************************************************************/
 
+
+//Wrapper, so I can use functionality of QSettings in QML
+//Stores user sensetive data and app states for recreation
 #ifndef USERSETTINGS_H
 #define USERSETTINGS_H
 
@@ -35,13 +38,23 @@ public:
         QSettings(QSettings::IniFormat, QSettings::UserScope,
                   QCoreApplication::instance()->organizationName(),
                   QCoreApplication::instance()->applicationName(),
-                  parent) { }
+                  parent)
+    {
+        this->beginGroup("user_security");
+        this->setValue("for_xor", "8fdda158eeb8c0ed9d151991aff3c84c");
+        this->endGroup();
+        this->remove("userhash");//DONT FORGET TO DELETE "this->remove..."
+    }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
         { QSettings::setValue(key, value); }
     Q_INVOKABLE QVariant value(const QString& key, const QVariant &defaultValue = QVariant()) const
         { return QSettings::value(key, defaultValue); }
     Q_INVOKABLE void remove(const QString& key)
         { QSettings::remove(key); }
+    Q_INVOKABLE void beginGroup(const QString &prefix)
+        { QSettings::beginGroup(prefix); }
+    Q_INVOKABLE void endGroup()
+        { QSettings::endGroup(); }
 };
 
 #endif // USERSETTINGS_H
