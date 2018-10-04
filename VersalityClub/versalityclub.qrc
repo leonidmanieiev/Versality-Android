@@ -13,9 +13,11 @@
         <file>qml/almostDonePage.qml</file>
         <file>qml/logInPage.qml</file>
         <file>qml/xmlHttpRequest.qml</file>
-        <file>qml/EmailTextField.qml</file>
         <file>UserSettings.qml</file>
         <file>qml/ToastMessage.qml</file>
         <file>qml/profileSettingsPage.qml</file>
+        <file>qml/CustomLabel.qml</file>
+        <file>qml/CustomTextField.qml</file>
+        <file>qml/chooseCategoryPage.qml</file>
     </qresource>
 </RCC>

@@ -40,22 +40,16 @@ Page
         anchors.centerIn: parent
         spacing: parent.height*0.05
 
-        Label
+        CustomLabel
         {
             id: sexLabel
-            clip: true
-            Layout.fillWidth: true
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: qsTr("Пол:")
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.mainPurple
+            labelText: qsTr("Пол:")
+            labelColor: Style.mainPurple
         }
 
         ControlButton
         {
             id: sexButton
-            Layout.fillWidth: true
             buttonText: qsTr("М/Ж")
             labelContentColor: Style.backgroundBlack
             onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
@@ -67,62 +61,46 @@ Page
             }
         }
 
-        Label
+        CustomLabel
         {
             id: dateofbirthLabel
-            clip: true
-            Layout.fillWidth: true
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: qsTr("Дата рождения:")
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.mainPurple
+            labelText: qsTr("Дата рождения:")
+            labelColor: Style.mainPurple
         }
 
-        TextField
+        CustomTextField
         {
             id: dateofbirthField
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
-            background: ControlBackground { }
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.backgroundBlack
+            setTextColor: Style.backgroundBlack
+            setFillColor: Style.backgroundWhite
+            setBorderColor: Style.mainPurple
             inputMask: "00.00.0000"
             inputMethodHints: Qt.ImhDigitsOnly
-            onFocusChanged:
-            {
-                //workaround to get default text color after incorrect input
-                if(color === Style.errorRed)
-                {
-                    color = Style.backgroundBlack;
-                    text = ''
-                }
-            }
         }
 
-        Label
+        CustomLabel
         {
             id: emailLabel
-            clip: true
-            Layout.fillWidth: true
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: qsTr("E-mail:")
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.mainPurple
+            labelText: qsTr("E-mail:")
+            labelColor: Style.mainPurple
         }
 
-        EmailTextField
+        CustomTextField
         {
             id: emailField
-            Layout.alignment: Qt.AlignHCenter
+            setFillColor: Style.backgroundWhite
+            setBorderColor: Style.mainPurple
+            setTextColor: Style.backgroundBlack
+            placeholderText: "*****@****.**"
+            inputMethodHints: Qt.ImhEmailCharactersOnly
+            validator: RegExpValidator
+            { regExp: Style.emailRegEx }
         }
 
         ControlButton
         {
             id: signUpButton
-            Layout.fillWidth: true
-            padding: Style.screenHeight * 0.08
+            padding: middleFieldsColumns.spacing * 2
             buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
             labelContentColor: Style.backgroundWhite
             backgroundColor: Style.mainPurple

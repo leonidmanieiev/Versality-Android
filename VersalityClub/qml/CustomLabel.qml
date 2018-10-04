@@ -20,38 +20,24 @@
 **
 ****************************************************************************/
 
-//template textfiled for email
+//template for label
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import QtQuick.Layouts 1.3
 
-
-TextField
+Label
 {
-    property color setFillColor: Style.backgroundWhite
-    property color setBorderColor: Style.backgroundBlack
+    property string labelText: ''
+    property color labelColor: Style.backgroundWhite
 
-    id: emailTextField
-    implicitWidth: parent.width*0.9
+    id: customLable
+    clip: true
+    Layout.fillWidth: true
+    verticalAlignment: Text.AlignVCenter
     horizontalAlignment: Text.AlignHCenter
-    background: ControlBackground
-    {
-        fillColor: setFillColor
-        borderColor: setBorderColor
-    }
-    placeholderText: qsTr("*****@****.**")
+    text: labelText
     font.pixelSize: Helper.toDp(15, Style.dpi)
-    color: Style.backgroundBlack
-    inputMethodHints: Qt.ImhEmailCharactersOnly
-    validator: RegExpValidator { regExp: Style.emailRegEx }
-    onFocusChanged:
-    {
-        //workaround to get default text color after incorrect input
-        if(color === Style.errorRed)
-        {
-            color = Style.backgroundBlack;
-            text = ''
-        }
-    }
+    color: labelColor
 }

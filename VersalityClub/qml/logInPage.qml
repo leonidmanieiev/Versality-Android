@@ -39,32 +39,30 @@ Page
         anchors.centerIn: parent
         spacing: parent.height*0.05
 
-        Label
+        CustomLabel
         {
             id: emailLabel
-            clip: true
-            Layout.fillWidth: true
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: qsTr("E-mail:")
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.mainPurple
+            labelText: qsTr("E-mail:")
+            labelColor: Style.mainPurple
         }
 
-        EmailTextField
+        CustomTextField
         {
             id: emailField
-            Layout.alignment: Qt.AlignHCenter
+            placeholderText: "*****@****.**"
+            setFillColor: Style.backgroundWhite
+            setBorderColor: Style.mainPurple
+            setTextColor: Style.backgroundBlack
+            inputMethodHints: Qt.ImhEmailCharactersOnly
+            validator: RegExpValidator
+            { regExp: Style.emailRegEx }
         }
 
         ControlButton
         {
             id: enterButton
-            padding: middleLayout.spacing
-            Layout.fillWidth: true
+            padding: middleLayout.spacing*2
             buttonText: "ВОЙТИ"
-            labelContentColor: Style.backgroundWhite
-            backgroundColor: Style.mainPurple
             onClicked:
             {
                 //check for input corresponds to regex

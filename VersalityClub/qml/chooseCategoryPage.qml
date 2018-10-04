@@ -20,32 +20,44 @@
 **
 ****************************************************************************/
 
-//coverts pixels to device-independent pixels using device dpi
-function toDp(px, dpi)
-{
-    if(dpi < 120)
-        return px;
-    else return Math.round(px*(dpi/160.0));
-}
+//page where user chooses categories
+import "../"
+import "../js/helpFunc.js" as Helper
+import QtQuick 2.11
+import QtQuick.Controls 2.4
 
-//encrypts user password using xor and Base64
-function encryptPassword(pass, strForXor)
+Page
 {
-    var result = "";
+    property string jjson: '{"index":["all"],"flux":{"all":[{"data":{"title":"boris","icon":"icon.png"}}]}}'
 
-    //xor each letter of pass with letter of strForXor
-    for(var i = 0; i < pass.length; i++)
-        result += String.fromCharCode(strForXor.charCodeAt(i % strForXor.length)
-                                                           ^ pass.charCodeAt(i));
-    //encrypt xored pass using Base64
-    return Qt.btoa(result);
-}
+    id: chooseCategoryPage
+    height: Style.screenHeight
+    width: Style.screenWidth
 
-function loaded(jsonObject)
-{
-    for(var index in jsonObject.flux.all)
+    Component.onCompleted: Helper.loaded(JSON.parse(jjson))
+
+    ListModel { id: listModel }
+
+    ListView
     {
-        listModel.append({"title": jsonObject.flux.all[index].data["title"],
-                          "icon": jsonObject.flux.all[index].data["icon"]});
+        id: listView
+        anchors.fill: parent
+        model: listModel
+        delegate: Rectangle
+        {
+            width: parent.width
+            height: 80
+            Text
+            {
+                anchors.centerIn: parent
+                text: title
+            }
+        }
+    }
+
+    Loader
+    {
+        id: chooseCategoryPageLoader
+        anchors.fill: parent
     }
 }

@@ -20,32 +20,36 @@
 **
 ****************************************************************************/
 
-//coverts pixels to device-independent pixels using device dpi
-function toDp(px, dpi)
-{
-    if(dpi < 120)
-        return px;
-    else return Math.round(px*(dpi/160.0));
-}
+//template for text field
+import "../"
+import "../js/helpFunc.js" as Helper
+import QtQuick 2.11
+import QtQuick.Controls 2.4
+import QtQuick.Layouts 1.3
 
-//encrypts user password using xor and Base64
-function encryptPassword(pass, strForXor)
+TextField
 {
-    var result = "";
+    property color setFillColor: Style.mainPurple
+    property color setBorderColor: Style.backgroundWhite
+    property color setTextColor: Style.backgroundWhite
 
-    //xor each letter of pass with letter of strForXor
-    for(var i = 0; i < pass.length; i++)
-        result += String.fromCharCode(strForXor.charCodeAt(i % strForXor.length)
-                                                           ^ pass.charCodeAt(i));
-    //encrypt xored pass using Base64
-    return Qt.btoa(result);
-}
-
-function loaded(jsonObject)
-{
-    for(var index in jsonObject.flux.all)
+    id: customTextFiled
+    Layout.fillWidth: true
+    horizontalAlignment: Text.AlignHCenter
+    background: ControlBackground
     {
-        listModel.append({"title": jsonObject.flux.all[index].data["title"],
-                          "icon": jsonObject.flux.all[index].data["icon"]});
+        fillColor: setFillColor
+        borderColor: setBorderColor
+    }
+    font.pixelSize: Helper.toDp(15, Style.dpi)
+    color: setTextColor
+    onFocusChanged:
+    {
+        //workaround to get default text color after incorrect input
+        if(color === Style.errorRed)
+        {
+            color = Style.setTextColor;
+            text = ''
+        }
     }
 }

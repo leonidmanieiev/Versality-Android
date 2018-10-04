@@ -59,16 +59,10 @@ Page
             width: Style.screenWidth
             spacing: Style.screenHeight*0.05
 
-            Label
+            CustomLabel
             {
                 id: sexLabel
-                clip: true
-                Layout.fillWidth: true
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                text: qsTr("Пол:")
-                font.pixelSize: Helper.toDp(15, Style.dpi)
-                color: Style.backgroundWhite
+                labelText: qsTr("Пол:")
             }
 
             ControlButton
@@ -82,124 +76,66 @@ Page
                 onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
             }
 
-            Label
+            CustomLabel
             {
                 id: dateofbirthLabel
-                clip: true
-                Layout.fillWidth: true
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                text: qsTr("Дата рождения:")
-                font.pixelSize: Helper.toDp(15, Style.dpi)
-                color: Style.backgroundWhite
+                labelText: qsTr("Дата рождения:")
             }
 
-            TextField
+            CustomTextField
             {
                 id: dateofbirthField
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                background: ControlBackground
-                {
-                    fillColor: Style.mainPurple
-                    borderColor: Style.backgroundWhite
-                }
-                font.pixelSize: Helper.toDp(15, Style.dpi)
-                color: Style.backgroundWhite
                 inputMask: "00.00.0000"
                 inputMethodHints: Qt.ImhDigitsOnly
                 text: birthday
             }
 
-            Label
+            CustomLabel
             {
                 id: emailLabel
-                clip: true
-                Layout.fillWidth: true
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                text: qsTr("E-mail:")
-                font.pixelSize: Helper.toDp(15, Style.dpi)
-                color: Style.backgroundWhite
+                labelText: qsTr("E-mail:")
             }
 
-            EmailTextField
+            CustomTextField
             {
                 id: emailField
-                Layout.alignment: Qt.AlignHCenter
-                color: Style.backgroundWhite
-                setFillColor: Style.mainPurple
-                setBorderColor: Style.backgroundWhite
                 text: email
+                inputMethodHints: Qt.ImhEmailCharactersOnly
+                validator: RegExpValidator
+                { regExp: Style.emailRegEx }
             }
 
-            Label
+            CustomLabel
             {
                 id: changePasswordLabel
-                clip: true
-                Layout.fillWidth: true
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                text: qsTr("Изменить пароль:")
-                font.pixelSize: Helper.toDp(15, Style.dpi)
-                color: Style.backgroundWhite
+                labelText: qsTr("Изменить пароль:")
             }
 
-            TextField
+            CustomTextField
             {
                 id: changePasswordField
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                background: ControlBackground
-                {
-                    fillColor: Style.mainPurple
-                    borderColor: Style.backgroundWhite
-                }
-                font.pixelSize: Helper.toDp(15, Style.dpi)
-                color: Style.backgroundWhite
                 echoMode: TextInput.Password
                 inputMethodHints: Qt.ImhSensitiveData
                 selectByMouse: false
                 placeholderText: qsTr("ВВЕДИТЕ НОВЫЙ ПАРОЛЬ")
             }
 
-            Label
+            CustomLabel
             {
                 id: firstNameLabel
-                clip: true
-                Layout.fillWidth: true
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                text: qsTr("Имя (не обязательно):")
-                font.pixelSize: Helper.toDp(15, Style.dpi)
-                color: Style.backgroundWhite
+                labelText: qsTr("Имя (не обязательно):")
             }
 
-            TextField
+            CustomTextField
             {
                 id: firstNameField
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                background: ControlBackground
-                {
-                    fillColor: Style.mainPurple
-                    borderColor: Style.backgroundWhite
-                }
-                font.pixelSize: Helper.toDp(15, Style.dpi)
-                color: Style.backgroundWhite
                 placeholderText: qsTr("ВВЕДИТЕ ИМЯ")
             }
 
-            Label
+            CustomLabel
             {
                 id: chooseCategoryLabel
-                clip: true
-                Layout.fillWidth: true
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                text: qsTr("Выберите категории:")
-                font.pixelSize: Helper.toDp(15, Style.dpi)
-                color: Style.backgroundWhite
+                labelText: qsTr("Выберите категории:")
             }
 
             ControlButton
@@ -210,7 +146,21 @@ Page
                 labelContentColor: Style.backgroundWhite
                 backgroundColor: Style.mainPurple
                 setBorderColor: Style.backgroundWhite
-                //onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
+                onClicked:
+                {
+
+                }
+            }
+
+            ControlButton
+            {
+                id: saveButton
+                Layout.fillWidth: true
+                padding: middleFieldsColumns.spacing * 2
+                buttonText: qsTr("СОХРАНИТЬ")
+                labelContentColor: Style.backgroundWhite
+                backgroundColor: Style.mainPurple
+                setBorderColor: Style.backgroundWhite
             }
         }
     }

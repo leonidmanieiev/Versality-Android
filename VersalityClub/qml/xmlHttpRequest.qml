@@ -119,7 +119,10 @@ Item
                     {
                         switch(functionalFlag)
                         {
-                            case 'categories': console.log("categories"); break;
+                            case 'categories':
+                                var jjson = responseToJSON(request.responseText);
+                                xmlHttpRequestLoader.setSource("chooseCategoryPage.qml",
+                                                               { "JSON": jjson }); break;
                             case 'register': xmlHttpRequestLoader.source = "passwordInputPage.qml"; break;
                             case 'login':
                                 //saving hash(secret) for further auto authentication

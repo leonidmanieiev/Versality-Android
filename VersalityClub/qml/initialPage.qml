@@ -27,7 +27,6 @@ import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 import org.leonman.versalityclub 1.0
-import QtQml 2.2
 
 Page
 {
@@ -45,7 +44,6 @@ Page
         ControlButton
         {
             id: signUpButton
-            Layout.fillWidth: true
             buttonText: qsTr("ЗАРЕГИСТРИРОВАТЬСЯ")
             onClicked:
             {
@@ -63,7 +61,6 @@ Page
         ControlButton
         {
             id: logInButton
-            Layout.fillWidth: true
             buttonText: qsTr("ВОЙТИ")
             onClicked:
             {
