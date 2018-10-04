@@ -29,6 +29,12 @@ import QtQuick.Controls.Styles 1.4
 
 Page
 {
+    //those few become "not empty" after request
+    property string email: ''
+    property string sex: ''
+    property string birthday: ''
+    property string cats: ''
+
     id: profileSettingsPage
     height: Style.screenHeight
     width: Style.screenWidth
@@ -40,122 +46,178 @@ Page
         color: Style.mainPurple
     }
 
-    ColumnLayout
+    ScrollView
     {
-        id: middleFieldsColumns
-        width: parent.width*0.8
-        anchors.centerIn: parent
-        spacing: parent.height*0.05
+        id: listView
+        clip: true
+        anchors.fill: parent
+        ScrollBar.vertical: ScrollBar { visible: false }
 
-        Label
+        ColumnLayout
         {
-            id: sexLabel
-            clip: true
-            Layout.fillWidth: true
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: qsTr("Пол:")
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.backgroundWhite
-        }
+            id: middleFieldsColumns
+            width: Style.screenWidth
+            spacing: Style.screenHeight*0.05
 
-        ControlButton
-        {
-            id: sexButton
-            Layout.fillWidth: true
-            buttonText: UserSettings.value("user_sex")
-            labelContentColor: Style.backgroundWhite
-            backgroundColor: Style.mainPurple
-            borderColor: Style.backgroundWhite
-            onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
-        }
-
-        Label
-        {
-            id: dateofbirthLabel
-            clip: true
-            Layout.fillWidth: true
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: qsTr("Дата рождения:")
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.backgroundWhite
-        }
-
-        TextField
-        {
-            id: dateofbirthField
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
-            background: ControlBackground
+            Label
             {
-                fillColor: Style.mainPurple
-                borderColor: Style.backgroundWhite
+                id: sexLabel
+                clip: true
+                Layout.fillWidth: true
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Пол:")
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                color: Style.backgroundWhite
             }
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.backgroundWhite
-            inputMask: "00.00.0000"
-            inputMethodHints: Qt.ImhDigitsOnly
-            placeholderText: UserSettings.value("user_birthday")
-        }
 
-        Label
-        {
-            id: emailLabel
-            clip: true
-            Layout.fillWidth: true
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: qsTr("E-mail:")
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.backgroundWhite
-        }
-
-        EmailTextField
-        {
-            id: emailField
-            Layout.alignment: Qt.AlignHCenter
-            color: Style.backgroundWhite
-            setFillColor: Style.mainPurple
-            setBorderColor: Style.backgroundWhite
-            placeholderText: UserSettings.value("user_email")
-        }
-
-        /*ControlButton
-        {
-            id: saveButton
-            Layout.fillWidth: true
-            padding: Style.screenHeight * 0.08
-            buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
-            labelContentColor: Style.backgroundWhite
-            backgroundColor: Style.mainPurple
-            onClicked:
+            ControlButton
             {
-                if(sexButton.text === 'М/Ж')
+                id: sexButton
+                Layout.fillWidth: true
+                buttonText: sex
+                labelContentColor: Style.backgroundWhite
+                backgroundColor: Style.mainPurple
+                setBorderColor: Style.backgroundWhite
+                onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
+            }
+
+            Label
+            {
+                id: dateofbirthLabel
+                clip: true
+                Layout.fillWidth: true
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Дата рождения:")
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                color: Style.backgroundWhite
+            }
+
+            TextField
+            {
+                id: dateofbirthField
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
+                background: ControlBackground
                 {
-                    sexButton.labelContentColor = Style.errorRed;
+                    fillColor: Style.mainPurple
+                    borderColor: Style.backgroundWhite
                 }
-                else if(dateofbirthField.text === '..')
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                color: Style.backgroundWhite
+                inputMask: "00.00.0000"
+                inputMethodHints: Qt.ImhDigitsOnly
+                text: birthday
+            }
+
+            Label
+            {
+                id: emailLabel
+                clip: true
+                Layout.fillWidth: true
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("E-mail:")
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                color: Style.backgroundWhite
+            }
+
+            EmailTextField
+            {
+                id: emailField
+                Layout.alignment: Qt.AlignHCenter
+                color: Style.backgroundWhite
+                setFillColor: Style.mainPurple
+                setBorderColor: Style.backgroundWhite
+                text: email
+            }
+
+            Label
+            {
+                id: changePasswordLabel
+                clip: true
+                Layout.fillWidth: true
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Изменить пароль:")
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                color: Style.backgroundWhite
+            }
+
+            TextField
+            {
+                id: changePasswordField
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
+                background: ControlBackground
                 {
-                    dateofbirthField.color = Style.errorRed;
-                    dateofbirthField.text = "Некорректная дата";
+                    fillColor: Style.mainPurple
+                    borderColor: Style.backgroundWhite
                 }
-                //check for input corresponds to regex
-                else if(emailField.acceptableInput === false)
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                color: Style.backgroundWhite
+                echoMode: TextInput.Password
+                inputMethodHints: Qt.ImhSensitiveData
+                selectByMouse: false
+                placeholderText: qsTr("ВВЕДИТЕ НОВЫЙ ПАРОЛЬ")
+            }
+
+            Label
+            {
+                id: firstNameLabel
+                clip: true
+                Layout.fillWidth: true
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Имя (не обязательно):")
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                color: Style.backgroundWhite
+            }
+
+            TextField
+            {
+                id: firstNameField
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
+                background: ControlBackground
                 {
-                    emailField.color = Style.errorRed;
-                    emailField.text = "Некорректный E-mail";
+                    fillColor: Style.mainPurple
+                    borderColor: Style.backgroundWhite
                 }
-                else
-                {
-                    signLogLoader.setSource("xmlHttpRequest.qml",
-                                            { "serverUrl": 'http://patrick.ga:8080/api/register?',
-                                              "email": emailField.text.toLowerCase(),
-                                              "sex": sexButton.buttonText,
-                                              "birthday": dateofbirthField.text,
-                                              "functionalFlag": 'register' });
-                }
-            }//onClicked
-        }//ControlButton*/
-    }//ColumnLayout
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                color: Style.backgroundWhite
+                placeholderText: qsTr("ВВЕДИТЕ ИМЯ")
+            }
+
+            Label
+            {
+                id: chooseCategoryLabel
+                clip: true
+                Layout.fillWidth: true
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Выберите категории:")
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                color: Style.backgroundWhite
+            }
+
+            ControlButton
+            {
+                id: chooseCategoryButton
+                Layout.fillWidth: true
+                buttonText: qsTr("ВВЫБОР")
+                labelContentColor: Style.backgroundWhite
+                backgroundColor: Style.mainPurple
+                setBorderColor: Style.backgroundWhite
+                //onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
+            }
+        }
+    }
+
+    Loader
+    {
+        id: profileSettingsPageLoader
+        anchors.fill: parent
+    }
 }

@@ -30,6 +30,7 @@ QtObject
 {
     readonly property color backgroundWhite: "#FFFFFF"
     readonly property color backgroundBlack: "#000000"
+    readonly property color toastGrey: "#9ea0a3"
     readonly property color mainPurple: "#631964"
     readonly property color errorRed: "RED"
 

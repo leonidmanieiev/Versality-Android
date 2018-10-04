@@ -145,14 +145,20 @@ Page
                 }
                 else
                 {
-                    signLogLoader.setSource("xmlHttpRequest.qml",
-                                            { "serverUrl": 'http://patrick.ga:8080/api/register?',
-                                              "email": emailField.text.toLowerCase(),
-                                              "sex": sexButton.buttonText,
-                                              "birthday": dateofbirthField.text,
-                                              "functionalFlag": 'register' });
+                    signUpPageLoader.setSource("xmlHttpRequest.qml",
+                                               { "serverUrl": 'http://patrick.ga:8080/api/register?',
+                                                 "email": emailField.text.toLowerCase(),
+                                                 "sex": sexButton.buttonText,
+                                                 "birthday": dateofbirthField.text,
+                                                 "functionalFlag": 'register' });
                 }
             }//onClicked
         }//ControlButton
     }//ColumnLayout
+
+    Loader
+    {
+        id: signUpPageLoader
+        anchors.fill: parent
+    }
 }//Page

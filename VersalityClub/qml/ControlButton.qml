@@ -31,14 +31,14 @@ AbstractButton
     property string buttonText: undefined
     property color labelContentColor: Style.mainPurple
     property color backgroundColor: Style.backgroundWhite
-    property color borderColor: Style.mainPurple
+    property color setBorderColor: Style.mainPurple
 
     id: controlButton
     text: qsTr(buttonText)
     background: ControlBackground
     {
         color: backgroundColor
-        border.color: borderColor
+        borderColor: setBorderColor
     }
     contentItem: Label
     {

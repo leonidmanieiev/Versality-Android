@@ -46,7 +46,7 @@ Page
         {
             id: signUpButton
             Layout.fillWidth: true
-            buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
+            buttonText: qsTr("ЗАРЕГИСТРИРОВАТЬСЯ")
             onClicked:
             {
                 //workaround because of testing on windows and having QTBUG-68613
@@ -56,7 +56,7 @@ Page
                     toastMessage.open();
                     toastMessage.tmt.running = true;
                 }
-                else signLogLoader.source = "signUpPage.qml"
+                else initialPageLoader.source = "signUpPage.qml"
             }
         }
 
@@ -64,7 +64,7 @@ Page
         {
             id: logInButton
             Layout.fillWidth: true
-            buttonText: "ВОЙТИ"
+            buttonText: qsTr("ВОЙТИ")
             onClicked:
             {
                 //workaround because of testing on windows and having QTBUG-68613
@@ -74,7 +74,7 @@ Page
                     toastMessage.open();
                     toastMessage.tmt.running = true;
                 }
-                else signLogLoader.source = "logInPage.qml"
+                else initialPageLoader.source = "logInPage.qml"
             }
         }
     }
@@ -84,7 +84,7 @@ Page
 
     Loader
     {
-        id: signLogLoader
+        id: initialPageLoader
         anchors.fill: parent
     }
 }

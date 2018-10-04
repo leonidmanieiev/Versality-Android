@@ -79,15 +79,21 @@ Page
             onClicked:
             {
                 var encryptedPass = Helper.encryptPassword(passField.text,
-                                                           UserSettings.value("for_xor"));
-                signLogLoader.setSource("xmlHttpRequest.qml",
-                                         { "serverUrl": 'http://patrick.ga:8080/api/login?',
-                                           "email": email,
-                                           "password": encryptedPass,
-                                           "functionalFlag": 'login'
-                                         }
-                                       );
+                                                           UserSettings.value("user_security/for_xor"));
+                passwordInputPageLoader.setSource("xmlHttpRequest.qml",
+                                                  { "serverUrl": 'http://patrick.ga:8080/api/login?',
+                                                    "email": email,
+                                                    "password": encryptedPass,
+                                                    "functionalFlag": 'login'
+                                                  }
+                                                );
             }
         }
+    }
+
+    Loader
+    {
+        id: passwordInputPageLoader
+        anchors.fill: parent
     }
 }

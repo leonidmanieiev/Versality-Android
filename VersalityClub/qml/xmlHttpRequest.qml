@@ -35,6 +35,7 @@ Item
     property string sex: ''
     property string birthday: ''
     property string password: ''
+    property string cats: ''
     //to authenticate client request on server side
     property string secret: ''
     //coords of user
@@ -55,11 +56,12 @@ Item
     {
         switch(functionalFlag)
         {
-            case 'categories': return 'id='+id+'&title='+title+'&adults='+adults;
+            case 'categories': return '';
             case 'register': return 'email='+email+'&sex='+sex+'&birthday='+birthday;
             case 'login': return 'email='+email+'&password='+password;
+            case 'user/info': return 'secret='+secret;
+            case 'user/refresh-cats': return 'secret='+secret+'&cats='+cats;
             case 'promotion': return 'secret='+secret+'&lat='+lat+'&lon='+lon;
-            //case 'promotion': return 'secret='+secret+'&lat='+lat+'&lon='+lon;
             default: return -1;
         }
     }
@@ -73,9 +75,21 @@ Item
         {
             case 'REG-1': return 'REG-1: Некорректная дата';
             case 'REG-2': return 'REG-2: E-mail уже занят';
+            case 'REG-3': return 'REG-3: Неизвестный пол';
+            case 'REG-4': return 'REG-4: Некорректный e-mail';
             case 'LIN-1': return 'LIN-1: Неверный e-mail или пароль';
+            case 'INF-1': return 'INF-1: Неизвестный токен';
+            case 'CAT-0': return 'CAT-0: Неизвестная ошибка';
+            case 'CAT-1': return 'CAT-1: Неизвестный токен';
+            case 'CAT-2': return 'CAT-2: Неизвестный id подкатегории';
+            case 'PROM-0': return 'PROM-0: Неизвестная ошибка';
             default: return 'NO_ERROR';
         }
+    }
+
+    function responseToJSON(responseText)
+    {
+        return JSON.parse(responseText);
     }
 
     function xhr()
@@ -98,15 +112,15 @@ Item
             {
                 if(request.status === 200)
                 {
-                    console.log("Response: " + request.responseText);
+                    //console.log("Response: " + request.responseText);
                     var errorStatus = responseHandler(request.responseText);
 
                     if(errorStatus === 'NO_ERROR')
                     {
                         switch(functionalFlag)
                         {
-                            case 'categories': console.log("categories"); return '';
-                            case 'register': signLogLoader.source = "passwordInputPage.qml"; break;
+                            case 'categories': console.log("categories"); break;
+                            case 'register': xmlHttpRequestLoader.source = "passwordInputPage.qml"; break;
                             case 'login':
                                 //saving hash(secret) for further auto authentication
                                 UserSettings.beginGroup("user_security");
@@ -117,12 +131,20 @@ Item
                                 {
                                     //setting key to 1, so user won't get app instructions anymore
                                     UserSettings.setValue("seen_almost_done_page", 1);
-                                    signLogLoader.source = "profileSettingsPage.qml";//CHANGE IT
+                                    xmlHttpRequestLoader.source = "almostDonePage.qml";
                                 }
-                                else signLogLoader.source = "profileSettingsPage.qml"; break;//CHANGE IT
-                            case 'promotion': console.log("promotions"); return '';
-                            //case 'promotion': console.log("promotions"); return '';
-                            default: console.log("Unknown functionalFlag"); return '';
+                                else xmlHttpRequestLoader.source = "mapPage.qml"; break;
+                            case 'user/info':
+                                var respJSON = responseToJSON(request.responseText);
+                                xmlHttpRequestLoader.setSource("profileSettingsPage.qml",
+                                                               { "email": respJSON.email,
+                                                                 "sex": respJSON.sex,
+                                                                 "birthday": respJSON.birthday,
+                                                                 "cats": respJSON.categories,
+                                                               }); break;
+                            case 'user/refresh-cats': console.log("user/refresh-cats"); break;
+                            case 'promotion': console.log("promotions"); break;
+                            default: console.log("Unknown functionalFlag"); break;
                         }
                     }
                     else
@@ -153,5 +175,11 @@ Item
     {
         console.log("Params: " + makeParams());
         xhr();
+    }
+
+    Loader
+    {
+        id: xmlHttpRequestLoader
+        anchors.fill: parent
     }
 }

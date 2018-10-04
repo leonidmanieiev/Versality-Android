@@ -51,7 +51,7 @@ Popup
         width: popupContent.width*1.2
         height: popupContent.height*1.2
         radius: parent.height*0.5
-        color: Style.mainPurple
+        color: Style.toastGrey
     }
     //Smoothed show up animation
     enter: Transition

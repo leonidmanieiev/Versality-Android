@@ -75,10 +75,16 @@ Page
                 }
                 else
                 {
-                    signLogLoader.setSource("passwordInputPage.qml",
-                                             { "email": emailField.text.toLowerCase()});
+                    logInPageLoader.setSource("passwordInputPage.qml",
+                                              { "email": emailField.text.toLowerCase()});
                 }
             }
         }
+    }
+
+    Loader
+    {
+        id: logInPageLoader
+        anchors.fill: parent
     }
 }

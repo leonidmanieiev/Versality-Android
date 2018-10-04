@@ -22,22 +22,47 @@
 
 //page where app tells how to use itself
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
 Page
 {
-    //authentication code, so user don't have to log in constantly
-    property string secret: ''
-
-    id: almostDonePage
-    width: Style.screenWidth
+    id: almostDodePage
     height: Style.screenHeight
+    width: Style.screenWidth
 
-    Rectangle
+    background: Rectangle
     {
-        id: area
+        id: background
         anchors.fill: parent
-        color: "RED"
+        color: Style.mainPurple
+    }
+
+    ControlButton
+    {
+        id: startUsingAppButton
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: Helper.toDp(parent.height/14, Style.dpi)
+        buttonText: qsTr("Все понятно, начать работу!")
+        labelContentColor: Style.backgroundWhite
+        backgroundColor: Style.mainPurple
+        setBorderColor: Style.backgroundWhite
+        onClicked:
+        {
+            almostDonePageLoader.setSource("xmlHttpRequest.qml",
+                                     { "serverUrl": 'http://patrick.ga:8080/api/user/info?',
+                                       "secret": UserSettings.value("user_security/user_hash"),
+                                       "functionalFlag": 'user/info'
+                                     }
+                                   );
+        }
+    }
+
+    Loader
+    {
+        id: almostDonePageLoader
+        anchors.fill: parent
     }
 }

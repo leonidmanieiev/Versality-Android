@@ -22,19 +22,47 @@
 
 //main page in map view
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
 Page
 {
     id: mapPage
-    width: Style.screenWidth
     height: Style.screenHeight
+    width: Style.screenWidth
 
-    Rectangle
+    background: Rectangle
     {
-        id: area
+        id: background
         anchors.fill: parent
         color: "YELLOW"
+    }
+
+    ControlButton
+    {
+        id: startUsingAppButton
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: Helper.toDp(parent.height/14, Style.dpi)
+        buttonText: qsTr("Все понятно, начать работу!")
+        labelContentColor: Style.backgroundWhite
+        backgroundColor: Style.mainPurple
+        setBorderColor: Style.backgroundWhite
+        onClicked:
+        {
+            mapPageLoader.setSource("xmlHttpRequest.qml",
+                                    { "serverUrl": 'http://patrick.ga:8080/api/user/info?',
+                                      "secret": UserSettings.value("user_security/user_hash"),
+                                      "functionalFlag": 'user/info'
+                                    }
+                                   );
+        }
+    }
+
+    Loader
+    {
+        id: mapPageLoader
+        anchors.fill: parent
     }
 }
