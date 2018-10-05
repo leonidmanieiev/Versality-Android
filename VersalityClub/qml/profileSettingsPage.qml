@@ -134,13 +134,13 @@ Page
 
             CustomLabel
             {
-                id: chooseCategoryLabel
+                id: selectCategoryLabel
                 labelText: qsTr("Выберите категории:")
             }
 
             ControlButton
             {
-                id: chooseCategoryButton
+                id: selectCategoryButton
                 Layout.fillWidth: true
                 buttonText: qsTr("ВВЫБОР")
                 labelContentColor: Style.backgroundWhite
@@ -148,7 +148,10 @@ Page
                 setBorderColor: Style.backgroundWhite
                 onClicked:
                 {
-
+                    profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
+                                                        { "serverUrl": 'http://patrick.ga:8080/api/categories',
+                                                          "functionalFlag": 'categories'
+                                                        });
                 }
             }
 

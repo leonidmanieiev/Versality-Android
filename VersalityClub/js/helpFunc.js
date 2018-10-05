@@ -41,11 +41,21 @@ function encryptPassword(pass, strForXor)
     return Qt.btoa(result);
 }
 
-function loaded(jsonObject)
+function catsJsonToListModel(catsJSON)
 {
-    for(var index in jsonObject.flux.all)
+    for(var i in catsJSON)
     {
-        listModel.append({"title": jsonObject.flux.all[index].data["title"],
-                          "icon": jsonObject.flux.all[index].data["icon"]});
+        catsModel.append({
+                             "id": catsJSON[i].id,
+                             "title": catsJSON[i].title,
+                             "collapsed": true,
+                             "subcats": []
+                        });
+
+        for(var j in catsJSON[i].subcats)
+            catsModel.get(i).subcats.append({
+                                                "subid": catsJSON[i].subcats[j].id,
+                                                "subtitle": catsJSON[i].subcats[j].title
+                                           });
     }
 }

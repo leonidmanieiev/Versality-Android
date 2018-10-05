@@ -33,6 +33,7 @@ AbstractButton
     property color labelContentColor: Style.mainPurple
     property color backgroundColor: Style.backgroundWhite
     property color setBorderColor: Style.mainPurple
+    property alias labelContentAlias: labelContent
 
     id: controlButton
     text: qsTr(buttonText)

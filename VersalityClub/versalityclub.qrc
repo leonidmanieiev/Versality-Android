@@ -18,6 +18,6 @@
         <file>qml/profileSettingsPage.qml</file>
         <file>qml/CustomLabel.qml</file>
         <file>qml/CustomTextField.qml</file>
-        <file>qml/chooseCategoryPage.qml</file>
+        <file>qml/selectCategoryPage.qml</file>
     </qresource>
 </RCC>

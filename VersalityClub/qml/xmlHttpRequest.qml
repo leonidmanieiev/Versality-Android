@@ -119,10 +119,10 @@ Item
                     {
                         switch(functionalFlag)
                         {
-                            case 'categories':
-                                var jjson = responseToJSON(request.responseText);
-                                xmlHttpRequestLoader.setSource("chooseCategoryPage.qml",
-                                                               { "JSON": jjson }); break;
+                            case 'categories':;
+                                xmlHttpRequestLoader.setSource("selectCategoryPage.qml",
+                                                               { "strCatsJSON": request.responseText }
+                                                              ); break;
                             case 'register': xmlHttpRequestLoader.source = "passwordInputPage.qml"; break;
                             case 'login':
                                 //saving hash(secret) for further auto authentication
@@ -138,12 +138,12 @@ Item
                                 }
                                 else xmlHttpRequestLoader.source = "mapPage.qml"; break;
                             case 'user/info':
-                                var respJSON = responseToJSON(request.responseText);
+                                var uInfoRespJSON = responseToJSON(request.responseText);
                                 xmlHttpRequestLoader.setSource("profileSettingsPage.qml",
-                                                               { "email": respJSON.email,
-                                                                 "sex": respJSON.sex,
-                                                                 "birthday": respJSON.birthday,
-                                                                 "cats": respJSON.categories,
+                                                               { "email": uInfoRespJSON.email,
+                                                                 "sex": uInfoRespJSON.sex,
+                                                                 "birthday": uInfoRespJSON.birthday,
+                                                                 "cats": uInfoRespJSON.categories,
                                                                }); break;
                             case 'user/refresh-cats': console.log("user/refresh-cats"); break;
                             case 'promotion': console.log("promotions"); break;
