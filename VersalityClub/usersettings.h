@@ -41,9 +41,6 @@ public:
                   QCoreApplication::instance()->applicationName(),
                   parent)
     {
-        this->beginGroup("user_security");
-        this->setValue("for_xor", "8fdda158eeb8c0ed9d151991aff3c84c");
-        this->endGroup();
         this->remove("user_security/user_hash");//DONT FORGET TO DELETE THIS
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)

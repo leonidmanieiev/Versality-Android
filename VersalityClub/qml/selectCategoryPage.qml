@@ -206,8 +206,6 @@ Page
         {
             chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
                                               { "serverUrl": 'http://patrick.ga:8080/api/user/refresh-cats?',
-                                                "secret": UserSettings.value("user_security/user_hash"),
-                                                "cats": UserSettings.getStrCats(),
                                                 "functionalFlag": 'user/refresh-cats'
                                               });
         }

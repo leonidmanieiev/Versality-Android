@@ -28,9 +28,6 @@ import QtQuick.Layouts 1.3
 
 Page
 {
-    //value comes from logInPage
-    property string email: ''
-
     id: passInputPage
     height: Style.screenHeight
     width: Style.screenWidth
@@ -79,10 +76,9 @@ Page
             onClicked:
             {
                 var encryptedPass = Helper.encryptPassword(passField.text,
-                                                           UserSettings.value("user_security/for_xor"));
+                                                           Style.xorStr);
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
                                                   { "serverUrl": 'http://patrick.ga:8080/api/login?',
-                                                    "email": email,
                                                     "password": encryptedPass,
                                                     "functionalFlag": 'login'
                                                   }

@@ -23,7 +23,6 @@
 #include <QQmlApplicationEngine>
 #include "usersettings.h"
 #include "networkinfo.h"
-#include <iostream>
 
 int main(int argc, char *argv[])
 {

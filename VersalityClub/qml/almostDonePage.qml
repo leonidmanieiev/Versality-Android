@@ -53,7 +53,6 @@ Page
         {
             almostDonePageLoader.setSource("xmlHttpRequest.qml",
                                      { "serverUrl": 'http://patrick.ga:8080/api/user/info?',
-                                       "secret": UserSettings.value("user_security/user_hash"),
                                        "functionalFlag": 'user/info'
                                      }
                                    );

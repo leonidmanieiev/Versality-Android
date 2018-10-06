@@ -31,20 +31,16 @@ Item
 
     property string serverUrl: ''
     //those few become "not empty" depending on request (functionalFlag)
-    property string email: ''
-    property string sex: ''
-    property string birthday: ''
+    property string email: UserSettings.value("user_data/email")
+    property string sex: UserSettings.value("user_data/sex")
+    property string birthday: UserSettings.value("user_data/birthday")
     property string password: ''
-    property string cats: ''
+    property string cats: UserSettings.getStrCats()
     //to authenticate client request on server side
-    property string secret: ''
+    property string secret: UserSettings.value("user_security/user_hash")
     //coords of user
     property real lat: 0.0
     property real lon: 0.0
-    //category params
-    property int id: 0
-    property string title: ''
-    property bool adult: false
     //flag to determine type of request
     property string functionalFlag: ''
     //beg and end possition of code of error from server
