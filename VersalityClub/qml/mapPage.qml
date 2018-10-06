@@ -39,27 +39,6 @@ Page
         color: "YELLOW"
     }
 
-    ControlButton
-    {
-        id: startUsingAppButton
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: Helper.toDp(parent.height/14, Style.dpi)
-        buttonText: qsTr("Все понятно, начать работу!")
-        labelContentColor: Style.backgroundWhite
-        backgroundColor: Style.mainPurple
-        setBorderColor: Style.backgroundWhite
-        onClicked:
-        {
-            mapPageLoader.setSource("xmlHttpRequest.qml",
-                                    { "serverUrl": 'http://patrick.ga:8080/api/user/info?',
-                                      "secret": UserSettings.value("user_security/user_hash"),
-                                      "functionalFlag": 'user/info'
-                                    }
-                                   );
-        }
-    }
-
     Loader
     {
         id: mapPageLoader

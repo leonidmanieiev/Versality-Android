@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-//page where user chooses categories
+//page where user select categories
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
@@ -135,7 +135,7 @@ Page
                 delegate: Rectangle
                 {
                     id: subCatsItem
-                    color: "transparent"
+                    color: UserSettings.contains(subid) ? Style.toastGrey : "transparent"
                     height: Style.screenHeight*0.09
                     width: Style.screenWidth*0.8
                     radius: height*0.5
@@ -149,7 +149,7 @@ Page
                         width: parent.width*0.7
                         anchors.verticalCenter: parent.verticalCenter
                         font.pixelSize: Helper.toDp(15, Style.dpi)
-                        color: Style.backgroundWhite
+                        color: UserSettings.contains(subid) ? Style.backgroundBlack : Style.backgroundWhite
                         wrapMode: Text.WordWrap
                         text: subtitle
                     }
@@ -157,7 +157,7 @@ Page
                     Rectangle
                     {
                         id: catsSelectedIcon
-                        visible: false
+                        visible: UserSettings.contains(subid)
                         color: "green"
                         width: parent.radius
                         height: parent.radius
@@ -178,12 +178,14 @@ Page
                                 subCatsItem.color = "transparent";
                                 subCatsText.color = Style.backgroundWhite
                                 catsSelectedIcon.visible = false;
+                                console.log("removed cat " + subid + ": " + UserSettings.removeCat(subid));
                             }
                             else
                             {
                                 subCatsItem.color = Style.toastGrey;
                                 subCatsText.color = Style.backgroundBlack;
                                 catsSelectedIcon.visible = true;
+                                console.log("selected cat: " + UserSettings.insertCat(subid));
                             }
                         }
                     }//MouseArea
@@ -200,7 +202,15 @@ Page
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottomMargin: parent.height*0.1
         buttonText: qsTr("СОХРАНИТЬ\nИ ВЕРНУТЬСЯ К НАСТРОЙКАМ")
-        onClicked: chooseCategoryPageLoader.source = "profileSettingsPage.qml";
+        onClicked:
+        {
+            chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
+                                              { "serverUrl": 'http://patrick.ga:8080/api/user/refresh-cats?',
+                                                "secret": UserSettings.value("user_security/user_hash"),
+                                                "cats": UserSettings.getStrCats(),
+                                                "functionalFlag": 'user/refresh-cats'
+                                              });
+        }
     }
 
     Loader

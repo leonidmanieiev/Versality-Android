@@ -78,9 +78,9 @@ Item
             case 'REG-3': return 'REG-3: Неизвестный пол';
             case 'REG-4': return 'REG-4: Некорректный e-mail';
             case 'LIN-1': return 'LIN-1: Неверный e-mail или пароль';
-            case 'INF-1': return 'INF-1: Неизвестный токен';
+            case 'INF-1': return 'INF-1: Неизвестный токен аутентификации';
             case 'CAT-0': return 'CAT-0: Неизвестная ошибка';
-            case 'CAT-1': return 'CAT-1: Неизвестный токен';
+            case 'CAT-1': return 'CAT-1: Неизвестный токен аутентификации';
             case 'CAT-2': return 'CAT-2: Неизвестный id подкатегории';
             case 'PROM-0': return 'PROM-0: Неизвестная ошибка';
             default: return 'NO_ERROR';
@@ -130,22 +130,31 @@ Item
                                 UserSettings.setValue("user_hash", request.responseText);
                                 UserSettings.endGroup();
                                 //determine whether user seen app instructions
-                                if(UserSettings.value("seen_almost_done_page") === undefined)
+                                if(UserSettings.value("user_data/seen_almost_done_page") === undefined)
                                 {
                                     //setting key to 1, so user won't get app instructions anymore
+                                    UserSettings.beginGroup("user_data");
                                     UserSettings.setValue("seen_almost_done_page", 1);
+                                    UserSettings.endGroup();
                                     xmlHttpRequestLoader.source = "almostDonePage.qml";
                                 }
                                 else xmlHttpRequestLoader.source = "mapPage.qml"; break;
                             case 'user/info':
                                 var uInfoRespJSON = responseToJSON(request.responseText);
-                                xmlHttpRequestLoader.setSource("profileSettingsPage.qml",
-                                                               { "email": uInfoRespJSON.email,
-                                                                 "sex": uInfoRespJSON.sex,
-                                                                 "birthday": uInfoRespJSON.birthday,
-                                                                 "cats": uInfoRespJSON.categories,
-                                                               }); break;
-                            case 'user/refresh-cats': console.log("user/refresh-cats"); break;
+                                UserSettings.beginGroup("user_data");
+                                UserSettings.setValue("email", uInfoRespJSON.email);
+                                UserSettings.setValue("sex", uInfoRespJSON.sex);
+                                UserSettings.setValue("birthday", uInfoRespJSON.birthday);
+                                UserSettings.endGroup();
+                                for(var i in uInfoRespJSON.categories)
+                                    console.log("selected cat: " +
+                                                UserSettings.insertCat(uInfoRespJSON.categories[i]));
+                                xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+                                break;
+                            case 'user/refresh-cats':
+                                console.log("Cats have been saved");
+                                xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+                                break;
                             case 'promotion': console.log("promotions"); break;
                             default: console.log("Unknown functionalFlag"); break;
                         }

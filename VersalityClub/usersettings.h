@@ -28,6 +28,7 @@
 
 #include <QGuiApplication>
 #include <QSettings>
+#include <QSet>
 
 class UserSettings : public QSettings
 {
@@ -55,6 +56,25 @@ public:
         { QSettings::beginGroup(prefix); }
     Q_INVOKABLE void endGroup()
         { QSettings::endGroup(); }
+    Q_INVOKABLE QSet<quint32> getSelectedCats() const
+        { return this->selectedCats; }
+    Q_INVOKABLE quint32 insertCat(quint32 catId)
+        { return *this->selectedCats.insert(catId); }
+    Q_INVOKABLE bool contains(quint32 catId) const
+        { return this->selectedCats.find(catId) != this->selectedCats.constEnd(); }
+    Q_INVOKABLE bool removeCat(quint32 catId)
+        { return this->selectedCats.remove(catId); }
+    Q_INVOKABLE QString getStrCats() const
+    {
+        QString strCats;
+        for(auto cat : this->selectedCats)
+            strCats.append(QString::number(cat)).append(',');
+        strCats.chop(1);
+
+        return strCats;
+    }
+private:
+    QSet<quint32> selectedCats;
 };
 
 #endif // USERSETTINGS_H

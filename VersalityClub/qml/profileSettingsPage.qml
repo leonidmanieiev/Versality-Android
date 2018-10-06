@@ -29,12 +29,6 @@ import QtQuick.Controls.Styles 1.4
 
 Page
 {
-    //those few become "not empty" after request
-    property string email: ''
-    property string sex: ''
-    property string birthday: ''
-    property string cats: ''
-
     id: profileSettingsPage
     height: Style.screenHeight
     width: Style.screenWidth
@@ -69,7 +63,7 @@ Page
             {
                 id: sexButton
                 Layout.fillWidth: true
-                buttonText: sex
+                buttonText: UserSettings.value("user_data/sex");
                 labelContentColor: Style.backgroundWhite
                 backgroundColor: Style.mainPurple
                 setBorderColor: Style.backgroundWhite
@@ -87,7 +81,7 @@ Page
                 id: dateofbirthField
                 inputMask: "00.00.0000"
                 inputMethodHints: Qt.ImhDigitsOnly
-                text: birthday
+                text: UserSettings.value("user_data/birthday");
             }
 
             CustomLabel
@@ -99,7 +93,7 @@ Page
             CustomTextField
             {
                 id: emailField
-                text: email
+                text: UserSettings.value("user_data/email");
                 inputMethodHints: Qt.ImhEmailCharactersOnly
                 validator: RegExpValidator
                 { regExp: Style.emailRegEx }
@@ -164,6 +158,11 @@ Page
                 labelContentColor: Style.backgroundWhite
                 backgroundColor: Style.mainPurple
                 setBorderColor: Style.backgroundWhite
+                onClicked:
+                {
+
+                    profileSettingsPageLoader.source = "mapPage.qml";
+                }
             }
         }
     }
