@@ -67,7 +67,7 @@ Page
                 labelContentColor: Style.backgroundWhite
                 backgroundColor: Style.mainPurple
                 setBorderColor: Style.backgroundWhite
-                onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
+                onClicked: buttonText === "M" ? buttonText = "Ж" : buttonText = "M"
             }
 
             CustomLabel
@@ -158,11 +158,7 @@ Page
                 labelContentColor: Style.backgroundWhite
                 backgroundColor: Style.mainPurple
                 setBorderColor: Style.backgroundWhite
-                onClicked:
-                {
-
-                    profileSettingsPageLoader.source = "mapPage.qml";
-                }
+                onClicked: profileSettingsPageLoader.source = "userLocation.qml";
             }
         }
     }

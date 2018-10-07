@@ -28,6 +28,8 @@ import QtQuick.Controls 2.4
 
 Page
 {
+    property string response: ''
+
     id: mapPage
     height: Style.screenHeight
     width: Style.screenWidth
@@ -44,4 +46,6 @@ Page
         id: mapPageLoader
         anchors.fill: parent
     }
+
+    Component.onCompleted: console.log(response)
 }

@@ -19,5 +19,6 @@
         <file>qml/CustomLabel.qml</file>
         <file>qml/CustomTextField.qml</file>
         <file>qml/selectCategoryPage.qml</file>
+        <file>qml/userLocation.qml</file>
     </qresource>
 </RCC>

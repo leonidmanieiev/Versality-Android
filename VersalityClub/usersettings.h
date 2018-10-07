@@ -42,6 +42,7 @@ public:
                   parent)
     {
         this->remove("user_security/user_hash");//DONT FORGET TO DELETE THIS
+        this->remove("user_data/seen_almost_done_page");//DONT FORGET TO DELETE THIS
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
         { QSettings::setValue(key, value); }

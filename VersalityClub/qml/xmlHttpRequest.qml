@@ -29,18 +29,18 @@ Item
 {
     id: httpRequestItem
 
-    property string serverUrl: ''
     //those few become "not empty" depending on request (functionalFlag)
-    property string email: UserSettings.value("user_data/email")
-    property string sex: UserSettings.value("user_data/sex")
-    property string birthday: UserSettings.value("user_data/birthday")
+    property string serverUrl: ''
+    property string email: ''
+    property string sex: ''
+    property string birthday: ''
     property string password: ''
     property string cats: UserSettings.getStrCats()
-    //to authenticate client request on server side
+    //to authenticate client on server side
     property string secret: UserSettings.value("user_security/user_hash")
     //coords of user
-    property real lat: 0.0
-    property real lon: 0.0
+    property real lat: 59.4398376//UserSettings.value("user_data/lat") UNCOMMENT
+    property real lon: 24.5699876//UserSettings.value("user_data/lon") UNCOMMENT
     //flag to determine type of request
     property string functionalFlag: ''
     //beg and end possition of code of error from server
@@ -52,12 +52,21 @@ Item
     {
         switch(functionalFlag)
         {
+            //request for all categories
             case 'categories': return '';
+            //request for user constants
+            case 'constants': return '';
+            //request for sign up
             case 'register': return 'email='+email+'&sex='+sex+'&birthday='+birthday;
+            //request for log in
             case 'login': return 'email='+email+'&password='+password;
+            //request for user info
             case 'user/info': return 'secret='+secret;
+            //request for saving selected/deselected categories
             case 'user/refresh-cats': return 'secret='+secret+'&cats='+cats;
-            case 'promotion': return 'secret='+secret+'&lat='+lat+'&lon='+lon;
+            //request for promotions
+            case 'promotions': return 'secret='+secret+'&lat='+lat+'&lon='+lon;
+            //unknown request
             default: return -1;
         }
     }
@@ -73,17 +82,19 @@ Item
             case 'REG-2': return 'REG-2: E-mail уже занят';
             case 'REG-3': return 'REG-3: Неизвестный пол';
             case 'REG-4': return 'REG-4: Некорректный e-mail';
+            case 'REG-5': return 'REG-4: Некорректный возраст';
             case 'LIN-1': return 'LIN-1: Неверный e-mail или пароль';
             case 'INF-1': return 'INF-1: Неизвестный токен аутентификации';
             case 'CAT-0': return 'CAT-0: Неизвестная ошибка';
             case 'CAT-1': return 'CAT-1: Неизвестный токен аутентификации';
             case 'CAT-2': return 'CAT-2: Неизвестный id подкатегории';
-            case 'PROM-0': return 'PROM-0: Неизвестная ошибка';
+            case 'PROM-1': return 'PROM-1: Нет ниодной акции рядом с вами';
             default: return 'NO_ERROR';
         }
     }
 
-    function responseToJSON(responseText)
+    //converts JSON in text form to JSON as object
+    function strJSONtoJSON(responseText)
     {
         return JSON.parse(responseText);
     }
@@ -93,7 +104,7 @@ Item
         var request = new XMLHttpRequest();
         var params = makeParams();
 
-        //if -1, there was unknown type of request
+        //if -1, there was unknown request
         if(params === -1)
         {
             console.log("function xhr() faild. Params = -1");
@@ -108,7 +119,6 @@ Item
             {
                 if(request.status === 200)
                 {
-                    //console.log("Response: " + request.responseText);
                     var errorStatus = responseHandler(request.responseText);
 
                     if(errorStatus === 'NO_ERROR')
@@ -119,12 +129,16 @@ Item
                                 xmlHttpRequestLoader.setSource("selectCategoryPage.qml",
                                                                { "strCatsJSON": request.responseText }
                                                               ); break;
-                            case 'register': xmlHttpRequestLoader.source = "passwordInputPage.qml"; break;
+                            case 'register':
+                                xmlHttpRequestLoader.setSource("passwordInputPage.qml",
+                                                                { "email": email }
+                                                              ); break;
                             case 'login':
                                 //saving hash(secret) for further auto authentication
                                 UserSettings.beginGroup("user_security");
                                 UserSettings.setValue("user_hash", request.responseText);
                                 UserSettings.endGroup();
+
                                 //determine whether user seen app instructions
                                 if(UserSettings.value("user_data/seen_almost_done_page") === undefined)
                                 {
@@ -136,25 +150,28 @@ Item
                                 }
                                 else xmlHttpRequestLoader.source = "mapPage.qml"; break;
                             case 'user/info':
-                                var uInfoRespJSON = responseToJSON(request.responseText);
+                                var uInfoRespJSON = strJSONtoJSON(request.responseText);
+                                //saving user info to fill fields
                                 UserSettings.beginGroup("user_data");
                                 UserSettings.setValue("email", uInfoRespJSON.email);
                                 UserSettings.setValue("sex", uInfoRespJSON.sex);
                                 UserSettings.setValue("birthday", uInfoRespJSON.birthday);
                                 UserSettings.endGroup();
                                 for(var i in uInfoRespJSON.categories)
-                                    console.log("selected cat: " +
-                                                UserSettings.insertCat(uInfoRespJSON.categories[i]));
+                                    UserSettings.insertCat(uInfoRespJSON.categories[i]);
                                 xmlHttpRequestLoader.source = "profileSettingsPage.qml";
                                 break;
                             case 'user/refresh-cats':
-                                console.log("Cats have been saved");
                                 xmlHttpRequestLoader.source = "profileSettingsPage.qml";
                                 break;
-                            case 'promotion': console.log("promotions"); break;
+                            case 'promotions':
+                                xmlHttpRequestLoader.setSource("mapPage.qml",
+                                                               { "response": request.responseText });
+                                break;
                             default: console.log("Unknown functionalFlag"); break;
                         }
                     }
+                    //showing response error
                     else
                     {
                         toastMessage.messageText = errorStatus;
@@ -162,6 +179,7 @@ Item
                         toastMessage.tmt.running = true;
                     }
                 }
+                //showing connection error
                 else
                 {
                     toastMessage.messageText = "HTTP error: " + request.status +

@@ -40,6 +40,6 @@ ApplicationWindow
         //whether user was signed(loged) in
         source: UserSettings.value("user_security/user_hash") === undefined ?
                                                       "qml/initialPage.qml" :
-                                                      "qml/mapPage.qml"
+                                                      "qml/userLocation.qml"
     }
 }

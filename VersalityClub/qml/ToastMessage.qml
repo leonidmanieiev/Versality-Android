@@ -29,6 +29,7 @@ import "../js/helpFunc.js" as Helper
 Popup
 {
     property string messageText: ''
+    //alias for calling from outside
     readonly property alias tmt: toastMessageTimer
 
     id: toastMessage
@@ -44,12 +45,13 @@ Popup
         width: Helper.toDp(text.length, Style.dpi)
         font.pixelSize: Helper.toDp(15, Style.dpi)
         color: Style.backgroundWhite
+        wrapMode: Text.WordWrap
     }
     background: Rectangle
     {
         id: popupBackground
-        width: popupContent.width*1.2
-        height: popupContent.height*1.2
+        width: Style.screenHeight*0.8
+        height: popupContent.height*2
         radius: parent.height*0.5
         color: Style.toastGrey
     }
