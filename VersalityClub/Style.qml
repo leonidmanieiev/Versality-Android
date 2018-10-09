@@ -37,8 +37,8 @@ QtObject
     readonly property var emailRegEx: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
     readonly property string xorStr: "8fdda158eeb8c0ed9d151991aff3c84c"
-    readonly property int posTimeOut: 30
-    readonly property int posGetFar: 500
+    readonly property int posTimeOut: 30*60000//minutes to milliseconds
+    readonly property int posGetFar: 500//in meters
 
     readonly property int dpi: Screen.pixelDensity * 25.4
     readonly property int screenHeight: Qt.platform.os === "windows" ?

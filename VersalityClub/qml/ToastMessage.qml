@@ -28,9 +28,12 @@ import "../js/helpFunc.js" as Helper
 
 Popup
 {
-    property string messageText: ''
-    //alias for calling from outside
-    readonly property alias tmt: toastMessageTimer
+    function setTextAndRun(messageText)
+    {
+        popupContent.text = messageText;
+        open();
+        toastMessageTimer.running = true;
+    }
 
     id: toastMessage
     x: (Style.screenWidth - width) / 2
@@ -39,7 +42,6 @@ Popup
     {
         id: popupContent
         clip: true
-        text: messageText
         anchors.centerIn: popupBackground
         height: Helper.toDp(15, Style.dpi)
         width: Helper.toDp(text.length, Style.dpi)

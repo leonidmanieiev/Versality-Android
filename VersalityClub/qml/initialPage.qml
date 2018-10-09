@@ -49,11 +49,7 @@ Page
             {
                 //workaround because of testing on windows and having QTBUG-68613
                 if(networkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
-                {
-                    toastMessage.messageText = "Нет интернет соединение";
-                    toastMessage.open();
-                    toastMessage.tmt.running = true;
-                }
+                    toastMessage.setTextAndRun(qsTr("Нет интернет соединение"));
                 else initialPageLoader.source = "signUpPage.qml"
             }
         }
@@ -66,11 +62,7 @@ Page
             {
                 //workaround because of testing on windows and having QTBUG-68613
                 if(networkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
-                {
-                    toastMessage.messageText = "Нет интернет соединение";
-                    toastMessage.open();
-                    toastMessage.tmt.running = true;
-                }
+                    toastMessage.setTextAndRun(qsTr("Нет интернет соединение"));
                 else initialPageLoader.source = "logInPage.qml"
             }
         }

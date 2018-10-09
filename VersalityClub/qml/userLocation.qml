@@ -32,10 +32,13 @@ Item
 
     PositionSource
     {
-        property bool compCompleted: false
+        property bool initialCoordSet: false
+        property bool posMethodSet: false
 
         id: userLocation
         updateInterval: 1000
+        //using .nmea if OS is win, because win does not have GPS module
+        nmeaSource: Qt.platform.os === "windows" ? "../output.nmea" : undefined
         active: true
 
         //handling errors
@@ -78,19 +81,36 @@ Item
             return true;
         }
 
-        //check if user gets further than posGetFar(500) meters from initial position
-        function isGetFar(curPos)
+        //check if user gets further than Style.posGetFar(500) meters from initial position
+        function isGetFar(curPosCoord)
         {
             var oldPos = QtPositioning.coordinate(UserSettings.value("user_data/lat"),
                                                   UserSettings.value("user_data/lon"));
-            return curPos.distanceTo(oldPos) > Style.posGetFar;
+            return curPosCoord.distanceTo(oldPos) > Style.posGetFar;
         }
 
-        //check if user set his initial position more than posTimeOut(30) minutes ago
-        function isTimePassed(curTime)
+        //check if user set his initial position more than Style.posTimeOut(30) minutes ago
+        function isTimePassed()
         {
             var oldTime = UserSettings.value("user_data/timeCheckPoint");
-            return Math.abs(curTime - oldTime) > Style.posTimeOut;
+            return Math.abs(new Date() - oldTime) > Style.posTimeOut;
+        }
+
+        function saveUserPositionInfo()
+        {
+            UserSettings.beginGroup("user_data");
+            UserSettings.setValue("lat", position.coordinate.latitude);
+            UserSettings.setValue("lon", position.coordinate.longitude);
+            UserSettings.setValue("timeCheckPoint", new Date());
+            UserSettings.endGroup();
+        }
+
+        function requestForPromotions()
+        {
+            userLocationLoader.setSource("xmlHttpRequest.qml",
+                                         { "serverUrl": 'http://patrick.ga:8080/api/promotions?',
+                                           "functionalFlag": 'promotions'
+                                         });
         }
 
         onSourceErrorChanged:
@@ -100,33 +120,30 @@ Item
             if(sem === undefined)
                 return;
 
-            toastMessage.messageText = sem;
-            toastMessage.open();
-            toastMessage.tmt.running = true;
-            //stop(); uncomment after deal with gps on PC
+            toastMessage.setTextAndRun(qsTr(sem));
+            stop();
         }
 
-        onUpdateTimeout:
-        {
-            toastMessage.messageText = qsTr("Невозможно получить местоположение");
-            toastMessage.open();
-            toastMessage.tmt.running = true;
-        }
+        onUpdateTimeout: toastMessage.setTextAndRun(qsTr("Невозможно получить местоположение"));
 
         onPositionChanged:
         {
-            //check if initial position and timeCheckPoint of user was set
-            if(compCompleted)
+            if(posMethodSet)
             {
-                console.log("userLocation onPisitionChanged");
-
-                if(isGetFar(position) || isTimePassed(new Date()))
+                if(!initialCoordSet)
                 {
-
+                    initialCoordSet = true;
+                    //saving initial position and timeCheckPoint of user
+                    saveUserPositionInfo();
+                    //making request for promotions which depend on position
+                    requestForPromotions();
                 }
-                else
-                {
 
+                if(isGetFar(position.coordinate) || isTimePassed())
+                {
+                    //out of date, saving data and making repeated request for promotions
+                    saveUserPositionInfo();
+                    requestForPromotions();
                 }
             }
         }
@@ -134,30 +151,12 @@ Item
         Component.onCompleted:
         {
             if(isPositioningMethodSet(supportedPositioningMethods))
-                console.log("Positioning method is set");
+                posMethodSet = true;
             else
             {
-                toastMessage.messageText = qsTr("Ошибка установки метода определения местоположения");
-                toastMessage.open();
-                toastMessage.tmt.running = true;
+                toastMessage.setTextAndRun(qsTr("Ошибка установки метода определения местоположения"));
                 return;
             }
-
-            //saving initial position and timeCheckPoint of user
-            UserSettings.beginGroup("user_data");
-            UserSettings.setValue("lat", position.coordinate.latitude);
-            UserSettings.setValue("lon", position.coordinate.longitude);
-            UserSettings.setValue("timeCheckPoint", new Date());
-            UserSettings.endGroup();
-
-            compCompleted = true;
-
-            //making request for promotions which depend on position
-            userLocationLoader.setSource("xmlHttpRequest.qml",
-                                         { "serverUrl": 'http://patrick.ga:8080/api/promotions?',
-                                           "functionalFlag": 'promotions'
-                                         }
-                                        );
         }
     }
 

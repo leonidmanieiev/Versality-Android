@@ -28,7 +28,7 @@ import QtQuick.Controls 2.4
 
 Page
 {
-    property string response: ''
+    property string promResp: ''
 
     id: mapPage
     height: Style.screenHeight
@@ -41,11 +41,19 @@ Page
         color: "YELLOW"
     }
 
+    Image
+    {
+        id: remoteImage
+        anchors.centerIn: parent
+        source: "https://cosmeticlik.ru/wp-content/uploads/2017/06/icon_2.png";
+        onStatusChanged: console.log(status)
+    }
+
     Loader
     {
         id: mapPageLoader
         anchors.fill: parent
     }
 
-    Component.onCompleted: console.log(response)
+    Component.onCompleted: console.log(promResp)
 }

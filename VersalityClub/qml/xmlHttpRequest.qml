@@ -39,8 +39,8 @@ Item
     //to authenticate client on server side
     property string secret: UserSettings.value("user_security/user_hash")
     //coords of user
-    property real lat: 59.4398376//UserSettings.value("user_data/lat") UNCOMMENT
-    property real lon: 24.5699876//UserSettings.value("user_data/lon") UNCOMMENT
+    property real lat: UserSettings.value("user_data/lat")
+    property real lon: UserSettings.value("user_data/lon")
     //flag to determine type of request
     property string functionalFlag: ''
     //beg and end possition of code of error from server
@@ -166,27 +166,17 @@ Item
                                 break;
                             case 'promotions':
                                 xmlHttpRequestLoader.setSource("mapPage.qml",
-                                                               { "response": request.responseText });
+                                                               { "promResp": request.responseText });
                                 break;
                             default: console.log("Unknown functionalFlag"); break;
                         }
                     }
                     //showing response error
-                    else
-                    {
-                        toastMessage.messageText = errorStatus;
-                        toastMessage.open();
-                        toastMessage.tmt.running = true;
-                    }
+                    else toastMessage.setTextAndRun(errorStatus);
                 }
                 //showing connection error
-                else
-                {
-                    toastMessage.messageText = "HTTP error: " + request.status +
-                                               ". Проверьте интернет соединение";
-                    toastMessage.open();
-                    toastMessage.tmt.running = true;
-                }
+                else toastMessage.setTextAndRun(qsTr("HTTP error: " + request.status +
+                                                     ". Проверьте интернет соединение"));
             }
             else console.log("Pending: " + request.readyState);
         }

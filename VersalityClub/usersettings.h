@@ -41,8 +41,8 @@ public:
                   QCoreApplication::instance()->applicationName(),
                   parent)
     {
-        this->remove("user_security/user_hash");//DONT FORGET TO DELETE THIS
-        this->remove("user_data/seen_almost_done_page");//DONT FORGET TO DELETE THIS
+        //DELETE AFTER LAUNCH
+        clearAllUserSettings();
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
         { QSettings::setValue(key, value); }
@@ -62,6 +62,8 @@ public:
         { return this->selectedCats.find(catId) != this->selectedCats.constEnd(); }
     Q_INVOKABLE bool removeCat(quint32 catId)
         { return this->selectedCats.remove(catId); }
+    Q_INVOKABLE void clearAllUserSettings()
+        { this->clear(); }
     Q_INVOKABLE QString getStrCats() const
     {
         QString strCats;
