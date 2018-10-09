@@ -25,7 +25,6 @@ import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
-import QtQuick.Layouts 1.3
 
 AbstractButton
 {
@@ -36,7 +35,6 @@ AbstractButton
 
     id: controlButton
     text: qsTr(buttonText)
-    Layout.fillWidth: true
     background: ControlBackground
     {
         color: backgroundColor

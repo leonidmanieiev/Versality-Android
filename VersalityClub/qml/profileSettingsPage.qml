@@ -40,12 +40,15 @@ Page
         color: Style.mainPurple
     }
 
-    ScrollView
+    Flickable
     {
-        id: listView
+        id: flickableArea
         clip: true
-        anchors.fill: parent
-        ScrollBar.vertical: ScrollBar { visible: false }
+        anchors.centerIn: parent
+        width: Style.screenWidth
+        height: Style.screenHeight*0.6
+        boundsBehavior: Flickable.DragOverBounds
+        contentHeight: middleFieldsColumns.height*1.05
 
         ColumnLayout
         {
@@ -149,17 +152,27 @@ Page
                 }
             }
 
-            ControlButton
-            {
-                id: saveButton
-                Layout.fillWidth: true
-                padding: middleFieldsColumns.spacing * 2
-                buttonText: qsTr("СОХРАНИТЬ")
-                labelContentColor: Style.backgroundWhite
-                backgroundColor: Style.mainPurple
-                setBorderColor: Style.backgroundWhite
-                onClicked: profileSettingsPageLoader.source = "userLocation.qml";
-            }
+        }
+    }
+
+    Rectangle
+    {
+        //temporary background
+        id: backOfButton
+        width: parent.width
+        height: Style.screenHeight*0.2
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: Style.backgroundWhite
+
+        ControlButton
+        {
+            id: saveButton
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: Style.screenHeight*0.08
+            anchors.horizontalCenter: parent.horizontalCenter
+            buttonText: qsTr("СОХРАНИТЬ")
+            onClicked: profileSettingsPageLoader.source = "userLocation.qml";
         }
     }
 

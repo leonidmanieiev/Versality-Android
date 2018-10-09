@@ -61,6 +61,7 @@ Page
         ControlButton
         {
             id: enterButton
+            Layout.fillWidth: true
             padding: middleLayout.spacing*2
             buttonText: "ВОЙТИ"
             onClicked:

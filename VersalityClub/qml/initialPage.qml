@@ -44,6 +44,7 @@ Page
         ControlButton
         {
             id: signUpButton
+            Layout.fillWidth: true
             buttonText: qsTr("ЗАРЕГИСТРИРОВАТЬСЯ")
             onClicked:
             {
@@ -57,6 +58,7 @@ Page
         ControlButton
         {
             id: logInButton
+            Layout.fillWidth: true
             buttonText: qsTr("ВОЙТИ")
             onClicked:
             {

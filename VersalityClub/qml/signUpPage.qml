@@ -50,6 +50,7 @@ Page
         ControlButton
         {
             id: sexButton
+            Layout.fillWidth: true
             buttonText: qsTr("М/Ж")
             labelContentColor: Style.backgroundBlack
             onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
@@ -100,6 +101,7 @@ Page
         ControlButton
         {
             id: signUpButton
+            Layout.fillWidth: true
             padding: middleFieldsColumns.spacing * 2
             buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
             labelContentColor: Style.backgroundWhite
