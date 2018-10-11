@@ -46,7 +46,7 @@ Page
         id: remoteImage
         anchors.centerIn: parent
         source: "https://cosmeticlik.ru/wp-content/uploads/2017/06/icon_2.png";
-        onStatusChanged: console.log(status)
+        onStatusChanged: console.log("Loading image status: " + status)
     }
 
     Loader

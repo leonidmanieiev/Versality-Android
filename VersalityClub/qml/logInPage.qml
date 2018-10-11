@@ -63,6 +63,8 @@ Page
             id: enterButton
             Layout.fillWidth: true
             padding: middleLayout.spacing*2
+            labelContentColor: Style.backgroundWhite
+            backgroundColor: Style.mainPurple
             buttonText: "ВОЙТИ"
             onClicked:
             {

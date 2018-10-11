@@ -38,7 +38,7 @@ ApplicationWindow
         id: depentOnHavingTokenLoader
         anchors.fill: parent
         //whether user was signed(loged) in
-        source: "qml/profileSettingsPage.qml"/*UserSettings.value("user_security/user_hash") === undefined ?
+        source: "qml/mapPage.qml"/*UserSettings.value("user_security/user_hash") === undefined ?
                                                       "qml/initialPage.qml" :
                                                       "qml/userLocation.qml"*/
     }

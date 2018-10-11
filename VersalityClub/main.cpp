@@ -21,6 +21,7 @@
 ****************************************************************************/
 
 #include <QQmlApplicationEngine>
+#include <QSslSocket>
 #include "usersettings.h"
 #include "networkinfo.h"
 
