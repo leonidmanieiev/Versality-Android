@@ -70,7 +70,7 @@ Page
         ControlButton
         {
             id: enterButton
-            padding: middleLayout.spacing
+            padding: middleLayout.spacing*2
             Layout.fillWidth: true
             buttonText: "ВОЙТИ"
             labelContentColor: Style.backgroundWhite

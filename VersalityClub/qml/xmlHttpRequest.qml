@@ -28,6 +28,7 @@ import QtQuick.Controls 2.4
 Item
 {
     id: httpRequestItem
+    opacity: 0
 
     //those few become "not empty" depending on request (functionalFlag)
     property string serverUrl: ''
@@ -88,7 +89,6 @@ Item
             case 'CAT-0': return 'CAT-0: Неизвестная ошибка';
             case 'CAT-1': return 'CAT-1: Неизвестный токен аутентификации';
             case 'CAT-2': return 'CAT-2: Неизвестный id подкатегории';
-            case 'PROM-1': return 'PROM-1: Нет ниодной акции рядом с вами';
             default: return 'NO_ERROR';
         }
     }
@@ -123,6 +123,7 @@ Item
 
                     if(errorStatus === 'NO_ERROR')
                     {
+                        httpRequestItem.opacity = 1;
                         switch(functionalFlag)
                         {
                             case 'categories':;

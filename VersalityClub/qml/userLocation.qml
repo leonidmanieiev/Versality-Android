@@ -38,7 +38,7 @@ Item
         id: userLocation
         updateInterval: 1000
         //using .nmea if OS is win, because win does not have GPS module
-        nmeaSource: Qt.platform.os === "windows" ? "../output.nmea" : undefined
+        nmeaSource: Qt.platform.os === "windows" ? "../output_new.nmea" : undefined
         active: true
 
         //handling errors
@@ -132,6 +132,7 @@ Item
             {
                 if(!initialCoordSet)
                 {
+                    console.log("initial onPositionChanged")
                     initialCoordSet = true;
                     //saving initial position and timeCheckPoint of user
                     saveUserPositionInfo();
@@ -141,9 +142,11 @@ Item
 
                 if(isGetFar(position.coordinate) || isTimePassed())
                 {
-                    //out of date, saving data and making repeated request for promotions
+                    console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
+                                " | isTimePassed: " + isTimePassed());
+                    //out of date, saving data and making request for promotions
                     saveUserPositionInfo();
-                    requestForPromotions();
+                    requestForPromotions();        
                 }
             }
         }

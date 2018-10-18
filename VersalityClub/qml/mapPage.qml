@@ -44,9 +44,32 @@ Page
     Image
     {
         id: remoteImage
-        anchors.centerIn: parent
+        width: parent.width
+        height: parent.height * 0.5
+        anchors.top: parent.top
+        fillMode: Image.PreserveAspectFit
         source: "https://cosmeticlik.ru/wp-content/uploads/2017/06/icon_2.png";
         onStatusChanged: console.log("Loading image status: " + status)
+    }
+
+    ScrollView
+    {
+        id: scrollViewOfTextArea
+        height: parent.height * 0.5
+        width: parent.width
+        contentHeight: promotionsInfo.text.length
+        contentWidth: parent.width
+        anchors.bottom: parent.bottom
+
+        TextArea
+        {
+            id: promotionsInfo
+            width: parent.width
+            height: parent.height * 0.5
+            anchors.fill: parent
+            text: promResp
+            wrapMode: Text.WordWrap
+        }
     }
 
     Loader
@@ -55,5 +78,5 @@ Page
         anchors.fill: parent
     }
 
-    Component.onCompleted: console.log(promResp)
+    Component.onCompleted: console.log("Promotion info: " + promResp);
 }
