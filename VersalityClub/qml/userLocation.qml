@@ -107,10 +107,9 @@ Item
 
         function requestForPromotions()
         {
-            userLocationLoader.setSource("xmlHttpRequest.qml",
-                                         { "serverUrl": 'http://patrick.ga:8080/api/promotions?',
-                                           "functionalFlag": 'promotions'
-                                         });
+            if(userLocationLoader.source == "qrc:/qml/mapPage.qml")
+                userLocationLoader.reload();
+            else userLocationLoader.source = "qrc:/qml/mapPage.qml";
         }
 
         onSourceErrorChanged:
@@ -169,5 +168,12 @@ Item
     {
         id: userLocationLoader
         anchors.fill: parent
+
+        function reload()
+        {
+            var oldSource = source;
+            source = '';
+            source = oldSource;
+        }
     }
 }
