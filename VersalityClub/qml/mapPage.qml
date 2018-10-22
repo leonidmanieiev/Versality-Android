@@ -24,59 +24,112 @@
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
+import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.4
 
 Page
 {
-    property string promResp: ''
+    property string serverUrl: 'http://patrick.ga:8080/api/promotions?'
+    property string secret: UserSettings.value("user_security/user_hash")
+    property real lat: UserSettings.value("user_data/lat")
+    property real lon: UserSettings.value("user_data/lon")
+    readonly property real footerButtonsHeight: Style.screenWidth*0.1
+    readonly property real footerButtonsSpacing: Style.screenWidth*0.05
 
     id: mapPage
     height: Style.screenHeight
     width: Style.screenWidth
 
+    //request promotion info
+    function xhr()
+    {
+        var request = new XMLHttpRequest();
+        var params = 'secret='+secret+'&lat='+lat+'&lon='+lon;
+
+        request.open('POST', serverUrl);
+
+        request.onreadystatechange = function()
+        {
+            if(request.readyState === XMLHttpRequest.DONE)
+            {
+                if(request.status === 200)
+                    promotionsInfo.text = request.responseText;
+                else toastMessage.setTextAndRun(qsTr("HTTP error: " + request.status +
+                                                     ". Проверьте интернет соединение"));
+            }
+            else console.log("Pending: " + request.readyState);
+        }
+
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        request.send(params);
+    }
+
+    ToastMessage { id: toastMessage }
+
     background: Rectangle
     {
         id: background
         anchors.fill: parent
-        color: "YELLOW"
+        color: Style.mainPurple
     }
 
-    Image
+    //footer color fill
+    Rectangle
     {
-        id: remoteImage
+        id: rowLayoutBackground
+        height: parent.height*0.125
         width: parent.width
-        height: parent.height * 0.5
-        anchors.top: parent.top
-        fillMode: Image.PreserveAspectFit
-        source: "https://cosmeticlik.ru/wp-content/uploads/2017/06/icon_2.png";
-        onStatusChanged: console.log("Loading image status: " + status)
-    }
-
-    ScrollView
-    {
-        id: scrollViewOfTextArea
-        height: parent.height * 0.5
-        width: parent.width
-        contentHeight: promotionsInfo.text.length
-        contentWidth: parent.width
         anchors.bottom: parent.bottom
+        color: Style.backgroundWhite
 
-        TextArea
+        //footer buttons
+        RowLayout
         {
-            id: promotionsInfo
-            width: parent.width
-            height: parent.height * 0.5
+            id: footerButtonsLayout
             anchors.fill: parent
-            text: promResp
-            wrapMode: Text.WordWrap
+            spacing: footerButtonsSpacing
+
+            RoundButton
+            {
+                id: userSettingsButton
+                height: footerButtonsHeight
+                width: height
+                Layout.alignment: Qt.AlignHCenter
+                radius: height/2
+                text: "S"
+                onClicked: mapPageLoader.setSource("xmlHttpRequest.qml",
+                                                   { "serverUrl": 'http://patrick.ga:8080/api/user/info?',
+                                                     "functionalFlag": 'user/info'
+                                                   }
+                                                  );
+            }
+
+            RoundButton
+            {
+                id: mainButton
+                height: footerButtonsHeight
+                width: height
+                Layout.alignment: Qt.AlignHCenter
+                radius: height/2
+                text: "M"
+            }
+
+            RoundButton
+            {
+                id: favouritesButton
+                height: footerButtonsHeight
+                width: height
+                Layout.alignment: Qt.AlignHCenter
+                radius: height/2
+                text: "F"
+            }
         }
     }
+
 
     Loader
     {
         id: mapPageLoader
         anchors.fill: parent
     }
-
-    Component.onCompleted: console.log("Promotion info: " + promResp);
 }

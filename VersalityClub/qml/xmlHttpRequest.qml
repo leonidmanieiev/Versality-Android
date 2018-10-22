@@ -28,7 +28,6 @@ import QtQuick.Controls 2.4
 Item
 {
     id: httpRequestItem
-    opacity: 0
 
     //those few become "not empty" depending on request (functionalFlag)
     property string serverUrl: ''
@@ -39,9 +38,6 @@ Item
     property string cats: UserSettings.getStrCats()
     //to authenticate client on server side
     property string secret: UserSettings.value("user_security/user_hash")
-    //coords of user
-    property real lat: UserSettings.value("user_data/lat")
-    property real lon: UserSettings.value("user_data/lon")
     //flag to determine type of request
     property string functionalFlag: ''
     //beg and end possition of code of error from server
@@ -65,8 +61,6 @@ Item
             case 'user/info': return 'secret='+secret;
             //request for saving selected/deselected categories
             case 'user/refresh-cats': return 'secret='+secret+'&cats='+cats;
-            //request for promotions
-            case 'promotions': return 'secret='+secret+'&lat='+lat+'&lon='+lon;
             //unknown request
             default: return -1;
         }
@@ -123,7 +117,6 @@ Item
 
                     if(errorStatus === 'NO_ERROR')
                     {
-                        httpRequestItem.opacity = 1;
                         switch(functionalFlag)
                         {
                             case 'categories':;
@@ -164,10 +157,6 @@ Item
                                 break;
                             case 'user/refresh-cats':
                                 xmlHttpRequestLoader.source = "profileSettingsPage.qml";
-                                break;
-                            case 'promotions':
-                                xmlHttpRequestLoader.setSource("mapPage.qml",
-                                                               { "promResp": request.responseText });
                                 break;
                             default: console.log("Unknown functionalFlag"); break;
                         }

@@ -42,7 +42,7 @@ public:
                   parent)
     {
         //DELETE AFTER LAUNCH
-        clearAllUserSettings();
+        //clearAllUserSettings();
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
         { QSettings::setValue(key, value); }
