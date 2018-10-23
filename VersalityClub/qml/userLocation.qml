@@ -34,6 +34,10 @@ Item
     {
         property bool initialCoordSet: false
         property bool posMethodSet: false
+        property string serverUrl: 'http://patrick.ga:8080/api/promotions?'
+        property string secret: UserSettings.value("user_security/user_hash")
+        property real lat: position.coordinate.latitude
+        property real lon: position.coordinate.longitude
 
         id: userLocation
         updateInterval: 1000
@@ -99,17 +103,34 @@ Item
         function saveUserPositionInfo()
         {
             UserSettings.beginGroup("user_data");
-            UserSettings.setValue("lat", position.coordinate.latitude);
-            UserSettings.setValue("lon", position.coordinate.longitude);
+            UserSettings.setValue("lat", lat);
+            UserSettings.setValue("lon", lon);
             UserSettings.setValue("timeCheckPoint", new Date());
             UserSettings.endGroup();
         }
 
+        //request promotion info
         function requestForPromotions()
         {
-            if(userLocationLoader.source == "qrc:/qml/mapPage.qml")
-                userLocationLoader.reload();
-            else userLocationLoader.source = "qrc:/qml/mapPage.qml";
+            var request = new XMLHttpRequest();
+            var params = 'secret='+secret+'&lat='+lat+'&lon='+lon;
+
+            request.open('POST', serverUrl);
+
+            request.onreadystatechange = function()
+            {
+                if(request.readyState === XMLHttpRequest.DONE)
+                {
+                    if(request.status === 200)
+                        console.log("Got promotions");
+                    else toastMessage.setTextAndRun(qsTr("HTTP error: " + request.status +
+                                                         ". Проверьте интернет соединение"));
+                }
+                else console.log("Pending: " + request.readyState);
+            }
+
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            request.send(params);
         }
 
         onSourceErrorChanged:
@@ -142,10 +163,10 @@ Item
                 if(isGetFar(position.coordinate) || isTimePassed())
                 {
                     console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
-                                " | isTimePassed: " + isTimePassed());
+                                " | isTimePassed: " + isTimePassed()) + ")";
                     //out of date, saving data and making request for promotions
                     saveUserPositionInfo();
-                    requestForPromotions();        
+                    requestForPromotions();
                 }
             }
         }
@@ -168,12 +189,5 @@ Item
     {
         id: userLocationLoader
         anchors.fill: parent
-
-        function reload()
-        {
-            var oldSource = source;
-            source = '';
-            source = oldSource;
-        }
     }
 }

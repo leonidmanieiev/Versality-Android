@@ -145,6 +145,7 @@ Page
                 setBorderColor: Style.backgroundWhite
                 onClicked:
                 {
+                    PageNameHolder.push("profileSettingsPage.qml");
                     profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
                                                         { "serverUrl": 'http://patrick.ga:8080/api/categories',
                                                           "functionalFlag": 'categories'
@@ -172,7 +173,11 @@ Page
             anchors.bottomMargin: Style.screenHeight*0.08
             anchors.horizontalCenter: parent.horizontalCenter
             buttonText: qsTr("СОХРАНИТЬ")
-            onClicked: profileSettingsPageLoader.source = "userLocation.qml";
+            onClicked:
+            {
+                PageNameHolder.push("profileSettingsPage.qml");
+                profileSettingsPageLoader.source = "mapPage.qml";
+            }
         }
     }
 

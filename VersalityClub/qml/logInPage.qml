@@ -76,6 +76,7 @@ Page
                 }
                 else
                 {
+                    PageNameHolder.push("logInPage.qml");
                     logInPageLoader.setSource("passwordInputPage.qml",
                                               { "email": emailField.text.toLowerCase()});
                 }

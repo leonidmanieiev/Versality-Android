@@ -42,6 +42,7 @@ ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
 HEADERS += \
     usersettings.h \
-    networkinfo.h
+    networkinfo.h \
+    pagenameholder.h
 
 include(android-openssl.pri)

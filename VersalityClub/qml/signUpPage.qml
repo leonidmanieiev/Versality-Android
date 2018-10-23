@@ -116,6 +116,7 @@ Page
                 }
                 else
                 {
+                    PageNameHolder.push("signUpPage.qml");
                     signUpPageLoader.setSource("xmlHttpRequest.qml",
                                                { "serverUrl": 'http://patrick.ga:8080/api/register?',
                                                  "email": emailField.text.toLowerCase(),

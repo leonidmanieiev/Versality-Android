@@ -204,6 +204,7 @@ Page
         buttonText: qsTr("СОХРАНИТЬ\nИ ВЕРНУТЬСЯ К НАСТРОЙКАМ")
         onClicked:
         {
+            PageNameHolder.pop();
             chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
                                               { "serverUrl": 'http://patrick.ga:8080/api/user/refresh-cats?',
                                                 "functionalFlag": 'user/refresh-cats'

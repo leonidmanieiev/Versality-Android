@@ -24,6 +24,7 @@
 #include <QSslSocket>
 #include "usersettings.h"
 #include "networkinfo.h"
+#include "pagenameholder.h"
 
 int main(int argc, char *argv[])
 {
@@ -33,6 +34,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<UserSettings>("org.leonman.versalityclub", 1, 0, "UserSettings");
     qmlRegisterType<NetworkInfo>("org.leonman.versalityclub", 1, 0, "NetworkInfo");
+    qmlRegisterType<PageNameHolder>("org.leonman.versalityclub", 1, 0, "PageNameHolder");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

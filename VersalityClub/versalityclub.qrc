@@ -21,5 +21,7 @@
         <file>qml/selectCategoryPage.qml</file>
         <file>qml/userLocation.qml</file>
         <file>output_new.nmea</file>
+        <file>PageNameHolder.qml</file>
+        <file>NetworkInfo.qml</file>
     </qresource>
 </RCC>

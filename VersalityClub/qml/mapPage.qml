@@ -29,10 +29,6 @@ import QtQuick.Controls 2.4
 
 Page
 {
-    property string serverUrl: 'http://patrick.ga:8080/api/promotions?'
-    property string secret: UserSettings.value("user_security/user_hash")
-    property real lat: UserSettings.value("user_data/lat")
-    property real lon: UserSettings.value("user_data/lon")
     readonly property real footerButtonsHeight: Style.screenWidth*0.1
     readonly property real footerButtonsSpacing: Style.screenWidth*0.05
 
@@ -40,35 +36,9 @@ Page
     height: Style.screenHeight
     width: Style.screenWidth
 
-    //request promotion info
-    function xhr()
-    {
-        var request = new XMLHttpRequest();
-        var params = 'secret='+secret+'&lat='+lat+'&lon='+lon;
-
-        request.open('POST', serverUrl);
-
-        request.onreadystatechange = function()
-        {
-            if(request.readyState === XMLHttpRequest.DONE)
-            {
-                if(request.status === 200)
-                    promotionsInfo.text = request.responseText;
-                else toastMessage.setTextAndRun(qsTr("HTTP error: " + request.status +
-                                                     ". Проверьте интернет соединение"));
-            }
-            else console.log("Pending: " + request.readyState);
-        }
-
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        request.send(params);
-    }
-
-    ToastMessage { id: toastMessage }
-
     background: Rectangle
     {
-        id: background
+        id: pageBackground
         anchors.fill: parent
         color: Style.mainPurple
     }
@@ -97,11 +67,14 @@ Page
                 Layout.alignment: Qt.AlignHCenter
                 radius: height/2
                 text: "S"
-                onClicked: mapPageLoader.setSource("xmlHttpRequest.qml",
-                                                   { "serverUrl": 'http://patrick.ga:8080/api/user/info?',
-                                                     "functionalFlag": 'user/info'
-                                                   }
-                                                  );
+                onClicked:
+                {
+                    PageNameHolder.push("mapPage.qml");
+                    mapPageLoader.setSource("xmlHttpRequest.qml",
+                                            { "serverUrl": 'http://patrick.ga:8080/api/user/info?',
+                                              "functionalFlag": 'user/info'
+                                            });
+                }
             }
 
             RoundButton
@@ -126,10 +99,41 @@ Page
         }
     }
 
+    Component.onCompleted:
+    {
+        PageNameHolder.clear();
+        //setting active focus for key capturing
+        mapPage.forceActiveFocus();
+        //start capturing user location and getting promotions
+        mapPageLoader.source = "userLocation.qml"
+    }
+
+    Keys.onReleased:
+    {
+        //back button pressed for android and windows
+        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
+        {
+            event.accepted = true
+            var pageName = PageNameHolder.pop();
+
+            if(pageName === "")
+                appWindow.close();
+            else mapPageLoader.source = pageName;
+
+            mapPageLoader.reload();
+        }
+    }
 
     Loader
     {
         id: mapPageLoader
         anchors.fill: parent
+
+        function reload()
+        {
+            var oldSource = source;
+            source = "";
+            source = oldSource;
+        }
     }
 }

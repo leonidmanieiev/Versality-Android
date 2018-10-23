@@ -26,7 +26,7 @@ import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
-import org.leonman.versalityclub 1.0
+//import org.leonman.versalityclub 1.0
 
 Page
 {
@@ -49,9 +49,13 @@ Page
             onClicked:
             {
                 //workaround because of testing on windows and having QTBUG-68613
-                if(networkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
+                if(NetworkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
                     toastMessage.setTextAndRun(qsTr("Нет интернет соединение"));
-                else initialPageLoader.source = "signUpPage.qml"
+                else
+                {
+                    PageNameHolder.push("initialPage.qml");
+                    initialPageLoader.source = "signUpPage.qml";
+                }
             }
         }
 
@@ -63,19 +67,48 @@ Page
             onClicked:
             {
                 //workaround because of testing on windows and having QTBUG-68613
-                if(networkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
+                if(NetworkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
                     toastMessage.setTextAndRun(qsTr("Нет интернет соединение"));
-                else initialPageLoader.source = "logInPage.qml"
+                else
+                {
+                    PageNameHolder.push("initialPage.qml");
+                    initialPageLoader.source = "logInPage.qml";
+                }
             }
         }
     }
 
     ToastMessage { id: toastMessage }
-    NetworkInfo { id: networkInfo }
 
     Loader
     {
         id: initialPageLoader
         anchors.fill: parent
+
+        function reload()
+        {
+            var oldSource = source;
+            source = "";
+            source = oldSource;
+        }
+    }
+
+    Component.onCompleted: initialPage.forceActiveFocus();
+
+
+    Keys.onReleased:
+    {
+        //back button pressed for android and windows
+        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
+        {
+            event.accepted = true
+            var pageName = PageNameHolder.pop();
+
+            if(pageName === "")
+                appWindow.close();
+            else initialPageLoader.source = pageName;
+
+            initialPageLoader.reload();
+        }
     }
 }

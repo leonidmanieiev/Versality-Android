@@ -119,14 +119,16 @@ Item
                     {
                         switch(functionalFlag)
                         {
-                            case 'categories':;
+                            case 'categories':
                                 xmlHttpRequestLoader.setSource("selectCategoryPage.qml",
                                                                { "strCatsJSON": request.responseText }
-                                                              ); break;
+                                                              );
+                                break;
                             case 'register':
                                 xmlHttpRequestLoader.setSource("passwordInputPage.qml",
                                                                 { "email": email }
-                                                              ); break;
+                                                              );
+                                break;
                             case 'login':
                                 //saving hash(secret) for further auto authentication
                                 UserSettings.beginGroup("user_security");
