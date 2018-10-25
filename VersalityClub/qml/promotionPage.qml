@@ -20,18 +20,25 @@
 **
 ****************************************************************************/
 
-//main page in map view
+//full info about promotion
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import QtQuick.Layouts 1.3
 
 Page
 {
-    id: mapPage
+    property string p_picture: ''
+    property string p_title: ''
+    property string p_description: ''
+    property string p_company_logo: ''
+    property string p_company_name: ''
+
+    id: promPage
     height: Style.pageHeight
     width: Style.screenWidth
-    anchors.top: parent.top
+    anchors.top: appWindow.top
 
     background: Rectangle
     {
@@ -41,58 +48,75 @@ Page
         color: Style.backgroundWhite
     }
 
+    Flickable
+    {
+        id: flickableArea
+        clip: true
+        anchors.top: parent.top
+        anchors.centerIn: parent
+        width: Style.screenWidth
+        height: Style.pageHeight
+        boundsBehavior: Flickable.DragOverBounds
+        contentHeight: middleFieldsColumns.height*1.05
+
+        ColumnLayout
+        {
+            id: middleFieldsColumns
+            width: Style.screenWidth
+            spacing: Style.screenHeight*0.05
+
+            Rectangle
+            {
+                id: promsImage
+                Layout.alignment: Qt.AlignHCenter
+                height: Style.screenHeight*0.25
+                width: Style.screenWidth*0.8
+                radius: Style.listItemRadius
+                color: "transparent"
+
+                //rounding promotion image
+                ImageRounder
+                {
+                    imageSource: p_picture
+                    roundValue: Style.listItemRadius
+                }
+            }
+        }
+    }
+
+    //switch to mapPage (proms on map view)
     ControlButton
     {
-        id: showInListView
+        id: backToPromotions
         setHeight: Style.footerButtonsFieldHeight*0.4
         setWidth: Style.screenWidth*0.55
         fontPixelSize: Helper.toDp(13, Style.dpi)
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: Helper.toDp(parent.height/13, Style.dpi)
-        buttonText: qsTr("Показать в виде списка")
+        buttonText: qsTr("Назад к выбору акций")
         labelContentColor: Style.backgroundWhite
         backgroundColor: Style.mainPurple
         setBorderColor: "transparent"
         onClicked:
         {
-            PageNameHolder.push("mapPage.qml");
-            mapPageLoader.source = "listViewPage.qml";
-        }
-    }
-
-    FooterButtons { pressedFromPageName: "mapPage.qml" }
-
-    Component.onCompleted:
-    {
-        PageNameHolder.clear();
-        //setting active focus for key capturing
-        mapPage.forceActiveFocus();
-        //start capturing user location and getting promotions
-        mapPageLoader.source = "userLocation.qml"
-    }
-
-    Keys.onReleased:
-    {
-        //back button pressed for android and windows
-        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
-        {
-            event.accepted = true
             var pageName = PageNameHolder.pop();
 
             //if no pages in sequence
             if(pageName === "")
                 appWindow.close();
-            else mapPageLoader.source = pageName;
+            else promotionPageLoader.source = pageName;
 
             //to avoid not loading bug
-            mapPageLoader.reload();
+            promotionPageLoader.reload();
         }
     }
 
+    FooterButtons { pressedFromPageName: 'promotionPage.qml' }
+
     Loader
     {
-        id: mapPageLoader
+        id: promotionPageLoader
         asynchronous: true
         anchors.fill: parent
         visible: status == Loader.Ready

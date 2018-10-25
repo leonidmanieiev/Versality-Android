@@ -73,16 +73,16 @@ Item
 
         switch(errorFlag)
         {
-            case 'REG-1': return 'REG-1: Некорректная дата';
-            case 'REG-2': return 'REG-2: E-mail уже занят';
-            case 'REG-3': return 'REG-3: Неизвестный пол';
-            case 'REG-4': return 'REG-4: Некорректный e-mail';
-            case 'REG-5': return 'REG-4: Некорректный возраст';
-            case 'LIN-1': return 'LIN-1: Неверный e-mail или пароль';
-            case 'INF-1': return 'INF-1: Неизвестный токен аутентификации';
-            case 'CAT-0': return 'CAT-0: Неизвестная ошибка';
-            case 'CAT-1': return 'CAT-1: Неизвестный токен аутентификации';
-            case 'CAT-2': return 'CAT-2: Неизвестный id подкатегории';
+            case 'REG-1': return 'Некорректная дата';
+            case 'REG-2': return 'E-mail уже занят';
+            case 'REG-3': return 'Неизвестный пол';
+            case 'REG-4': return 'Некорректный e-mail';
+            case 'REG-5': return 'Некорректный возраст';
+            case 'LIN-1': return 'Неверный e-mail или пароль';
+            case 'INF-1': return 'Неизвестный токен аутентификации';
+            case 'CAT-0': return 'Неизвестная ошибка';
+            case 'CAT-1': return 'Неизвестный токен аутентификации';
+            case 'CAT-2': return 'Неизвестный id подкатегории';
             default: return 'NO_ERROR';
         }
     }
@@ -167,8 +167,7 @@ Item
                     else toastMessage.setTextAndRun(errorStatus);
                 }
                 //showing connection error
-                else toastMessage.setTextAndRun(qsTr("HTTP error: " + request.status +
-                                                     ". Проверьте интернет соединение"));
+                else toastMessage.setTextAndRun(qsTr("Проверьте интернет соединение"));
             }
             else console.log("Pending: " + request.readyState);
         }
@@ -188,6 +187,8 @@ Item
     Loader
     {
         id: xmlHttpRequestLoader
+        asynchronous: true
         anchors.fill: parent
+        visible: status == Loader.Ready
     }
 }

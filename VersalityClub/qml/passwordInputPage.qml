@@ -93,6 +93,8 @@ Page
     Loader
     {
         id: passwordInputPageLoader
+        asynchronous: true
         anchors.fill: parent
+        visible: status == Loader.Ready
     }
 }

@@ -21,7 +21,6 @@
 ****************************************************************************/
 
 import "../"
-import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
@@ -173,17 +172,15 @@ Page
             anchors.bottomMargin: Style.screenHeight*0.08
             anchors.horizontalCenter: parent.horizontalCenter
             buttonText: qsTr("СОХРАНИТЬ")
-            onClicked:
-            {
-                PageNameHolder.push("profileSettingsPage.qml");
-                profileSettingsPageLoader.source = "mapPage.qml";
-            }
+            onClicked: profileSettingsPageLoader.source = "mapPage.qml";
         }
     }
 
     Loader
     {
         id: profileSettingsPageLoader
+        asynchronous: true
         anchors.fill: parent
+        visible: status == Loader.Ready
     }
 }

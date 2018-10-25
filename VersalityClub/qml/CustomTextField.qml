@@ -48,7 +48,7 @@ TextField
         //workaround to get default text color after incorrect input
         if(color === Style.errorRed)
         {
-            color = Style.setTextColor;
+            color = Style.backgroundBlack;
             text = ''
         }
     }

@@ -41,6 +41,7 @@ function encryptPassword(pass, strForXor)
     return Qt.btoa(result);
 }
 
+//puts categories from JSON to model for listview
 function catsJsonToListModel(catsJSON)
 {
     for(var i in catsJSON)
@@ -57,5 +58,21 @@ function catsJsonToListModel(catsJSON)
                                                 "subid": catsJSON[i].subcats[j].id,
                                                 "subtitle": catsJSON[i].subcats[j].title
                                            });
+    }
+}
+
+//puts promotions from JSON to model for listview
+function promsJsonToListModel(promsJSON)
+{
+    for(var i in promsJSON)
+    {
+        promsModel.append({
+                             "id": promsJSON[i].id,
+                             "picture": promsJSON[i].picture.url,
+                             "title": promsJSON[i].title,
+                             "description": promsJSON[i].desc,
+                             "company_logo": promsJSON[i].company_logo.url,
+                             "company_name": promsJSON[i].company_name
+                         });
     }
 }

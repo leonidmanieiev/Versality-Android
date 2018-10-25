@@ -22,6 +22,7 @@
 
 //request for user location
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQml 2.2
 import QtPositioning 5.8
@@ -122,9 +123,9 @@ Item
                 if(request.readyState === XMLHttpRequest.DONE)
                 {
                     if(request.status === 200)
-                        console.log("Got promotions");
-                    else toastMessage.setTextAndRun(qsTr("HTTP error: " + request.status +
-                                                         ". Проверьте интернет соединение"));
+                        //saving response for further using
+                        Style.promsResponse = request.responseText;
+                    else toastMessage.setTextAndRun(qsTr("Проверьте интернет соединение"));
                 }
                 else console.log("Pending: " + request.readyState);
             }
@@ -188,6 +189,8 @@ Item
     Loader
     {
         id: userLocationLoader
+        asynchronous: true
         anchors.fill: parent
+        visible: status == Loader.Ready
     }
 }

@@ -31,7 +31,7 @@ Page
     property string strCatsJSON: ''
 
     id: selectCategoryPage
-    height: Style.screenHeigh
+    height: Style.screenHeight
     width: Style.screenWidth
 
     Rectangle
@@ -215,6 +215,8 @@ Page
     Loader
     {
         id: chooseCategoryPageLoader
+        asynchronous: true
         anchors.fill: parent
+        visible: status == Loader.Ready
     }
 }

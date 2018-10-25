@@ -35,11 +35,13 @@ ApplicationWindow
 
     Loader
     {
-        id: depentOnHavingTokenLoader
+        id: appWindowLoader
+        asynchronous: true
         anchors.fill: parent
+        visible: status == Loader.Ready
         //whether user was signed(loged) in
         source: UserSettings.value("user_security/user_hash") === undefined ?
                                                       "qml/initialPage.qml" :
-                                                      "qml/userLocation.qml"
+                                                      "qml/mapPage.qml"
     }
 }

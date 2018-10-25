@@ -20,39 +20,37 @@
 **
 ****************************************************************************/
 
-//standard button
-import "../"
-import "../js/helpFunc.js" as Helper
+//Rounding image
 import QtQuick 2.11
-import QtQuick.Controls 2.4
+import QtGraphicalEffects 1.0
 
-AbstractButton
+Item
 {
-    property string buttonText: undefined
-    property color labelContentColor: Style.mainPurple
-    property color backgroundColor: Style.backgroundWhite
-    property color setBorderColor: Style.mainPurple
-    property real setHeight: Style.screenHeight*0.09
-    property real setWidth: Style.screenWidth*0.8
-    property int fontPixelSize: 15
+    property string imageSource: ''
+    property int roundValue: 0
 
-    id: controlButton
-    opacity: pressed ? 0.8 : 1
-    text: qsTr(buttonText)
-    background: ControlBackground
+    id: item
+    height: parent.height
+    width: parent.width
+
+    Image
     {
-        color: backgroundColor
-        borderColor: setBorderColor
-        h: setHeight
-        w: setWidth
+        id: image
+        source: imageSource
+        width: parent.width
+        height: parent.height
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectCrop
+        layer.enabled: true
+        layer.effect: OpacityMask { maskSource: imgMask }
     }
-    contentItem: Label
+
+    Rectangle
     {
-        id: labelContent
-        text: buttonText
-        font.pixelSize: Helper.toDp(fontPixelSize, Style.dpi)
-        color: labelContentColor
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+        id: imgMask
+        width: parent.width
+        height: parent.height
+        radius: roundValue
+        visible: false
     }
 }

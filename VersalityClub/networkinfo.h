@@ -21,6 +21,7 @@
 ****************************************************************************/
 
 //Wrapper, so I can use functionality of QNetworkAccessManager in QML
+//For checking valid internet connection
 #ifndef NETWORKINFO_H
 #define NETWORKINFO_H
 

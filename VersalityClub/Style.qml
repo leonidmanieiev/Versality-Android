@@ -30,7 +30,8 @@ QtObject
 {
     readonly property color backgroundWhite: "#FFFFFF"
     readonly property color backgroundBlack: "#000000"
-    readonly property color toastGrey: "#dee0e2"
+    readonly property color toastGrey: "#76797c"
+    readonly property color listViewGrey: "#e8e9ea"
     readonly property color mainPurple: "#631964"
     readonly property color errorRed: "RED"
 
@@ -40,6 +41,11 @@ QtObject
     readonly property int posTimeOut: 30*60000//minutes to milliseconds
     readonly property int posGetFar: 500//in meters
 
+    readonly property real footerButtonsFieldHeight: screenHeight*0.125
+    readonly property real footerButtonsHeight: screenWidth*0.1
+    readonly property real footerButtonsSpacing: screenWidth*0.05
+    readonly property real pageHeight: screenHeight-footerButtonsFieldHeight
+
     readonly property int dpi: Screen.pixelDensity * 25.4
     readonly property int screenHeight: Qt.platform.os === "windows" ?
                                         Helper.toDp(480, dpi) :
@@ -47,4 +53,6 @@ QtObject
     readonly property int screenWidth: Qt.platform.os === "windows" ?
                                        Helper.toDp(320, dpi) :
                                        Helper.toDp(Screen.width, dpi)
+    property string promsResponse: ''
+    readonly property int listItemRadius: 20
 }

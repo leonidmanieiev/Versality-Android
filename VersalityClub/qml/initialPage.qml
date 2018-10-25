@@ -22,7 +22,6 @@
 
 //sign up and log in buttons page
 import "../"
-import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
@@ -83,7 +82,9 @@ Page
     Loader
     {
         id: initialPageLoader
+        asynchronous: true
         anchors.fill: parent
+        visible: status == Loader.Ready
 
         function reload()
         {
@@ -93,6 +94,7 @@ Page
         }
     }
 
+    //setting active focus for key capturing
     Component.onCompleted: initialPage.forceActiveFocus();
 
 
@@ -108,6 +110,7 @@ Page
                 appWindow.close();
             else initialPageLoader.source = pageName;
 
+            //to avoid not loading bug
             initialPageLoader.reload();
         }
     }

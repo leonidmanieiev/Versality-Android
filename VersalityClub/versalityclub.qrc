@@ -23,5 +23,10 @@
         <file>output_new.nmea</file>
         <file>PageNameHolder.qml</file>
         <file>NetworkInfo.qml</file>
+        <file>qml/listViewPage.qml</file>
+        <file>qml/FooterButtons.qml</file>
+        <file>qml/favouritePage.qml</file>
+        <file>qml/ImageRounder.qml</file>
+        <file>qml/promotionPage.qml</file>
     </qresource>
 </RCC>

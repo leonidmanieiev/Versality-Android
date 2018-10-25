@@ -42,7 +42,7 @@ public:
                   parent)
     {
         //DELETE AFTER LAUNCH
-        clearAllUserSettings();
+        //clearAllUserSettings();
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
         { QSettings::setValue(key, value); }
@@ -64,6 +64,7 @@ public:
         { return this->selectedCats.remove(catId); }
     Q_INVOKABLE void clearAllUserSettings()
         { this->clear(); }
+    //serialize categories for request param
     Q_INVOKABLE QString getStrCats() const
     {
         QString strCats;

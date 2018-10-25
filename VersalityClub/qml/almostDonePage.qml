@@ -65,6 +65,8 @@ Page
     Loader
     {
         id: almostDonePageLoader
+        asynchronous: true
         anchors.fill: parent
+        visible: status == Loader.Ready
     }
 }
