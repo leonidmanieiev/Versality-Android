@@ -98,7 +98,6 @@ Page
                     anchors.right: parent.right
                     anchors.rightMargin: parent.radius
                     anchors.verticalCenter: parent.verticalCenter
-
                 }
 
                 MouseArea
@@ -197,7 +196,7 @@ Page
     ControlButton
     {
         id: saveSelectedButton
-        width: Style.screenWidth*0.8
+        setWidth: Style.screenWidth*0.8
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottomMargin: parent.height*0.1

@@ -34,6 +34,7 @@ QtObject
     readonly property color listViewGrey: "#e8e9ea"
     readonly property color mainPurple: "#631964"
     readonly property color errorRed: "RED"
+    readonly property color activeCouponColor: "#f93738"
 
     readonly property var emailRegEx: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 

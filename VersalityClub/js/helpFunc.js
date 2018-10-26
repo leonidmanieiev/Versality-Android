@@ -72,7 +72,20 @@ function promsJsonToListModel(promsJSON)
                              "title": promsJSON[i].title,
                              "description": promsJSON[i].desc,
                              "company_logo": promsJSON[i].company_logo.url,
+                             "store_hours": promsJSON[i].store_hours,
                              "company_name": promsJSON[i].company_name
                          });
     }
+}
+
+//get store hours depend on day
+function currStoreHours(p_store_hours)
+{
+    //deserialize work hours
+    var hours = p_store_hours.split(' ');
+    var currDate = new Date();
+    //adjust for russian locale
+    var currDay = currDate.getDay()-1 == -1 ? 6 : currDate.getDay()-1;
+
+    return hours[currDay];
 }

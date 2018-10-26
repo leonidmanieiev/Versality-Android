@@ -20,39 +20,25 @@
 **
 ****************************************************************************/
 
-//standard button
+//company card page
 import "../"
-import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
-Button
+Page
 {
-    property string buttonText: ''
-    property color labelContentColor: Style.mainPurple
-    property color backgroundColor: Style.backgroundWhite
-    property color setBorderColor: Style.mainPurple
-    property real setHeight: Style.screenHeight*0.09
-    property real setWidth: Style.screenWidth*0.8
-    property int fontPixelSize: 15
+    id: companyPage
+    height: Style.pageHeight
+    width: Style.screenWidth
+    anchors.top: parent.top
 
-    id: controlButton
-    opacity: pressed ? 0.8 : 1
-    background: ControlBackground
+    background: Rectangle
     {
-        id: background
-        color: backgroundColor
-        borderColor: setBorderColor
-        h: setHeight
-        w: setWidth
+        id: pageBackground
+        height: Style.pageHeight
+        width: Style.screenWidth
+        color: Style.backgroundBlack
     }
-    contentItem: Text
-    {
-        id: labelContent
-        text: buttonText
-        font.pixelSize: Helper.toDp(fontPixelSize, Style.dpi)
-        color: labelContentColor
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-    }
+
+    FooterButtons { pressedFromPageName: 'companyPage.qml' }
 }

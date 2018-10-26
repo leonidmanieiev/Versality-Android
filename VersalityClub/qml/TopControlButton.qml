@@ -20,39 +20,53 @@
 **
 ****************************************************************************/
 
-//standard button
+//top button
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
-Button
+RoundButton
 {
     property string buttonText: ''
-    property color labelContentColor: Style.mainPurple
-    property color backgroundColor: Style.backgroundWhite
-    property color setBorderColor: Style.mainPurple
-    property real setHeight: Style.screenHeight*0.09
-    property real setWidth: Style.screenWidth*0.8
-    property int fontPixelSize: 15
+    property real buttonWidth: 0.0
 
-    id: controlButton
+    id: topControlButton
     opacity: pressed ? 0.8 : 1
-    background: ControlBackground
-    {
-        id: background
-        color: backgroundColor
-        borderColor: setBorderColor
-        h: setHeight
-        w: setWidth
-    }
+    height: Style.footerButtonsFieldHeight*0.4
+    width: buttonWidth
+    radius: height*0.5
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
     contentItem: Text
     {
-        id: labelContent
+        id: buttonTextContent
         text: buttonText
-        font.pixelSize: Helper.toDp(fontPixelSize, Style.dpi)
-        color: labelContentColor
+        font.pixelSize: Helper.toDp(13, Style.dpi)
+        color: Style.backgroundWhite
+        leftPadding: parent.radius*0.8
+        horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+    }
+    background: Rectangle
+    {
+        id: buttonBackground
+        anchors.fill: parent
+        radius: height*0.5
+        color: Style.mainPurple
+        border.color: "transparent"
+    }
+
+    Rectangle
+    {
+        id: topControlButtonIcon
+        color: "red"
+        width: parent.radius
+        height: width
+        radius: height*0.5
+        anchors.right: parent.right
+        anchors.rightMargin: parent.radius
+        anchors.verticalCenter: parent.verticalCenter
     }
 }

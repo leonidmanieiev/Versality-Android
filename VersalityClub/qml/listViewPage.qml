@@ -45,6 +45,7 @@ Page
     {
         //start capturing user location and getting promotions
         listViewPageLoader.source = "userLocation.qml";
+
         var promsJSON = JSON.parse(Style.promsResponse);
         //applying promotions at ListModel
         Helper.promsJsonToListModel(promsJSON);
@@ -56,8 +57,6 @@ Page
         clip: true
         width: Style.screenWidth
         height: Style.pageHeight
-        anchors.top: parent.top
-        anchors.centerIn: parent
         model: promsModel
         delegate: promsDelegate
     }
@@ -119,6 +118,7 @@ Page
                                                        "p_title": title,
                                                        "p_description": description,
                                                        "p_company_logo": company_logo,
+                                                        "p_store_hours": store_hours,
                                                        "p_company_name": company_name
                                                      });
                     }
@@ -128,20 +128,12 @@ Page
     }
 
     //switch to mapPage (proms on map view)
-    ControlButton
+    TopControlButton
     {
-        id: showOnMap
-        setHeight: Style.footerButtonsFieldHeight*0.4
-        setWidth: Style.screenWidth*0.45
-        fontPixelSize: Helper.toDp(13, Style.dpi)
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/13, Style.dpi)
+        id: showOnMapButton
+        buttonWidth: Style.screenWidth*0.5
         buttonText: qsTr("Показать на карте")
-        labelContentColor: Style.backgroundWhite
-        backgroundColor: Style.mainPurple
-        setBorderColor: "transparent"
-        onClicked: listViewPageLoader.source = "mapPage.qml";
+        onClicked: listViewPageLoader.source = "mapPage.qml"
     }
 
     FooterButtons { pressedFromPageName: 'listViewPage.qml' }

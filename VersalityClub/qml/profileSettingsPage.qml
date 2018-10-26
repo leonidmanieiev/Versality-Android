@@ -21,6 +21,7 @@
 ****************************************************************************/
 
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
@@ -165,16 +166,37 @@ Page
         anchors.horizontalCenter: parent.horizontalCenter
         color: Style.backgroundWhite
 
-        ControlButton
+        RoundButton
         {
-            id: saveButton
+            id: mainButton
+            height: Style.screenHeight*0.09
+            width: Style.screenWidth*0.8
             anchors.bottom: parent.bottom
             anchors.bottomMargin: Style.screenHeight*0.08
             anchors.horizontalCenter: parent.horizontalCenter
-            buttonText: qsTr("СОХРАНИТЬ")
+            opacity: pressed ? 0.8 : 1
             onClicked: profileSettingsPageLoader.source = "mapPage.qml";
+
+            contentItem: Text
+            {
+                text: qsTr("СОХРАНИТЬ")
+                color: Style.mainPurple
+                font.pixelSize: Helper.toDp(15, Style.dpi)
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            background: Rectangle
+            {
+                implicitWidth: parent.width
+                implicitHeight: parent.height
+                border.color: Style.mainPurple
+                border.width: height*0.06
+                radius: Style.listItemRadius
+            }
         }
     }
+
 
     Loader
     {

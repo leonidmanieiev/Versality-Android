@@ -41,19 +41,12 @@ Page
         color: Style.backgroundWhite
     }
 
-    ControlButton
+    //switch to listViewPage (proms as list)
+    TopControlButton
     {
-        id: showInListView
-        setHeight: Style.footerButtonsFieldHeight*0.4
-        setWidth: Style.screenWidth*0.55
-        fontPixelSize: Helper.toDp(13, Style.dpi)
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/13, Style.dpi)
+        id: showInListViewButton
+        buttonWidth: Style.screenWidth*0.6
         buttonText: qsTr("Показать в виде списка")
-        labelContentColor: Style.backgroundWhite
-        backgroundColor: Style.mainPurple
-        setBorderColor: "transparent"
         onClicked:
         {
             PageNameHolder.push("mapPage.qml");

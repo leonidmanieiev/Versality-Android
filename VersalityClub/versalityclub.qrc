@@ -28,5 +28,7 @@
         <file>qml/favouritePage.qml</file>
         <file>qml/ImageRounder.qml</file>
         <file>qml/promotionPage.qml</file>
+        <file>qml/TopControlButton.qml</file>
+        <file>qml/companyPage.qml</file>
     </qresource>
 </RCC>

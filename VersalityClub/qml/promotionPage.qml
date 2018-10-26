@@ -32,7 +32,10 @@ Page
     property string p_picture: ''
     property string p_title: ''
     property string p_description: ''
+    //property string p_promo_code: ''
+    //property string p_company_id: ''
     property string p_company_logo: ''
+    property string p_store_hours: ''
     property string p_company_name: ''
 
     id: promPage
@@ -45,15 +48,13 @@ Page
         id: pageBackground
         height: Style.pageHeight
         width: Style.screenWidth
-        color: Style.backgroundWhite
+        color: Style.listViewGrey
     }
 
     Flickable
     {
         id: flickableArea
         clip: true
-        anchors.top: parent.top
-        anchors.centerIn: parent
         width: Style.screenWidth
         height: Style.pageHeight
         boundsBehavior: Flickable.DragOverBounds
@@ -62,7 +63,7 @@ Page
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: Style.screenWidth
+            width: parent.width
             spacing: Style.screenHeight*0.05
 
             Rectangle
@@ -81,23 +82,142 @@ Page
                     roundValue: Style.listItemRadius
                 }
             }
+
+            Label
+            {
+                id: promotionTitle
+                text: p_title
+                font.pixelSize: Helper.toDp(16, Style.dpi)
+                font.bold: true
+                color: Style.backgroundBlack
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            Rectangle
+            {
+                id: textArea
+                width: promsImage.width
+                height: promotionDescription.height
+                Layout.alignment: Qt.AlignHCenter
+                color: Style.listViewGrey
+
+                Label
+                {
+                    id: promotionDescription
+                    width: parent.width
+                    text: p_description
+                    font.pixelSize: Helper.toDp(13, Style.dpi)
+                    color: Style.backgroundBlack
+                    wrapMode: Label.WordWrap
+                }
+            }
+
+            RowLayout
+            {
+                id: rowLayout1
+                width: Style.screenWidth*0.8
+                Layout.alignment: Qt.AlignHCenter
+                spacing: Style.screenWidth*0.1
+
+                ControlButton
+                {
+                    id: activeCoupon
+                    setWidth: Style.screenWidth*0.6
+                    buttonText: qsTr("АКТИВИРОВАТЬ КУПОН")
+                    labelContentColor: Style.backgroundWhite
+                    backgroundColor: Style.activeCouponColor
+                    setBorderColor: "transparent"
+                    //onClicked:
+                }
+
+                RoundButton
+                {
+                    id: addToFavourite
+                    height: Style.screenWidth*0.2
+                    width: height
+                    radius: height*0.5
+                    opacity: pressed ? 0.8 : 1
+                    text: qsTr("AtF")
+                    //onClicked:
+                }
+            }
+
+
+            RowLayout
+            {
+                id: rowLayout2
+                width: Style.screenWidth*0.8
+                Layout.alignment: Qt.AlignHCenter
+                spacing: Style.screenWidth*0.05
+
+                Rectangle
+                {
+                    id: companyLogo
+                    height: Style.screenWidth*0.16
+                    width: height
+                    radius: height*0.5
+                    color: "transparent"
+
+                    //rounding company logo item background image
+                    ImageRounder
+                    {
+                        imageSource: p_company_logo
+                        roundValue: parent.height*0.5
+                    }
+                }
+
+                Rectangle
+                {
+                    id: textBox
+                    width: Style.screenWidth*0.6
+                    height: Style.screenWidth*0.15
+                    Layout.alignment: Qt.AlignHCenter
+                    color: Style.listViewGrey
+
+                    Label
+                    {
+                        id: nameAndHours
+                        topPadding: Helper.toDp(7, Style.dpi)
+                        text: p_company_name+'\n'+Helper.currStoreHours(p_store_hours)
+                        font.pixelSize: Helper.toDp(13, Style.dpi)
+                        color: Style.backgroundBlack
+                    }
+                }
+            }
+
+            ControlButton
+            {
+                id: nearestStoreButton
+                setWidth: Style.screenWidth*0.8
+                buttonText: qsTr("БЛИЖАЙШИЙ КО МНЕ АДРЕС")
+                labelContentColor: Style.mainPurple
+                backgroundColor: Style.backgroundWhite
+                setBorderColor: Style.mainPurple
+                Layout.alignment: Qt.AlignHCenter
+                //onClicked:
+            }
+
+            ControlButton
+            {
+                id: companyCardButton
+                setWidth: Style.screenWidth*0.8
+                buttonText: qsTr("ОТКРЫТЬ КАРТОЧКУ КОМПАНИИ")
+                labelContentColor: Style.backgroundBlack
+                backgroundColor: Style.backgroundWhite
+                setBorderColor: Style.backgroundBlack
+                Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: Style.screenHeight*0.03
+                onClicked: promotionPageLoader.source = "companyPage.qml";
+            }
         }
     }
 
-    //switch to mapPage (proms on map view)
-    ControlButton
+    //back to promotions choose button
+    TopControlButton
     {
-        id: backToPromotions
-        setHeight: Style.footerButtonsFieldHeight*0.4
-        setWidth: Style.screenWidth*0.55
-        fontPixelSize: Helper.toDp(13, Style.dpi)
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/13, Style.dpi)
+        id: backButton
+        buttonWidth: Style.screenWidth*0.55
         buttonText: qsTr("Назад к выбору акций")
-        labelContentColor: Style.backgroundWhite
-        backgroundColor: Style.mainPurple
-        setBorderColor: "transparent"
         onClicked:
         {
             var pageName = PageNameHolder.pop();
