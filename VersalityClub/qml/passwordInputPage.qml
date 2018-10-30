@@ -80,7 +80,7 @@ Page
                 var encryptedPass = Helper.encryptPassword(passField.text,
                                                            Style.xorStr);
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
-                                                  { "serverUrl": 'http://patrick.ga:8080/api/login?',
+                                                  { "serverUrl": 'http://patrick.ga:8082/api/login?',
                                                     "password": encryptedPass,
                                                     "email": email,
                                                     "functionalFlag": 'login'

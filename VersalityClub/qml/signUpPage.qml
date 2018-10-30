@@ -117,7 +117,7 @@ Page
                 {
                     PageNameHolder.push("signUpPage.qml");
                     signUpPageLoader.setSource("xmlHttpRequest.qml",
-                                               { "serverUrl": 'http://patrick.ga:8080/api/register?',
+                                               { "serverUrl": 'http://patrick.ga:8082/api/register?',
                                                  "email": emailField.text.toLowerCase(),
                                                  "sex": sexButton.buttonText,
                                                  "birthday": dateofbirthField.text,

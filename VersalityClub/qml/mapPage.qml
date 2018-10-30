@@ -24,6 +24,7 @@
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
+import QtWebView 1.1
 import QtQuick.Controls 2.4
 
 Page
@@ -41,10 +42,19 @@ Page
         color: Style.backgroundWhite
     }
 
+    WebView
+    {
+        id: myMap
+        anchors.fill: parent
+        Component.onCompleted: myMap.loadHtml(Style.mapHTML);
+    }
+
     //switch to listViewPage (proms as list)
     TopControlButton
     {
         id: showInListViewButton
+        anchors.top: parent.top
+        anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
         buttonWidth: Style.screenWidth*0.6
         buttonText: qsTr("Показать в виде списка")
         onClicked:

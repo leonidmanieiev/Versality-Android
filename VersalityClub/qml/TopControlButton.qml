@@ -37,8 +37,6 @@ RoundButton
     width: buttonWidth
     radius: height*0.5
     anchors.horizontalCenter: parent.horizontalCenter
-    anchors.top: parent.top
-    anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
     contentItem: Text
     {
         id: buttonTextContent

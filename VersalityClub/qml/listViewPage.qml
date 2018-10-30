@@ -113,13 +113,24 @@ Page
                     onClicked:
                     {
                         PageNameHolder.push("listViewPage.qml");
-                        listViewPageLoader.setSource("promotionPage.qml",
+                        /*listViewPageLoader.setSource("promotionPage.qml",
                                                      { "p_picture": picture,
                                                        "p_title": title,
                                                        "p_description": description,
                                                        "p_company_logo": company_logo,
-                                                        "p_store_hours": store_hours,
-                                                       "p_company_name": company_name
+                                                       "p_store_hours": store_hours,
+                                                       "p_company_name": company_name,
+                                                       "p_is_marked": is_marked
+                                                     });*/
+                        listViewPageLoader.setSource("previewPromotionPage.qml",
+                                                     { "p_id": id,
+                                                       "p_picture": picture,
+                                                       "p_title": title,
+                                                       "p_description": description,
+                                                       "p_company_logo": company_logo,
+                                                       "p_store_hours": store_hours,
+                                                       "p_company_name": company_name,
+                                                       "p_is_marked": is_marked
                                                      });
                     }
                 }
@@ -131,6 +142,8 @@ Page
     TopControlButton
     {
         id: showOnMapButton
+        anchors.top: parent.top
+        anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
         buttonWidth: Style.screenWidth*0.5
         buttonText: qsTr("Показать на карте")
         onClicked: listViewPageLoader.source = "mapPage.qml"

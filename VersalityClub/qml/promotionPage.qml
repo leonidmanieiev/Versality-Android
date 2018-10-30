@@ -29,14 +29,16 @@ import QtQuick.Layouts 1.3
 
 Page
 {
-    property string p_picture: ''
+    property string p_id: ''
     property string p_title: ''
+    property string p_picture: ''
     property string p_description: ''
     //property string p_promo_code: ''
     //property string p_company_id: ''
     property string p_company_logo: ''
     property string p_store_hours: ''
     property string p_company_name: ''
+    property bool p_is_marked: false
 
     id: promPage
     height: Style.pageHeight
@@ -130,15 +132,21 @@ Page
                     //onClicked:
                 }
 
-                RoundButton
+                ControlButton
                 {
                     id: addToFavourite
-                    height: Style.screenWidth*0.2
-                    width: height
-                    radius: height*0.5
-                    opacity: pressed ? 0.8 : 1
-                    text: qsTr("AtF")
-                    //onClicked:
+                    setWidth: setHeight
+                    buttonText: qsTr("AtF")
+                    labelContentColor: Style.backgroundWhite
+                    backgroundColor: p_is_marked ? Style.errorRed : Style.listViewGrey
+                    setBorderColor: "transparent"
+                    checkable: true
+                    checked: p_is_marked
+                    onClicked:
+                    {
+                        backgroundColor = checked ? Style.listViewGrey : Style.errorRed
+                        //request for flag change
+                    }
                 }
             }
 
@@ -216,6 +224,8 @@ Page
     TopControlButton
     {
         id: backButton
+        anchors.top: parent.top
+        anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
         buttonWidth: Style.screenWidth*0.55
         buttonText: qsTr("Назад к выбору акций")
         onClicked:

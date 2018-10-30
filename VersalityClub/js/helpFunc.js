@@ -73,7 +73,8 @@ function promsJsonToListModel(promsJSON)
                              "description": promsJSON[i].desc,
                              "company_logo": promsJSON[i].company_logo.url,
                              "store_hours": promsJSON[i].store_hours,
-                             "company_name": promsJSON[i].company_name
+                             "company_name": promsJSON[i].company_name,
+                             "is_marked": promsJSON[i].is_marked
                          });
     }
 }

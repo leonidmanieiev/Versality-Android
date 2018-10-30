@@ -167,7 +167,8 @@ Item
                     else toastMessage.setTextAndRun(errorStatus);
                 }
                 //showing connection error
-                else toastMessage.setTextAndRun(qsTr("Проверьте интернет соединение"));
+                else toastMessage.setTextAndRun(qsTr("Request status: " + request.status
+                                                     + ". Проверьте интернет соединение"));
             }
             else console.log("Pending: " + request.readyState);
         }

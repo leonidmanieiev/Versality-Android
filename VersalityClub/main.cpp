@@ -20,8 +20,10 @@
 **
 ****************************************************************************/
 
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QSslSocket>
+#include <QtWebView/QtWebView>
 #include "usersettings.h"
 #include "networkinfo.h"
 #include "pagenameholder.h"
@@ -29,8 +31,9 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
     QGuiApplication app(argc, argv);
+
+    QtWebView::initialize();
 
     qmlRegisterType<UserSettings>("org.leonman.versalityclub", 1, 0, "UserSettings");
     qmlRegisterType<NetworkInfo>("org.leonman.versalityclub", 1, 0, "NetworkInfo");

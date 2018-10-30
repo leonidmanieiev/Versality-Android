@@ -56,4 +56,24 @@ QtObject
                                        Helper.toDp(Screen.width, dpi)
     property string promsResponse: ''
     readonly property int listItemRadius: 20
+
+    readonly property string mapHTML: '<!DOCTYPE html>
+                                       <html><head>
+                                           <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                                           <script src="https://api-maps.yandex.ru/2.1/?apikey=<1a61a32c-93ff-4f0e-9812-b6a359dc13b9>&lang=ru_RU"
+                                                   type="text/javascript"></script>
+                                           <script> ymaps.ready(function () {
+                                                    var custMap = new ymaps.Map("map", {
+                                                            center: [59.933284, 30.343614],
+                                                            zoom: 16,
+                                                            controls: ["geolocationControl"],
+                                                            provider: "auto",
+                                                            mapStateAutoApply: true,
+                                                            autoReverseGeocode: false
+                                                        });
+                                               });</script>
+                                           <style> html, body, #map {
+                                                   width: 100%; height: 100%; padding: 0; margin: 0;
+                                               }</style>
+                                       </head><body><div id="map"></div></body></html>'
 }
