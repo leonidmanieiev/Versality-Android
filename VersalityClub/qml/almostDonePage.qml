@@ -53,8 +53,8 @@ Page
         {
             PageNameHolder.push("almostDonePage.qml");
             almostDonePageLoader.setSource("xmlHttpRequest.qml",
-                                     { "serverUrl": 'http://patrick.ga:8080/api/user/info?',
-                                       "functionalFlag": 'user/info'
+                                     { "serverUrl": 'http://patrick.ga:8080/api/user?',
+                                       "functionalFlag": 'user'
                                      }
                                    );
         }

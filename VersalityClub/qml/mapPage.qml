@@ -42,12 +42,12 @@ Page
         color: Style.backgroundWhite
     }
 
-    WebView
+    /*WebView
     {
         id: myMap
         anchors.fill: parent
         Component.onCompleted: myMap.loadHtml(Style.mapHTML);
-    }
+    }*/
 
     //switch to listViewPage (proms as list)
     TopControlButton

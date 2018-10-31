@@ -28,6 +28,14 @@ import "../js/helpFunc.js" as Helper
 
 Popup
 {
+    property color backgroundColor: Style.toastGrey
+
+    function setText(messageText)
+    {
+        popupContent.text = messageText;
+        open();
+    }
+
     function setTextAndRun(messageText)
     {
         popupContent.text = messageText;
@@ -36,7 +44,7 @@ Popup
     }
 
     id: toastMessage
-    x: Style.screenWidth*0.1//(Style.screenWidth - width)*0.5
+    x: Style.screenWidth*0.1
     y: Style.screenHeight - height
     contentItem: Text
     {
@@ -55,7 +63,7 @@ Popup
         width: Style.screenWidth*0.8
         height: popupContent.height*2
         radius: parent.height*0.5
-        color: Style.toastGrey
+        color: backgroundColor
     }
     //Smoothed show up animation
     enter: Transition

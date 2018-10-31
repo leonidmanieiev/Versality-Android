@@ -68,13 +68,17 @@ function promsJsonToListModel(promsJSON)
     {
         promsModel.append({
                              "id": promsJSON[i].id,
+                             "lat": promsJSON[i].lat,
+                             "lon": promsJSON[i].lon,
                              "picture": promsJSON[i].picture.url,
                              "title": promsJSON[i].title,
                              "description": promsJSON[i].desc,
-                             "company_logo": promsJSON[i].company_logo.url,
+                             "is_marked": promsJSON[i].is_marked,
+                             "promo_code": promsJSON[i].promo_code,
                              "store_hours": promsJSON[i].store_hours,
+                             "company_id": promsJSON[i].company_id,
                              "company_name": promsJSON[i].company_name,
-                             "is_marked": promsJSON[i].is_marked
+                             "company_logo": promsJSON[i].company_logo.url
                          });
     }
 }

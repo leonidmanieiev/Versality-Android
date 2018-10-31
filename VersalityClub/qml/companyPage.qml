@@ -27,6 +27,10 @@ import QtQuick.Controls 2.4
 
 Page
 {
+    property string p_company_id: p_company_id
+    property string p_company_name: p_company_name
+    property string p_company_logo: p_company_logo
+
     id: companyPage
     height: Style.pageHeight
     width: Style.screenWidth
@@ -41,4 +45,8 @@ Page
     }
 
     FooterButtons { pressedFromPageName: 'companyPage.qml' }
+
+    Component.onCompleted: console.log(p_company_id + " | "
+                                       + p_company_name + " | "
+                                       + p_company_logo);
 }

@@ -26,19 +26,22 @@ import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
+import QtPositioning 5.8
 
 Page
 {
     property string p_id: ''
+    property real p_lat: 0.0
+    property real p_lon: 0.0
     property string p_title: ''
     property string p_picture: ''
     property string p_description: ''
-    //property string p_promo_code: ''
-    //property string p_company_id: ''
-    property string p_company_logo: ''
-    property string p_store_hours: ''
-    property string p_company_name: ''
     property bool p_is_marked: false
+    property string p_store_hours: ''
+    property string p_promo_code: ''
+    property string p_company_id: ''
+    property string p_company_name: ''
+    property string p_company_logo: ''
 
     id: promPage
     height: Style.pageHeight
@@ -124,12 +127,22 @@ Page
                 ControlButton
                 {
                     id: activeCoupon
+                    enabled: closeEnough() ? true : false
+                    opacity: enabled ? 1 : 0.8
                     setWidth: Style.screenWidth*0.6
                     buttonText: qsTr("АКТИВИРОВАТЬ КУПОН")
                     labelContentColor: Style.backgroundWhite
                     backgroundColor: Style.activeCouponColor
                     setBorderColor: "transparent"
-                    //onClicked:
+                    onClicked: promoCodePopup.setText(p_promo_code);
+
+                    function closeEnough()
+                    {
+                        var promPos = QtPositioning.coordinate(p_lat, p_lon);
+                        var userPos = QtPositioning.coordinate(UserSettings.value("user_data/lat"),
+                                                               UserSettings.value("user_data/lon"));
+                        return promPos.distanceTo(userPos) < Style.promCloseDist;
+                    }
                 }
 
                 ControlButton
@@ -215,9 +228,23 @@ Page
                 setBorderColor: Style.backgroundBlack
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: Style.screenHeight*0.03
-                onClicked: promotionPageLoader.source = "companyPage.qml";
+                onClicked:
+                {
+                    PageNameHolder.push("promotionPage.qml");
+                    promotionPageLoader.setSource("companyPage.qml",
+                                                  {"p_company_id": p_company_id,
+                                                   "p_company_name": p_company_name,
+                                                   "p_company_logo": p_company_logo});
+                }
             }
         }
+    }
+
+    ToastMessage
+    {
+        id: promoCodePopup
+        backgroundColor: Style.activeCouponColor
+        y: Style.screenHeight*0.5
     }
 
     //back to promotions choose button
@@ -228,18 +255,7 @@ Page
         anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
         buttonWidth: Style.screenWidth*0.55
         buttonText: qsTr("Назад к выбору акций")
-        onClicked:
-        {
-            var pageName = PageNameHolder.pop();
-
-            //if no pages in sequence
-            if(pageName === "")
-                appWindow.close();
-            else promotionPageLoader.source = pageName;
-
-            //to avoid not loading bug
-            promotionPageLoader.reload();
-        }
+        onClicked: promotionPageLoader.source = "listViewPage.qml"
     }
 
     FooterButtons { pressedFromPageName: 'promotionPage.qml' }

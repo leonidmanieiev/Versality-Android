@@ -113,24 +113,19 @@ Page
                     onClicked:
                     {
                         PageNameHolder.push("listViewPage.qml");
-                        /*listViewPageLoader.setSource("promotionPage.qml",
-                                                     { "p_picture": picture,
-                                                       "p_title": title,
-                                                       "p_description": description,
-                                                       "p_company_logo": company_logo,
-                                                       "p_store_hours": store_hours,
-                                                       "p_company_name": company_name,
-                                                       "p_is_marked": is_marked
-                                                     });*/
-                        listViewPageLoader.setSource("previewPromotionPage.qml",
+                        listViewPageLoader.setSource("promotionPage.qml",
                                                      { "p_id": id,
+                                                       "p_lat": lat,
+                                                       "p_lon": lon,
                                                        "p_picture": picture,
                                                        "p_title": title,
                                                        "p_description": description,
-                                                       "p_company_logo": company_logo,
+                                                       "p_is_marked": is_marked,
+                                                       "p_promo_code": promo_code,
                                                        "p_store_hours": store_hours,
-                                                       "p_company_name": company_name,
-                                                       "p_is_marked": is_marked
+                                                       "p_company_id": company_id,
+                                                       "p_company_logo": company_logo,
+                                                       "p_company_name": company_name
                                                      });
                     }
                 }

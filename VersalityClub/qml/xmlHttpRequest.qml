@@ -33,6 +33,7 @@ Item
     property string serverUrl: ''
     property string email: ''
     property string sex: ''
+    property string name: ''
     property string birthday: ''
     property string password: ''
     property string cats: UserSettings.getStrCats()
@@ -58,9 +59,11 @@ Item
             //request for log in
             case 'login': return 'email='+email+'&password='+password;
             //request for user info
-            case 'user/info': return 'secret='+secret;
+            case 'user': return 'secret='+secret;
             //request for saving selected/deselected categories
             case 'user/refresh-cats': return 'secret='+secret+'&cats='+cats;
+            //request for refreshing sex, name and birthday
+            case 'user/refresh-snb': return 'secret='+secret+'&sex='+sex+'&name='+name+'&birthday='+birthday;
             //unknown request
             default: return -1;
         }
@@ -83,6 +86,7 @@ Item
             case 'CAT-0': return 'Неизвестная ошибка';
             case 'CAT-1': return 'Неизвестный токен аутентификации';
             case 'CAT-2': return 'Неизвестный id подкатегории';
+            case 'ERR-1': return 'Неизвестный токен аутентификации';
             default: return 'NO_ERROR';
         }
     }
@@ -145,13 +149,14 @@ Item
                                     xmlHttpRequestLoader.source = "almostDonePage.qml";
                                 }
                                 else xmlHttpRequestLoader.source = "mapPage.qml"; break;
-                            case 'user/info':
+                            case 'user':
                                 var uInfoRespJSON = strJSONtoJSON(request.responseText);
                                 //saving user info to fill fields
                                 UserSettings.beginGroup("user_data");
                                 UserSettings.setValue("email", uInfoRespJSON.email);
                                 UserSettings.setValue("sex", uInfoRespJSON.sex);
                                 UserSettings.setValue("birthday", uInfoRespJSON.birthday);
+                                UserSettings.setValue("name", uInfoRespJSON.name);
                                 UserSettings.endGroup();
                                 for(var i in uInfoRespJSON.categories)
                                     UserSettings.insertCat(uInfoRespJSON.categories[i]);
@@ -159,6 +164,9 @@ Item
                                 break;
                             case 'user/refresh-cats':
                                 xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+                                break;
+                            case 'user/refresh-snb':
+                                xmlHttpRequestLoader.source = "mapPage.qml";
                                 break;
                             default: console.log("Unknown functionalFlag"); break;
                         }

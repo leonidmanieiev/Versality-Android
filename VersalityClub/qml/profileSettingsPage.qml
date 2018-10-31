@@ -126,6 +126,7 @@ Page
             CustomTextField
             {
                 id: firstNameField
+                text: UserSettings.value("user_data/name");
                 placeholderText: qsTr("ВВЕДИТЕ ИМЯ")
             }
 
@@ -175,7 +176,16 @@ Page
             anchors.bottomMargin: Style.screenHeight*0.08
             anchors.horizontalCenter: parent.horizontalCenter
             opacity: pressed ? 0.8 : 1
-            onClicked: profileSettingsPageLoader.source = "mapPage.qml";
+            onClicked:
+            {
+                chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
+                                                              { "serverUrl": 'http://patrick.ga:8080/api/user?',
+                                                                "functionalFlag": 'user/refresh-snb',
+                                                                "sex": sexButton.buttonText,
+                                                                "name": firstNameField.text,
+                                                                "birthday": dateofbirthField.text
+                                                              });
+            }
 
             contentItem: Text
             {

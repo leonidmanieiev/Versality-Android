@@ -30,15 +30,15 @@ import QtQuick.Layouts 1.3
 Page
 {
     property string p_id: ''
-    property string p_picture: ''
     property string p_title: ''
+    property string p_picture: ''
     property string p_description: ''
-    //property string p_promo_code: ''
-    //property string p_company_id: ''
-    property string p_company_logo: ''
-    property string p_store_hours: ''
-    property string p_company_name: ''
     property bool p_is_marked: false
+    property string p_store_hours: ''
+    property string p_promo_code: ''
+    property string p_company_id: ''
+    property string p_company_name: ''
+    property string p_company_logo: ''
 
     id: previewPromPage
     height: Style.pageHeight
@@ -72,7 +72,7 @@ Page
                 id: buttonBackground
                 implicitWidth: parent.width
                 implicitHeight: parent.height
-                radius: 20
+                radius: Style.listItemRadius
                 color: p_is_marked ? Style.errorRed : Style.backgroundWhite
             }
             checkable: true
@@ -145,15 +145,17 @@ Page
             {
                 PageNameHolder.push("previewPromotionPage.qml");
                 previewPromotionPageLoader.setSource("promotionPage.qml",
-                                                     { "p_id": p_id,
-                                                       "p_picture": p_picture,
-                                                       "p_title": p_title,
-                                                       "p_description": p_description,
-                                                       "p_company_logo": p_company_logo,
-                                                       "p_store_hours": p_store_hours,
-                                                       "p_company_name": p_company_name,
-                                                       "p_is_marked": p_is_marked
-                                                     });
+                                                      { "p_id": p_id,
+                                                        "p_picture": p_picture,
+                                                        "p_title": p_title,
+                                                        "p_description": p_description,
+                                                        "p_is_marked": p_is_marked,
+                                                        "p_promo_code": p_promo_code,
+                                                        "p_store_hours": p_store_hours,
+                                                        "p_company_id": p_company_id,
+                                                        "p_company_logo": p_company_logo,
+                                                        "p_company_name": p_company_name
+                                                      });
             }
         }
     }
@@ -166,18 +168,7 @@ Page
         anchors.topMargin: Style.screenWidth*0.25
         buttonWidth: Style.screenWidth*0.55
         buttonText: qsTr("Назад к выбору акций")
-        onClicked:
-        {
-            var pageName = PageNameHolder.pop();
-
-            //if no pages in sequence
-            if(pageName === "")
-                appWindow.close();
-            else previewPromotionPageLoader.source = pageName;
-
-            //to avoid not loading bug
-            previewPromotionPageLoader.reload();
-        }
+        onClicked: previewPromotionPageLoader.source = "listViewPage.qml"
     }
 
     FooterButtons { pressedFromPageName: 'promotionPage.qml' }
