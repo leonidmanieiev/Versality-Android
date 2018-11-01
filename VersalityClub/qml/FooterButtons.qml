@@ -89,7 +89,10 @@ Rectangle
                 if(pressedFromPageName != "favouritePage.qml")
                     PageNameHolder.push(pressedFromPageName);
 
-                footerButtonsLoader.source = "favouritePage.qml";
+                appWindowLoader.setSource("xmlHttpRequest.qml",
+                                          { "serverUrl": 'http://patrick.ga:8080/api/user/marked?',
+                                            "functionalFlag": 'user/marked'
+                                          });
             }
         }
     }

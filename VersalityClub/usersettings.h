@@ -66,14 +66,16 @@ public:
         { this->clear(); }
     //serialize categories for request param
     Q_INVOKABLE QString getStrCats() const
-    {
-        QString strCats;
-        for(auto cat : this->selectedCats)
-            strCats.append(QString::number(cat)).append(',');
-        strCats.chop(1);
+        {
+          QString strCats;
+          for(auto cat : this->selectedCats)
+              strCats.append(QString::number(cat)).append(',');
+          strCats.chop(1);
 
-        return strCats;
-    }
+          return strCats;
+        }
+    Q_INVOKABLE int getCatsAmount() const
+        { return selectedCats.size(); }
 private:
     QSet<quint32> selectedCats;
 };

@@ -79,8 +79,22 @@ Page
             checked: p_is_marked
             onClicked:
             {
-                buttonBackground.color = checked ? Style.backgroundWhite : Style.errorRed
-                //request for flag change
+                if(checked)
+                {
+                    buttonBackground.color = Style.activeCouponColor;
+                    previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                        {"serverUrl": 'http://patrick.ga:8080/api/user/mark?',
+                                                         "promo_id": p_id,
+                                                         "functionalFlag": "user/mark"});
+                }
+                else
+                {
+                    buttonBackground.color = Style.listViewGrey;
+                    previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                        {"serverUrl": 'http://patrick.ga:8080/api/user/unmark?',
+                                                         "promo_id": p_id,
+                                                         "functionalFlag": "user/unmark"});
+                }
             }
         }
 

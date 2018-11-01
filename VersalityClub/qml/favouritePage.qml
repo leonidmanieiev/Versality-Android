@@ -22,6 +22,7 @@
 
 //favourites promotions in list view
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
@@ -37,8 +38,116 @@ Page
         id: pageBackground
         height: Style.pageHeight
         width: Style.screenWidth
-        color: Style.mainPurple
+        color: Style.listViewGrey
+    }
+
+    Component.onCompleted:
+    {
+        var promsJSON = JSON.parse(Style.promsResponse);
+        //applying promotions at ListModel
+        Helper.promsJsonToListModel(promsJSON);
+    }
+
+    ListView
+    {
+        id: promsListView
+        clip: true
+        width: Style.screenWidth
+        height: Style.pageHeight
+        model: promsModel
+        delegate: promsDelegate
+    }
+
+    ListModel { id: promsModel }
+
+    Component
+    {
+        id: promsDelegate
+        Column
+        {
+            width: Style.screenWidth*0.8
+            anchors.horizontalCenter: parent.horizontalCenter
+            bottomPadding: Style.screenHeight*0.1
+            Rectangle
+            {
+                id: promsItem
+                height: Style.screenHeight*0.25
+                width: Style.screenWidth*0.8
+                radius: Style.listItemRadius
+                color: "transparent"
+
+                //rounding promotion item background image
+                ImageRounder
+                {
+                    imageSource: picture
+                    roundValue: Style.listItemRadius
+                }
+
+                Rectangle
+                {
+                    id: companyLogoItem
+                    height: parent.width*0.2
+                    width: height
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: -height*0.5
+                    radius: height*0.5
+                    color: "transparent"
+
+                    //rounding company logo item background image
+                    ImageRounder
+                    {
+                        imageSource: company_logo
+                        roundValue: parent.height*0.5
+                    }
+                }
+
+                //on promotion clicked
+                MouseArea
+                {
+                    id: promsClickableArea
+                    anchors.fill: parent
+                    onClicked:
+                    {
+                        PageNameHolder.push("favouritePage.qml");
+                        favouritePageLoader.setSource("promotionPage.qml",
+                                                     { "p_id": id,
+                                                       "p_lat": lat,
+                                                       "p_lon": lon,
+                                                       "p_picture": picture,
+                                                       "p_title": title,
+                                                       "p_description": description,
+                                                       "p_is_marked": is_marked,
+                                                       "p_promo_code": promo_code,
+                                                       "p_store_hours": store_hours,
+                                                       "p_company_id": company_id,
+                                                       "p_company_logo": company_logo,
+                                                       "p_company_name": company_name
+                                                     });
+                    }
+                }
+            }
+        }
+    }
+
+    //switch to mapPage (proms on map view)
+    TopControlButton
+    {
+        id: showOnMapButton
+        anchors.top: parent.top
+        anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
+        buttonWidth: Style.screenWidth*0.5
+        buttonText: qsTr("Показать на карте")
+        onClicked: favouritePageLoader.source = "mapPage.qml"
     }
 
     FooterButtons { pressedFromPageName: 'favouritePage.qml' }
+
+    Loader
+    {
+        id: favouritePageLoader
+        asynchronous: true
+        anchors.fill: parent
+        visible: status == Loader.Ready
+    }
 }

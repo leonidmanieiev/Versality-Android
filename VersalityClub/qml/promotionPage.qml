@@ -151,14 +151,28 @@ Page
                     setWidth: setHeight
                     buttonText: qsTr("AtF")
                     labelContentColor: Style.backgroundWhite
-                    backgroundColor: p_is_marked ? Style.errorRed : Style.listViewGrey
+                    backgroundColor: p_is_marked ? Style.activeCouponColor : Style.listViewGrey
                     setBorderColor: "transparent"
                     checkable: true
                     checked: p_is_marked
                     onClicked:
                     {
-                        backgroundColor = checked ? Style.listViewGrey : Style.errorRed
-                        //request for flag change
+                        if(checked)
+                        {
+                            backgroundColor = Style.activeCouponColor;
+                            promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                          {"serverUrl": 'http://patrick.ga:8080/api/user/mark?',
+                                                           "promo_id": p_id,
+                                                           "functionalFlag": "user/mark"});
+                        }
+                        else
+                        {
+                            backgroundColor = Style.listViewGrey;
+                            promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                          {"serverUrl": 'http://patrick.ga:8080/api/user/unmark?',
+                                                           "promo_id": p_id,
+                                                           "functionalFlag": "user/unmark"});
+                        }
                     }
                 }
             }

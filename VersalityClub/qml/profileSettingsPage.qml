@@ -70,7 +70,16 @@ Page
                 labelContentColor: Style.backgroundWhite
                 backgroundColor: Style.mainPurple
                 setBorderColor: Style.backgroundWhite
-                onClicked: buttonText === "M" ? buttonText = "Ж" : buttonText = "M"
+                onClicked:
+                {
+                    if(buttonText === "M")
+                        buttonText = "Ж";
+                    else buttonText = "M";
+
+                    UserSettings.beginGroup("user_data");
+                    UserSettings.setValue("sex", buttonText);
+                    UserSettings.endGroup();
+                }
             }
 
             CustomLabel
@@ -84,7 +93,13 @@ Page
                 id: dateofbirthField
                 inputMask: "00.00.0000"
                 inputMethodHints: Qt.ImhDigitsOnly
-                text: UserSettings.value("user_data/birthday");
+                text: UserSettings.value("user_data/birthday"); 
+                onTextChanged:
+                {
+                    UserSettings.beginGroup("user_data");
+                    UserSettings.setValue("birthday", text);
+                    UserSettings.endGroup();
+                }
             }
 
             CustomLabel
@@ -128,6 +143,12 @@ Page
                 id: firstNameField
                 text: UserSettings.value("user_data/name");
                 placeholderText: qsTr("ВВЕДИТЕ ИМЯ")
+                onTextChanged:
+                {
+                    UserSettings.beginGroup("user_data");
+                    UserSettings.setValue("name", text);
+                    UserSettings.endGroup();
+                }
             }
 
             CustomLabel
@@ -178,7 +199,7 @@ Page
             opacity: pressed ? 0.8 : 1
             onClicked:
             {
-                chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
+                profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
                                                               { "serverUrl": 'http://patrick.ga:8080/api/user?',
                                                                 "functionalFlag": 'user/refresh-snb',
                                                                 "sex": sexButton.buttonText,

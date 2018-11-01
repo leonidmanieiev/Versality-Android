@@ -205,7 +205,7 @@ Page
         {
             PageNameHolder.pop();
             chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
-                                              { "serverUrl": 'http://patrick.ga:8080/api/user?',
+                                              { "serverUrl": 'http://patrick.ga:8080/api/user/categories?',
                                                 "functionalFlag": 'user/refresh-cats'
                                               });
         }

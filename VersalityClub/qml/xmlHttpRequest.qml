@@ -36,7 +36,8 @@ Item
     property string name: ''
     property string birthday: ''
     property string password: ''
-    property string cats: UserSettings.getStrCats()
+    property string cats: UserSettings.getCatsAmount() === 0 ? '0' : UserSettings.getStrCats()
+    property string promo_id: ''
     //to authenticate client on server side
     property string secret: UserSettings.value("user_security/user_hash")
     //flag to determine type of request
@@ -64,6 +65,12 @@ Item
             case 'user/refresh-cats': return 'secret='+secret+'&cats='+cats;
             //request for refreshing sex, name and birthday
             case 'user/refresh-snb': return 'secret='+secret+'&sex='+sex+'&name='+name+'&birthday='+birthday;
+            //request for adding promotion to favourite
+            case 'user/mark': return 'secret='+secret+'&promo='+promo_id;
+            //request for erasing promotion from favourite
+            case 'user/unmark': return 'secret='+secret+'&promo='+promo_id;
+            //request for getting all merked promotions
+            case 'user/marked': return 'secret='+secret;
             //unknown request
             default: return -1;
         }
@@ -167,6 +174,10 @@ Item
                                 break;
                             case 'user/refresh-snb':
                                 xmlHttpRequestLoader.source = "mapPage.qml";
+                                break;
+                            case 'user/marked':
+                                Style.promsResponse = request.responseText;
+                                xmlHttpRequestLoader.source = "favouritePage.qml";
                                 break;
                             default: console.log("Unknown functionalFlag"); break;
                         }
