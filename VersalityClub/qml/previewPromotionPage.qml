@@ -30,6 +30,8 @@ import QtQuick.Layouts 1.3
 Page
 {
     property string p_id: ''
+    property string p_lat: ''
+    property string p_lon: ''
     property string p_title: ''
     property string p_picture: ''
     property string p_description: ''
@@ -160,11 +162,14 @@ Page
                 PageNameHolder.push("previewPromotionPage.qml");
                 previewPromotionPageLoader.setSource("promotionPage.qml",
                                                       { "p_id": p_id,
+                                                        "p_lat": p_lat,
+                                                        "p_lon": p_lon,
                                                         "p_picture": p_picture,
                                                         "p_title": p_title,
                                                         "p_description": p_description,
                                                         "p_is_marked": p_is_marked,
                                                         "p_promo_code": p_promo_code,
+                                                        "p_store_hours": p_store_hours,
                                                         "p_store_hours": p_store_hours,
                                                         "p_company_id": p_company_id,
                                                         "p_company_logo": p_company_logo,

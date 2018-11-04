@@ -48,6 +48,8 @@ QtObject
     readonly property real footerButtonsSpacing: screenWidth*0.05
     readonly property real pageHeight: screenHeight-footerButtonsFieldHeight
 
+    readonly property real mapButtonSize: screenWidth*0.09
+
     readonly property int dpi: Screen.pixelDensity * 25.4
     readonly property int screenHeight: Qt.platform.os === "windows" ?
                                         Helper.toDp(480, dpi) :
@@ -57,35 +59,4 @@ QtObject
                                        Helper.toDp(Screen.width, dpi)
     property string promsResponse: ''
     readonly property int listItemRadius: 20
-
-    readonly property string mapHTML: '<!DOCTYPE html>
-                                       <html><head>
-                                           <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                                           <script src="https://api-maps.yandex.ru/2.1/?apikey=<1a61a32c-93ff-4f0e-9812-b6a359dc13b9>&lang=ru_RU"
-                                                   type="text/javascript"></script>
-                                           <script> ymaps.ready(function () {
-                                                    var myMap = new ymaps.Map("map", {
-                                                            center: [59.933284, 30.343614],
-                                                            zoom: 13,
-                                                            controls: []
-                                                        }),
-                                                        userLocationButton = new ymaps.control.Button({
-                                                            options: {
-                                                                float: "right",
-                                                                selectOnClick: false,
-                                                                size: "small"
-                                                            }
-                                                        }),
-                                                        userLocationPlacemark = new ymaps.Placemark(['+UserSettings.value("user_data/lat")+
-                                                        ', '+UserSettings.value("user_data/lon")+']);
-
-                                                    userLocationButton.events.add("click", function () {
-                                                        myMap.geoObjects.add(userLocationPlacemark);
-                                                    });
-
-                                                    myMap.controls.add(userLocationButton);});</script>
-                                           <style> html, body, #map {
-                                                   width: 100%; height: 100%; padding: 0; margin: 0;
-                                               }</style>
-                                       </head><body><div id="map"></div></body></html>'
 }

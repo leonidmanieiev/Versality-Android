@@ -68,14 +68,14 @@ function promsJsonToListModel(promsJSON)
     {
         promsModel.append({
                              "id": promsJSON[i].id,
-                             "lat": promsJSON[i].lat,
-                             "lon": promsJSON[i].lon,
+                             //"lat": promsJSON[i].lat,
+                             //"lon": promsJSON[i].lon,
                              "picture": promsJSON[i].picture.url,
                              "title": promsJSON[i].title,
                              "description": promsJSON[i].desc,
                              "is_marked": promsJSON[i].is_marked,
                              "promo_code": promsJSON[i].promo_code,
-                             "store_hours": promsJSON[i].store_hours,
+                             //"store_hours": promsJSON[i].store_hours,
                              "company_id": promsJSON[i].company_id,
                              "company_name": promsJSON[i].company_name,
                              "company_logo": promsJSON[i].company_logo.url
@@ -93,4 +93,26 @@ function currStoreHours(p_store_hours)
     var currDay = currDate.getDay()-1 == -1 ? 6 : currDate.getDay()-1;
 
     return hours[currDay];
+}
+
+//puts promotions from JSON to model for mapMarkers
+function promsJsonToListModelForMap(promsJSON)
+{
+    for(var i in promsJSON)
+    {
+        promMarkersModel.append({
+                                    "id": promsJSON[i].id,
+                                    "lat": promsJSON[i].lat,
+                                    "lon": promsJSON[i].lon,
+                                    "picture": promsJSON[i].picture.url,
+                                    "title": promsJSON[i].title,
+                                    "description": promsJSON[i].desc,
+                                    "is_marked": promsJSON[i].is_marked,
+                                    "promo_code": promsJSON[i].promo_code,
+                                    "store_hours": promsJSON[i].store_hours,
+                                    "company_id": promsJSON[i].company_id,
+                                    "company_name": promsJSON[i].company_name,
+                                    "company_logo": promsJSON[i].company_logo.url
+                                });
+    }
 }

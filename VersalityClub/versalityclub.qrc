@@ -32,5 +32,8 @@
         <file>qml/companyPage.qml</file>
         <file>js/customMap.js</file>
         <file>qml/previewPromotionPage.qml</file>
+        <file>icons/geoLocationIcon.svg</file>
+        <file>icons/promotionMarkerIcon.svg</file>
+        <file>icons/userLocationMarkerIcon.svg</file>
     </qresource>
 </RCC>

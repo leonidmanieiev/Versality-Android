@@ -72,7 +72,9 @@ Rectangle
             radius: height/2
             opacity: pressed ? 0.8 : 1
             text: "M"
-            onClicked: footerButtonsLoader.source = "mapPage.qml";
+            onClicked: appWindowLoader.source = "mapPage.qml";
+            //need to clear data for getting fresh one
+            Component.onCompleted: Style.promsResponse = '';
         }
 
         RoundButton
