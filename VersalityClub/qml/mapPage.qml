@@ -36,28 +36,24 @@ Page
     readonly property real defaultLat: 59.933284
     readonly property real defaultLon: 30.343614
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
-    readonly property string mapCopyright: "<a href='http://corp.sputnik.ru/maps'>Cпутник</a>"
-                                           +" © <a href='https://www.rt.ru/'>Ростелеком</a>"
-    readonly property string mapDataCopyright: "<a href='https://www.openstreetmap.org/copyright'>"
-                                           +"OpenStreetMap</a>"
+    readonly property string mapCopyright: 'Tiles style by <a href="http://corp.sputnik.ru/maps"'
+                                           +' style="color: '+Style.mainPurple+'">Cпутник</a> © '
+                                           +'<a href="https://www.rt.ru/" style="color: '+
+                                           Style.mainPurple+'">Ростелеком</a>'
+    readonly property string mapDataCopyright: ' Data © <a href="https://www.openstreetmap.org/'
+                                               +'copyright" style="color: '+Style.mainPurple+'">'
+                                               +'OpenStreetMap</a>'
 
     id: mapPage
     height: Style.pageHeight
     width: Style.screenWidth
-    anchors.top: parent.top
-
-    background: Rectangle
-    {
-        id: pageBackground
-        height: Style.pageHeight
-        width: Style.screenWidth
-        color: Style.backgroundWhite
-    }
 
     Map
     {
         id: mainMap
         anchors.fill: parent
+        width: Style.screenWidth
+        anchors.bottomMargin: Style.footerButtonsFieldHeight
         center: QtPositioning.coordinate(defaultLat, defaultLon)
         zoomLevel: defaultZoomLevel
         plugin: Plugin
@@ -74,7 +70,7 @@ Page
                 name: "osm.mapping.highdpi_tiles"
                 value: "true"
             }
-            PluginParameter
+            /*PluginParameter
             {
                 name: "osm.mapping.custom.mapcopyright"
                 value: mapCopyright
@@ -83,7 +79,7 @@ Page
             {
                 name: "osm.mapping.custom.datacopyright"
                 value: mapDataCopyright
-            }
+            }*/
             PluginParameter
             {
                 name: "osm.useragent"
@@ -97,13 +93,12 @@ Page
                 if(supportedMapTypes[i_type].name.localeCompare("Custom URL Map") === 0)
                     activeMapType = supportedMapTypes[i_type];
         }
-        onCopyrightLinkActivated: Qt.openUrlExternally(link)
 
         MapQuickItem
         {
             id: userLocationMarker
             visible: false
-            anchorPoint.x: userMarkerImage.width/2
+            anchorPoint.x: userMarkerImage.width*0.5
             anchorPoint.y: userMarkerImage.height
             sourceItem: Image
             {
@@ -125,7 +120,7 @@ Page
                 id: promMarkersDelegate
                 //wait until get coords
                 visible: lat ? true : false
-                anchorPoint.x: promMarkersImage.width/2
+                anchorPoint.x: promMarkersImage.width*0.5
                 anchorPoint.y: promMarkersImage.height
                 coordinate: QtPositioning.coordinate(lat, lon)
                 sourceItem: Image
@@ -196,6 +191,25 @@ Page
         }
     }
 
+    Rectangle
+    {
+        id: copyrightTextBackground
+        width: childrenRect.width
+        height: childrenRect.height
+        anchors.left: parent.left
+        anchors.bottom: footerButton.top
+        color: Style.copyrightBackgroundColor
+
+        Text
+        {
+            id: copyrightText
+            color: Style.backgroundWhite
+            textFormat: Text.RichText;
+            text: mapCopyright+mapDataCopyright
+            font.pixelSize: Helper.toDp(15, Style.dpi)
+            onLinkActivated: Qt.openUrlExternally(link)
+        }
+    }
 
     //switch to listViewPage (proms as list)
     TopControlButton
@@ -212,7 +226,7 @@ Page
         }
     }
 
-    FooterButtons { pressedFromPageName: "mapPage.qml" }
+    FooterButtons { id: footerButton; pressedFromPageName: "mapPage.qml" }
 
     Component.onCompleted:
     {
@@ -225,10 +239,16 @@ Page
 
     function runParsing()
     {
-        var promsJSON = JSON.parse(Style.promsResponse);
-        //applying promotions at ListModel
-        Helper.promsJsonToListModelForMap(promsJSON);
+        if(Style.promsResponse.substring(0, 6) !== 'PROM-1')
+        {
+            var promsJSON = JSON.parse(Style.promsResponse);
+            //applying promotions at ListModel
+            Helper.promsJsonToListModelForMap(promsJSON);
+        }
+        else toastMessage.setTextAndRun(qsTr("No suitable promotions nearby."));
     }
+
+    ToastMessage { id: toastMessage }
 
     //workaround to wait until server sends pasponse
     Timer
@@ -244,7 +264,7 @@ Page
         //back button pressed for android and windows
         if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
         {
-            event.accepted = true
+            event.accepted = true;
             var pageName = PageNameHolder.pop();
 
             //if no pages in sequence

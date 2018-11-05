@@ -116,3 +116,21 @@ function promsJsonToListModelForMap(promsJSON)
                                 });
     }
 }
+
+//HTTP status code decoder
+function httpErrorDecoder(statusCode)
+{
+    var decodedError;
+    switch(statusCode)
+    {
+        case 0: decodedError = "Server not responding."; break;
+        case 400: decodedError = "Bad request."; break;
+        case 403: decodedError = "Forbidden."; break;
+        case 404: decodedError = "Not found."; break;
+        case 408: decodedError = "Request timeout."; break;
+        case 500: decodedError = "Server error."; break;
+        default: decodedError = "Unknown error."; break;
+    }
+
+    return decodedError + " Try again later.";
+}

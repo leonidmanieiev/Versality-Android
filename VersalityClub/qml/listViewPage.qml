@@ -31,13 +31,11 @@ Page
     id: listViewPage
     height: Style.pageHeight
     width: Style.screenWidth
-    anchors.top: parent.top
 
     background: Rectangle
     {
         id: pageBackground
-        height: Style.pageHeight
-        width: Style.screenWidth
+        anchors.fill: parent
         color: Style.listViewGrey
     }
 
@@ -45,18 +43,37 @@ Page
     {
         //start capturing user location and getting promotions
         listViewPageLoader.source = "userLocation.qml";
+    }
 
-        var promsJSON = JSON.parse(Style.promsResponse);
-        //applying promotions at ListModel
-        Helper.promsJsonToListModel(promsJSON);
+    function runParsing()
+    {
+        if(Style.promsResponse.substring(0, 6) !== 'PROM-1')
+        {
+            var promsJSON = JSON.parse(Style.promsResponse);
+            //applying promotions at ListModel
+            Helper.promsJsonToListModel(promsJSON);
+        }
+        else toastMessage.setTextAndRun(qsTr("No suitable promotions nearby."));
+    }
+
+    ToastMessage { id: toastMessage }
+
+    Timer
+    {
+        id: waitForResponse
+        running: Style.promsResponse === '' ? false : true
+        interval: 1
+        onTriggered: runParsing()
     }
 
     ListView
     {
         id: promsListView
         clip: true
-        width: Style.screenWidth
-        height: Style.pageHeight
+        anchors.top: parent.top
+        width: parent.width
+        height: parent.height
+        contentHeight: promsDelegate.height*1.05
         model: promsModel
         delegate: promsDelegate
     }

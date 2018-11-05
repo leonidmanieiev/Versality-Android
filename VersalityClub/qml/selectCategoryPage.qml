@@ -177,14 +177,12 @@ Page
                                 subCatsItem.color = "transparent";
                                 subCatsText.color = Style.backgroundWhite
                                 catsSelectedIcon.visible = false;
-                                console.log("removed cat " + subid + ": " + UserSettings.removeCat(subid));
                             }
                             else
                             {
                                 subCatsItem.color = Style.toastGrey;
                                 subCatsText.color = Style.backgroundBlack;
                                 catsSelectedIcon.visible = true;
-                                console.log("selected cat: " + UserSettings.insertCat(subid));
                             }
                         }
                     }//MouseArea

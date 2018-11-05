@@ -41,10 +41,10 @@ Item
         property real lon: position.coordinate.longitude
 
         id: userLocation
+        active: true
         updateInterval: 1000
         //using .nmea if OS is win, because win does not have GPS module
         nmeaSource: Qt.platform.os === "windows" ? "../output_new.nmea" : undefined
-        active: true
 
         //handling errors
         function sourceErrorMessage(sourceError)
@@ -114,18 +114,26 @@ Item
         function requestForPromotions()
         {
             var request = new XMLHttpRequest();
-            var params = 'secret='+secret+'&lat='+lat+'&lon='+lon;
+            var params = 'secret='+secret+'&lat='+UserSettings.value("user_data/lat")+
+                         '&lon='+UserSettings.value("user_data/lon");
+
+            console.log("userLocation request url: " + serverUrl + params);
 
             request.open('POST', serverUrl);
-
             request.onreadystatechange = function()
             {
                 if(request.readyState === XMLHttpRequest.DONE)
                 {
                     if(request.status === 200)
+                    {
                         //saving response for further using
                         Style.promsResponse = request.responseText;
-                    else toastMessage.setTextAndRun(qsTr("Проверьте интернет соединение"));
+                    }
+                    else
+                    {
+                        console.log("userLocation HTTP error: " + request.status);
+                        toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
+                    }
                 }
                 else console.log("Pending: " + request.readyState);
             }
@@ -151,16 +159,6 @@ Item
         {
             if(posMethodSet)
             {
-                if(!initialCoordSet)
-                {
-                    console.log("initial onPositionChanged")
-                    initialCoordSet = true;
-                    //saving initial position and timeCheckPoint of user
-                    saveUserPositionInfo();
-                    //making request for promotions which depend on position
-                    requestForPromotions();
-                }
-
                 if(isGetFar(position.coordinate) || isTimePassed())
                 {
                     console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
@@ -175,12 +173,25 @@ Item
         Component.onCompleted:
         {
             if(isPositioningMethodSet(supportedPositioningMethods))
+            {
                 posMethodSet = true;
+                if(!initialCoordSet)
+                {
+                    console.log("initial onPositionChanged")
+                    initialCoordSet = true;
+                    //saving initial position and timeCheckPoint of user
+                    saveUserPositionInfo();
+                    //making request for promotions which depend on position
+                    requestForPromotions();
+                }
+            }
             else
             {
                 toastMessage.setTextAndRun(qsTr("Ошибка установки метода определения местоположения"));
                 return;
             }
+
+            console.log("lat: " + position.coordinate.latitude + " | lon: " + lon);
         }
     }
 

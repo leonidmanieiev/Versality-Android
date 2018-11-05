@@ -33,7 +33,7 @@ RoundButton
 
     id: topControlButton
     opacity: pressed ? 0.8 : 1
-    height: Style.footerButtonsFieldHeight*0.4
+    height: Style.screenHeight*0.05
     width: buttonWidth
     radius: height*0.5
     anchors.horizontalCenter: parent.horizontalCenter

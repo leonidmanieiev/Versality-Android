@@ -44,7 +44,7 @@ Popup
     }
 
     id: toastMessage
-    x: Style.screenWidth*0.1
+    x: (Style.screenWidth-popupContent.width)*0.5
     y: Style.screenHeight - height
     contentItem: Text
     {
@@ -60,7 +60,7 @@ Popup
     background: Rectangle
     {
         id: popupBackground
-        width: Style.screenWidth*0.8
+        width: popupContent.width*1.2
         height: popupContent.height*2
         radius: parent.height*0.5
         color: backgroundColor

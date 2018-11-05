@@ -46,13 +46,11 @@ Page
     id: promPage
     height: Style.pageHeight
     width: Style.screenWidth
-    anchors.top: appWindow.top
 
     background: Rectangle
     {
         id: pageBackground
-        height: Style.pageHeight
-        width: Style.screenWidth
+        anchors.fill: parent
         color: Style.listViewGrey
     }
 
@@ -61,9 +59,11 @@ Page
         id: flickableArea
         clip: true
         width: Style.screenWidth
-        height: Style.pageHeight
-        boundsBehavior: Flickable.DragOverBounds
+        height: Style.screenHeight
         contentHeight: middleFieldsColumns.height*1.05
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        boundsBehavior: Flickable.DragOverBounds
 
         ColumnLayout
         {
@@ -120,7 +120,7 @@ Page
             RowLayout
             {
                 id: rowLayout1
-                width: Style.screenWidth*0.8
+                width: parent.width
                 Layout.alignment: Qt.AlignHCenter
                 spacing: Style.screenWidth*0.1
 
@@ -128,7 +128,6 @@ Page
                 {
                     id: activeCoupon
                     enabled: closeEnough() ? true : false
-                    opacity: enabled ? 1 : 0.8
                     setWidth: Style.screenWidth*0.6
                     buttonText: qsTr("АКТИВИРОВАТЬ КУПОН")
                     labelContentColor: Style.backgroundWhite
@@ -141,6 +140,7 @@ Page
                         var promPos = QtPositioning.coordinate(p_lat, p_lon);
                         var userPos = QtPositioning.coordinate(UserSettings.value("user_data/lat"),
                                                                UserSettings.value("user_data/lon"));
+                        console.log("promPos.distanceTo(userPos): " + promPos.distanceTo(userPos));
                         return promPos.distanceTo(userPos) < Style.promCloseDist;
                     }
                 }
@@ -223,7 +223,7 @@ Page
             ControlButton
             {
                 id: nearestStoreButton
-                setWidth: Style.screenWidth*0.8
+                Layout.fillWidth: true
                 buttonText: qsTr("БЛИЖАЙШИЙ КО МНЕ АДРЕС")
                 labelContentColor: Style.mainPurple
                 backgroundColor: Style.backgroundWhite
@@ -235,7 +235,7 @@ Page
             ControlButton
             {
                 id: companyCardButton
-                setWidth: Style.screenWidth*0.8
+                Layout.fillWidth: true
                 buttonText: qsTr("ОТКРЫТЬ КАРТОЧКУ КОМПАНИИ")
                 labelContentColor: Style.backgroundBlack
                 backgroundColor: Style.backgroundWhite
@@ -257,7 +257,7 @@ Page
     ToastMessage
     {
         id: promoCodePopup
-        backgroundColor: Style.activeCouponColor
+        backgroundColor: Style.mainPurple
         y: Style.screenHeight*0.5
     }
 

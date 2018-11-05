@@ -30,7 +30,6 @@
         <file>qml/promotionPage.qml</file>
         <file>qml/TopControlButton.qml</file>
         <file>qml/companyPage.qml</file>
-        <file>js/customMap.js</file>
         <file>qml/previewPromotionPage.qml</file>
         <file>icons/geoLocationIcon.svg</file>
         <file>icons/promotionMarkerIcon.svg</file>

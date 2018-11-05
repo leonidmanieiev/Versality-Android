@@ -27,20 +27,18 @@ import QtQuick.Controls 2.4
 
 Page
 {
-    property string p_company_id: p_company_id
-    property string p_company_name: p_company_name
-    property string p_company_logo: p_company_logo
+    property string p_company_id: ''
+    property string p_company_name: ''
+    property string p_company_logo: ''
 
     id: companyPage
     height: Style.pageHeight
     width: Style.screenWidth
-    anchors.top: parent.top
 
     background: Rectangle
     {
         id: pageBackground
-        height: Style.pageHeight
-        width: Style.screenWidth
+        anchors.fill: parent
         color: Style.backgroundBlack
     }
 

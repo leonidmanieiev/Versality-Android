@@ -44,11 +44,11 @@ Page
     {
         id: flickableArea
         clip: true
-        anchors.centerIn: parent
         width: Style.screenWidth
         height: Style.screenHeight*0.6
-        boundsBehavior: Flickable.DragOverBounds
         contentHeight: middleFieldsColumns.height*1.05
+        anchors.centerIn: parent
+        boundsBehavior: Flickable.DragOverBounds
 
         ColumnLayout
         {

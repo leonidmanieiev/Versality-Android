@@ -22,6 +22,7 @@
 
 //http client
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
@@ -109,6 +110,8 @@ Item
         var request = new XMLHttpRequest();
         var params = makeParams();
 
+        console.log("xml request url: " + serverUrl + params);
+
         //if -1, there was unknown request
         if(params === -1)
         {
@@ -186,8 +189,11 @@ Item
                     else toastMessage.setTextAndRun(errorStatus);
                 }
                 //showing connection error
-                else toastMessage.setTextAndRun(qsTr("Request status: " + request.status
-                                                     + ". Проверьте интернет соединение"));
+                else
+                {
+                    console.log("xml HTTP error: " + request.status);
+                    toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
+                }
             }
             else console.log("Pending: " + request.readyState);
         }
@@ -198,11 +204,7 @@ Item
 
     ToastMessage { id: toastMessage }
 
-    Component.onCompleted:
-    {
-        console.log("Params: " + makeParams());
-        xhr();
-    }
+    Component.onCompleted: xhr();
 
     Loader
     {

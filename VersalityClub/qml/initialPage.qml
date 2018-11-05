@@ -103,7 +103,7 @@ Page
         //back button pressed for android and windows
         if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
         {
-            event.accepted = true
+            event.accepted = true;
             var pageName = PageNameHolder.pop();
 
             if(pageName === "")

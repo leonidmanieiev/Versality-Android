@@ -45,13 +45,11 @@ Page
     id: previewPromPage
     height: Style.pageHeight
     width: Style.screenWidth
-    anchors.top: appWindow.top
 
     background: Rectangle
     {
         id: pageBackground
-        height: Style.pageHeight
-        width: Style.screenWidth
+        anchors.fill: parent
         color: Style.listViewGrey
     }
 
@@ -103,7 +101,7 @@ Page
         Rectangle
         {
             id: promsImage
-            Layout.topMargin: parent.spacing*1.2
+            Layout.topMargin: parent.spacing*3
             Layout.alignment: Qt.AlignHCenter
             height: Style.screenHeight*0.25
             width: Style.screenWidth*0.8
@@ -151,7 +149,7 @@ Page
         ControlButton
         {
             id: moreButton
-            setWidth: Style.screenWidth*0.8
+            Layout.fillWidth: true
             buttonText: qsTr("ПОДРОБНЕЕ")
             labelContentColor: Style.mainPurple
             backgroundColor: Style.backgroundWhite

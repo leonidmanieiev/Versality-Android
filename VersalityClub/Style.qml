@@ -28,6 +28,7 @@ import "js/helpFunc.js" as Helper
 
 QtObject
 {
+    //COLORS
     readonly property color backgroundWhite: "#FFFFFF"
     readonly property color backgroundBlack: "#000000"
     readonly property color toastGrey: "#76797c"
@@ -35,28 +36,38 @@ QtObject
     readonly property color mainPurple: "#631964"
     readonly property color errorRed: "RED"
     readonly property color activeCouponColor: "#f93738"
+    readonly property color copyrightBackgroundColor: "#c4c5c6"
 
+    //REGEX
     readonly property var emailRegEx: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
+    //FOR PASS
     readonly property string xorStr: "8fdda158eeb8c0ed9d151991aff3c84c"
+
+    //PROMOTION CONSTANTS
     readonly property int posTimeOut: 30*60000//minutes to milliseconds
     readonly property int posGetFar: 500//in meters
-    readonly property int promCloseDist: 100//in meters
+    readonly property int promCloseDist: 50//in meters
+    property string promsResponse: ''
 
-    readonly property real footerButtonsFieldHeight: screenHeight*0.125
-    readonly property real footerButtonsHeight: screenWidth*0.1
-    readonly property real footerButtonsSpacing: screenWidth*0.05
-    readonly property real pageHeight: screenHeight-footerButtonsFieldHeight
+    //FOOTERBUTTONS CONSTANTS
+    readonly property int footerButtonsFieldHeight: screenHeight*0.125
+    readonly property int footerButtonsHeight: screenWidth*0.1
+    readonly property int footerButtonsSpacing: screenWidth*0.05
 
-    readonly property real mapButtonSize: screenWidth*0.09
+    //MAP CONSTANTS
+    readonly property int mapButtonSize: screenWidth*0.09
 
+    //SCREEN CONSTANTS
     readonly property int dpi: Screen.pixelDensity * 25.4
+    readonly property int pageHeight: screenHeight-footerButtonsFieldHeight
     readonly property int screenHeight: Qt.platform.os === "windows" ?
                                         Helper.toDp(480, dpi) :
                                         Helper.toDp(Screen.height, dpi)
     readonly property int screenWidth: Qt.platform.os === "windows" ?
                                        Helper.toDp(320, dpi) :
                                        Helper.toDp(Screen.width, dpi)
-    property string promsResponse: ''
+
+    //LISTVIEW CONSTANTS
     readonly property int listItemRadius: 20
 }

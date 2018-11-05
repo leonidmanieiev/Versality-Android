@@ -31,30 +31,35 @@ Page
     id: favouritePage
     height: Style.pageHeight
     width: Style.screenWidth
-    anchors.top: parent.top
 
     background: Rectangle
     {
         id: pageBackground
-        height: Style.pageHeight
-        width: Style.screenWidth
+        anchors.fill: parent
         color: Style.listViewGrey
     }
 
     Component.onCompleted:
     {
-        var promsJSON = JSON.parse(Style.promsResponse);
-        //applying promotions at ListModel
-        Helper.promsJsonToListModel(promsJSON);
-        PageNameHolder.push("favouritePage.qml");
+        if(Style.promsResponse !== '[]')
+        {
+            var promsJSON = JSON.parse(Style.promsResponse);
+            //applying promotions at ListModel
+            Helper.promsJsonToListModel(promsJSON);
+            PageNameHolder.push("favouritePage.qml");
+        }
+        else toastMessage.setTextAndRun(qsTr('No favourite promotions.'));
     }
+
+    ToastMessage { id: toastMessage }
 
     ListView
     {
         id: promsListView
         clip: true
-        width: Style.screenWidth
-        height: Style.pageHeight
+        anchors.top: parent.top
+        width: parent.width
+        height: parent.height
         model: promsModel
         delegate: promsDelegate
     }
