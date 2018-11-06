@@ -23,12 +23,14 @@
 //http client
 import "../"
 import "../js/helpFunc.js" as Helper
+import Network 1.0
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
 Item
 {
     id: httpRequestItem
+    enabled: Style.isConnected
 
     //depend on request (functionalFlag)
     property string serverUrl: ''
@@ -46,6 +48,26 @@ Item
     //beg and end possition of code of error from server
     readonly property int errorFlagBeg: 0
     readonly property int errorFlagEnd: 5
+
+    //checking internet connetion
+    NetworkInfo
+    {
+        onNetworkStatusChanged:
+        {
+            if(accessible === 1)
+            {
+                Style.isConnected = true;
+                httpRequestItem.enabled = true;
+                toastMessage.setTextAndRun(qsTr("Internet re-established"));
+            }
+            else
+            {
+                Style.isConnected = false;
+                httpRequestItem.enabled = false;
+                toastMessage.setTextAndRun(qsTr("No Internet connection"));
+            }
+        }
+    }
 
     //creates params for request
     function makeParams()
@@ -195,7 +217,7 @@ Item
 
     ToastMessage { id: toastMessage }
 
-    Component.onCompleted: xhr();
+    Component.onCompleted: xhr()
 
     Loader
     {

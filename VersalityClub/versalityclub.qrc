@@ -22,7 +22,6 @@
         <file>qml/userLocation.qml</file>
         <file>output_new.nmea</file>
         <file>PageNameHolder.qml</file>
-        <file>NetworkInfo.qml</file>
         <file>qml/listViewPage.qml</file>
         <file>qml/FooterButtons.qml</file>
         <file>qml/favouritePage.qml</file>

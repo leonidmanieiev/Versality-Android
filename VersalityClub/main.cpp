@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     QtWebView::initialize();
 
     qmlRegisterType<AppSettings>("org.leonman.versalityclub", 1, 0, "AppSettings");
-    qmlRegisterType<NetworkInfo>("org.leonman.versalityclub", 1, 0, "NetworkInfo");
+    qmlRegisterType<NetworkInfo>("Network", 1, 0, "NetworkInfo");
     qmlRegisterType<PageNameHolder>("org.leonman.versalityclub", 1, 0, "PageNameHolder");
 
     QQmlApplicationEngine engine;

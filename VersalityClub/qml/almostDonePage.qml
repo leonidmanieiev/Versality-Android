@@ -23,14 +23,36 @@
 //page where app tells how to use itself
 import "../"
 import "../js/helpFunc.js" as Helper
+import Network 1.0
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
 Page
 {
     id: almostDodePage
+    enabled: Style.isConnected
     height: Style.screenHeight
     width: Style.screenWidth
+
+    //checking internet connetion
+    NetworkInfo
+    {
+        onNetworkStatusChanged:
+        {
+            if(accessible === 1)
+            {
+                Style.isConnected = true;
+                almostDodePage.enabled = true;
+                toastMessage.setTextAndRun(qsTr("Internet re-established"));
+            }
+            else
+            {
+                Style.isConnected = false;
+                almostDodePage.enabled = false;
+                toastMessage.setTextAndRun(qsTr("No Internet connection"));
+            }
+        }
+    }
 
     background: Rectangle
     {
@@ -58,7 +80,9 @@ Page
         }
     }
 
-    Component.onCompleted: PageNameHolder.clear();
+    ToastMessage { id: toastMessage }
+
+    Component.onCompleted: PageNameHolder.clear()
 
     Loader
     {

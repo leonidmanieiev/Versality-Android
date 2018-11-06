@@ -23,6 +23,7 @@
 //page where user select categories
 import "../"
 import "../js/helpFunc.js" as Helper
+import Network 1.0
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
@@ -31,8 +32,29 @@ Page
     property string strCatsJSON: ''
 
     id: selectCategoryPage
+    enabled: Style.isConnected
     height: Style.screenHeight
     width: Style.screenWidth
+
+    //checking internet connetion
+    NetworkInfo
+    {
+        onNetworkStatusChanged:
+        {
+            if(accessible === 1)
+            {
+                Style.isConnected = true;
+                selectCategoryPage.enabled = true;
+                toastMessage.setTextAndRun(qsTr("Internet re-established"));
+            }
+            else
+            {
+                Style.isConnected = false;
+                selectCategoryPage.enabled = false;
+                toastMessage.setTextAndRun(qsTr("No Internet connection"));
+            }
+        }
+    }
 
     Rectangle
     {
@@ -204,6 +226,8 @@ Page
                                               });
         }
     }
+
+    ToastMessage { id: toastMessage }
 
     Component.onCompleted:
     {

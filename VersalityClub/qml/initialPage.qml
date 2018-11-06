@@ -22,16 +22,37 @@
 
 //sign up and log in buttons page
 import "../"
+import Network 1.0
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
-//import org.leonman.versalityclub 1.0
 
 Page
 {
     id: initialPage
+    enabled: Style.isConnected
     height: Style.screenHeight
     width: Style.screenWidth
+
+    //checking internet connetion
+    NetworkInfo
+    {
+        onNetworkStatusChanged:
+        {
+            if(accessible === 1)
+            {
+                Style.isConnected = true;
+                initialPage.enabled = true;
+                toastMessage.setTextAndRun(qsTr("Internet re-established"));
+            }
+            else
+            {
+                Style.isConnected = false;
+                initialPage.enabled = false;
+                toastMessage.setTextAndRun(qsTr("No Internet connection"));
+            }
+        }
+    }
 
     ColumnLayout
     {
@@ -47,14 +68,8 @@ Page
             buttonText: qsTr("ЗАРЕГИСТРИРОВАТЬСЯ")
             onClicked:
             {
-                //workaround because of testing on windows and having QTBUG-68613
-                if(NetworkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
-                    toastMessage.setTextAndRun(qsTr("Нет интернет соединение"));
-                else
-                {
-                    PageNameHolder.push("initialPage.qml");
-                    initialPageLoader.source = "signUpPage.qml";
-                }
+                PageNameHolder.push("initialPage.qml");
+                initialPageLoader.source = "signUpPage.qml";
             }
         }
 
@@ -65,14 +80,8 @@ Page
             buttonText: qsTr("ВОЙТИ")
             onClicked:
             {
-                //workaround because of testing on windows and having QTBUG-68613
-                if(NetworkInfo.networkStatus() !== 1 && Qt.platform.os !== "windows")
-                    toastMessage.setTextAndRun(qsTr("Нет интернет соединение"));
-                else
-                {
-                    PageNameHolder.push("initialPage.qml");
-                    initialPageLoader.source = "logInPage.qml";
-                }
+                PageNameHolder.push("initialPage.qml");
+                initialPageLoader.source = "logInPage.qml";
             }
         }
     }//ColumnLayout
@@ -95,7 +104,7 @@ Page
     }
 
     //setting active focus for key capturing
-    Component.onCompleted: initialPage.forceActiveFocus();
+    Component.onCompleted: initialPage.forceActiveFocus()
 
     Keys.onReleased:
     {

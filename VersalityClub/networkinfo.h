@@ -33,9 +33,30 @@ class NetworkInfo : public QNetworkAccessManager
 
 public:
     explicit NetworkInfo(QObject *parent = nullptr) :
-        QNetworkAccessManager(parent) { }
+        QNetworkAccessManager(parent)
+        {
+            oldNetworkStatus = QNetworkAccessManager::networkAccessible();
+            startTimer(1000);
+        }
+    void timerEvent(QTimerEvent *e)
+        {
+            QNetworkAccessManager::NetworkAccessibility currNetworkStatus =
+                QNetworkAccessManager::networkAccessible();
+
+            if(oldNetworkStatus != currNetworkStatus)
+            {
+                oldNetworkStatus = currNetworkStatus;
+                triggerEvent(currNetworkStatus);
+            }
+        }
+    Q_INVOKABLE void triggerEvent(QNetworkAccessManager::NetworkAccessibility networkStatus)
+        { emit networkStatusChanged(networkStatus); }
     Q_INVOKABLE QNetworkAccessManager::NetworkAccessibility networkStatus() const
         { return QNetworkAccessManager::networkAccessible(); }
+signals:
+    void networkStatusChanged(QNetworkAccessManager::NetworkAccessibility accessible);
+private:
+    QNetworkAccessManager::NetworkAccessibility oldNetworkStatus;
 };
 
 #endif // NETWORKINFO_H

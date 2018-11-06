@@ -1,4 +1,3 @@
 singleton Style 1.0 Style.qml
 singleton AppSettings 1.0 AppSettings.qml
 singleton PageNameHolder 1.0 PageNameHolder.qml
-singleton NetworkInfo 1.0 NetworkInfo.qml

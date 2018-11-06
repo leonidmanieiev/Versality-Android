@@ -22,6 +22,7 @@
 
 //help properties
 pragma Singleton
+import "."
 import QtQuick 2.11
 import QtQuick.Window 2.11
 import "js/helpFunc.js" as Helper
@@ -70,4 +71,8 @@ QtObject
 
     //LISTVIEW CONSTANTS
     readonly property int listItemRadius: 20
+
+    //INTERTEN ACCESS CKECH
+    property int isConnected: NetworkInfo.networkStatus() === 1
+                              && Qt.platform.os !== "windows" ? true : false
 }
