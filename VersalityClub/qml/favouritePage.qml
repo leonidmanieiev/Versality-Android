@@ -41,14 +41,40 @@ Page
 
     Component.onCompleted:
     {
-        if(Style.promsResponse !== '[]')
+        favouritePage.forceActiveFocus();
+
+        //making request for favourites when getting to this page by pressing back button
+        if(Style.promsResponse === '')
+        {
+            favouritePageLoader.setSource("xmlHttpRequest.qml",
+                                          { "serverUrl": 'http://patrick.ga:8080/api/user/marked?',
+                                            "functionalFlag": 'user/marked'
+                                         });
+        }
+        else if(Style.promsResponse !== '[]')
         {
             var promsJSON = JSON.parse(Style.promsResponse);
             //applying promotions at ListModel
             Helper.promsJsonToListModel(promsJSON);
-            PageNameHolder.push("favouritePage.qml");
         }
         else toastMessage.setTextAndRun(qsTr('No favourite promotions.'));
+    }
+
+    Keys.onReleased:
+    {
+        //back button pressed for android and windows
+        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
+        {
+            event.accepted = true;
+            var pageName = PageNameHolder.pop();
+            //if no pages in sequence
+            if(pageName === "")
+                appWindow.close();
+            else favouritePageLoader.source = pageName;
+
+            //to avoid not loading bug
+            favouritePageLoader.reload();
+        }
     }
 
     ToastMessage { id: toastMessage }
@@ -60,6 +86,7 @@ Page
         anchors.top: parent.top
         width: parent.width
         height: parent.height
+        contentHeight: promsDelegate.height*1.3
         model: promsModel
         delegate: promsDelegate
     }
@@ -115,25 +142,29 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
-                        favouritePageLoader.setSource("promotionPage.qml",
-                                                     { "p_id": id,
-                                                       //"p_lat": lat,
-                                                       //"p_lon": lon,
-                                                       "p_picture": picture,
-                                                       "p_title": title,
-                                                       "p_description": description,
-                                                       "p_is_marked": is_marked,
-                                                       "p_promo_code": promo_code,
-                                                       //"p_store_hours": store_hours,
-                                                       "p_company_id": company_id,
-                                                       "p_company_logo": company_logo,
-                                                       "p_company_name": company_name
-                                                     });
+                        //saving promotion info for further using
+                        AppSettings.beginGroup("promotion");
+                        AppSettings.setValue("id", id);
+                        AppSettings.setValue("lat", 0.0);//CHANGE AFTER
+                        AppSettings.setValue("lon", 0.0);//CHANGE AFTER
+                        AppSettings.setValue("picture", picture);
+                        AppSettings.setValue("title", title);
+                        AppSettings.setValue("description", description);
+                        AppSettings.setValue("is_marked", is_marked);
+                        AppSettings.setValue("promo_code", promo_code);
+                        AppSettings.setValue("store_hours", '');//CHANGE AFTER
+                        AppSettings.setValue("company_id", company_id);
+                        AppSettings.setValue("company_logo", company_logo);
+                        AppSettings.setValue("company_name", company_name);
+                        AppSettings.endGroup();
+
+                        PageNameHolder.push("favouritePage.qml");
+                        favouritePageLoader.source = "promotionPage.qml"
                     }
-                }
-            }
-        }
-    }
+                }//MouseArea
+            }//Rectangle
+        }//Column
+    }//Component
 
     //switch to mapPage (proms on map view)
     TopControlButton
@@ -154,5 +185,12 @@ Page
         asynchronous: true
         anchors.fill: parent
         visible: status == Loader.Ready
+
+        function reload()
+        {
+            var oldSource = source;
+            source = "";
+            source = oldSource;
+        }
     }
 }

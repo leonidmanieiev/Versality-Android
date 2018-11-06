@@ -23,26 +23,26 @@
 
 //Wrapper, so I can use functionality of QSettings in QML
 //Stores user sensetive data and app states for recreation
-#ifndef USERSETTINGS_H
-#define USERSETTINGS_H
+#ifndef APPSETTINGS_H
+#define APPSETTINGS_H
 
 #include <QGuiApplication>
 #include <QSettings>
 #include <QSet>
 
-class UserSettings : public QSettings
+class AppSettings : public QSettings
 {
     Q_OBJECT
 
 public:
-    explicit UserSettings(QObject *parent = nullptr) :
+    explicit AppSettings(QObject *parent = nullptr) :
         QSettings(QSettings::IniFormat, QSettings::UserScope,
                   QCoreApplication::instance()->organizationName(),
                   QCoreApplication::instance()->applicationName(),
                   parent)
     {
         //DELETE AFTER LAUNCH
-        //clearAllUserSettings();
+        //clearAllAppSettings();
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
         { QSettings::setValue(key, value); }
@@ -62,7 +62,7 @@ public:
         { return this->selectedCats.find(catId) != this->selectedCats.constEnd(); }
     Q_INVOKABLE bool removeCat(quint32 catId)
         { return this->selectedCats.remove(catId); }
-    Q_INVOKABLE void clearAllUserSettings()
+    Q_INVOKABLE void clearAllAppSettings()
         { this->clear(); }
     //serialize categories for request param
     Q_INVOKABLE QString getStrCats() const
@@ -80,4 +80,4 @@ private:
     QSet<quint32> selectedCats;
 };
 
-#endif // USERSETTINGS_H
+#endif // APPSETTINGS_H

@@ -41,6 +41,8 @@ Page
 
     Component.onCompleted:
     {
+        //setting active focus for key capturing
+        listViewPage.forceActiveFocus();
         //start capturing user location and getting promotions
         listViewPageLoader.source = "userLocation.qml";
     }
@@ -70,10 +72,11 @@ Page
     {
         id: promsListView
         clip: true
+        width: Style.screenWidth
+        height: Style.screenHeight
+        contentHeight: promsDelegate.height*1.1
         anchors.top: parent.top
-        width: parent.width
-        height: parent.height
-        contentHeight: promsDelegate.height*1.05
+        anchors.horizontalCenter: parent.horizontalCenter
         model: promsModel
         delegate: promsDelegate
     }
@@ -129,26 +132,29 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
+                        //saving promotion info for further using
+                        AppSettings.beginGroup("promotion");
+                        AppSettings.setValue("id", id);
+                        AppSettings.setValue("lat", 0.0);//CHANGE AFTER
+                        AppSettings.setValue("lon", 0.0);//CHANGE AFTER
+                        AppSettings.setValue("picture", picture);
+                        AppSettings.setValue("title", title);
+                        AppSettings.setValue("description", description);
+                        AppSettings.setValue("is_marked", is_marked);
+                        AppSettings.setValue("promo_code", promo_code);
+                        AppSettings.setValue("store_hours", '');//CHANGE AFTER
+                        AppSettings.setValue("company_id", company_id);
+                        AppSettings.setValue("company_logo", company_logo);
+                        AppSettings.setValue("company_name", company_name);
+                        AppSettings.endGroup();
+
                         PageNameHolder.push("listViewPage.qml");
-                        listViewPageLoader.setSource("promotionPage.qml",
-                                                     { "p_id": id,
-                                                       //"p_lat": lat,
-                                                       //"p_lon": lon,
-                                                       "p_picture": picture,
-                                                       "p_title": title,
-                                                       "p_description": description,
-                                                       "p_is_marked": is_marked,
-                                                       "p_promo_code": promo_code,
-                                                       //"p_store_hours": store_hours,
-                                                       "p_company_id": company_id,
-                                                       "p_company_logo": company_logo,
-                                                       "p_company_name": company_name
-                                                     });
+                        listViewPageLoader.source = "promotionPage.qml";
                     }
                 }
-            }
-        }
-    }
+            }//Rectangle
+        }//Column
+    }//Component
 
     //switch to mapPage (proms on map view)
     TopControlButton
@@ -163,11 +169,36 @@ Page
 
     FooterButtons { pressedFromPageName: 'listViewPage.qml' }
 
+    Keys.onReleased:
+    {
+        //back button pressed for android and windows
+        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
+        {
+            event.accepted = true;
+            var pageName = PageNameHolder.pop();
+
+            //if no pages in sequence
+            if(pageName === "")
+                appWindow.close();
+            else listViewPageLoader.source = pageName;
+
+            //to avoid not loading bug
+            listViewPageLoader.reload();
+        }
+    }
+
     Loader
     {
         id: listViewPageLoader
         asynchronous: true
         anchors.fill: parent
         visible: status == Loader.Ready
+
+        function reload()
+        {
+            var oldSource = source;
+            source = "";
+            source = oldSource;
+        }
     }
 }

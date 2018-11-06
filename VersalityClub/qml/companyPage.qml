@@ -27,10 +27,6 @@ import QtQuick.Controls 2.4
 
 Page
 {
-    property string p_company_id: ''
-    property string p_company_name: ''
-    property string p_company_logo: ''
-
     id: companyPage
     height: Style.pageHeight
     width: Style.screenWidth
@@ -44,7 +40,45 @@ Page
 
     FooterButtons { pressedFromPageName: 'companyPage.qml' }
 
-    Component.onCompleted: console.log(p_company_id + " | "
-                                       + p_company_name + " | "
-                                       + p_company_logo);
+    Component.onCompleted:
+    {
+        //setting active focus for key capturing
+        companyPage.forceActiveFocus();
+
+        console.log(AppSettings.value("promotion/company_id") + " | "
+                    + AppSettings.value("promotion/company_name") + " | "
+                    + AppSettings.value("promotion/company_logo"));
+    }
+    Keys.onReleased:
+    {
+        //back button pressed for android and windows
+        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
+        {
+            event.accepted = true;
+            var pageName = PageNameHolder.pop();
+
+            //if no pages in sequence
+            if(pageName === "")
+                appWindow.close();
+            else companyPageLoader.source = pageName;
+
+            //to avoid not loading bug
+            companyPageLoader.reload();
+        }
+    }
+
+    Loader
+    {
+        id: companyPageLoader
+        asynchronous: true
+        anchors.fill: parent
+        visible: status == Loader.Ready
+
+        function reload()
+        {
+            var oldSource = source;
+            source = "";
+            source = oldSource;
+        }
+    }
 }

@@ -36,7 +36,7 @@ Item
         property bool initialCoordSet: false
         property bool posMethodSet: false
         property string serverUrl: 'http://patrick.ga:8080/api/promotions?'
-        property string secret: UserSettings.value("user_security/user_hash")
+        property string secret: AppSettings.value("user/hash")
         property real lat: position.coordinate.latitude
         property real lon: position.coordinate.longitude
 
@@ -89,33 +89,33 @@ Item
         //check if user gets further than Style.posGetFar(500) meters from initial position
         function isGetFar(curPosCoord)
         {
-            var oldPos = QtPositioning.coordinate(UserSettings.value("user_data/lat"),
-                                                  UserSettings.value("user_data/lon"));
+            var oldPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
+                                                  AppSettings.value("user/lon"));
             return curPosCoord.distanceTo(oldPos) > Style.posGetFar;
         }
 
         //check if user set his initial position more than Style.posTimeOut(30) minutes ago
         function isTimePassed()
         {
-            var oldTime = UserSettings.value("user_data/timeCheckPoint");
+            var oldTime = AppSettings.value("user/timeCheckPoint");
             return Math.abs(new Date() - oldTime) > Style.posTimeOut;
         }
 
         function saveUserPositionInfo()
         {
-            UserSettings.beginGroup("user_data");
-            UserSettings.setValue("lat", lat);
-            UserSettings.setValue("lon", lon);
-            UserSettings.setValue("timeCheckPoint", new Date());
-            UserSettings.endGroup();
+            AppSettings.beginGroup("user");
+            AppSettings.setValue("lat", lat);
+            AppSettings.setValue("lon", lon);
+            AppSettings.setValue("timeCheckPoint", new Date());
+            AppSettings.endGroup();
         }
 
         //request promotion info
         function requestForPromotions()
         {
             var request = new XMLHttpRequest();
-            var params = 'secret='+secret+'&lat='+UserSettings.value("user_data/lat")+
-                         '&lon='+UserSettings.value("user_data/lon");
+            var params = 'secret='+secret+'&lat='+AppSettings.value("user/lat")+
+                         '&lon='+AppSettings.value("user/lon");
 
             console.log("userLocation request url: " + serverUrl + params);
 
@@ -129,18 +129,14 @@ Item
                         //saving response for further using
                         Style.promsResponse = request.responseText;
                     }
-                    else
-                    {
-                        console.log("userLocation HTTP error: " + request.status);
-                        toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
-                    }
+                    else toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
                 }
                 else console.log("Pending: " + request.readyState);
             }
 
             request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             request.send(params);
-        }
+        }//function requestForPromotions()
 
         onSourceErrorChanged:
         {
@@ -159,6 +155,17 @@ Item
         {
             if(posMethodSet)
             {
+                //if android, there will be no onPositionChanged triggered
+                //so initializing in Component.onComplete
+                if(!initialCoordSet && Qt.platform.os === "windows")
+                {
+                    console.log("initial onPositionChanged")
+                    initialCoordSet = true;
+                    //saving initial position and timeCheckPoint of user
+                    saveUserPositionInfo();
+                    //making request for promotions which depend on position
+                    requestForPromotions();
+                }
                 if(isGetFar(position.coordinate) || isTimePassed())
                 {
                     console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
@@ -168,14 +175,16 @@ Item
                     requestForPromotions();
                 }
             }
-        }
+        }//onPositionChanged
 
         Component.onCompleted:
         {
             if(isPositioningMethodSet(supportedPositioningMethods))
             {
                 posMethodSet = true;
-                if(!initialCoordSet)
+                //if windows, coordinates will be NaN because of .nmea file
+                //so initializing in onPositionChanged
+                if(!initialCoordSet && Qt.platform.os !== "windows")
                 {
                     console.log("initial onPositionChanged")
                     initialCoordSet = true;
@@ -190,10 +199,8 @@ Item
                 toastMessage.setTextAndRun(qsTr("Ошибка установки метода определения местоположения"));
                 return;
             }
-
-            console.log("lat: " + position.coordinate.latitude + " | lon: " + lon);
-        }
-    }
+        }//Component.onCompleted:
+    }//PositionSource
 
     ToastMessage { id: toastMessage }
 

@@ -51,12 +51,10 @@ Page
         setBorderColor: Style.backgroundWhite
         onClicked:
         {
-            PageNameHolder.push("almostDonePage.qml");
             almostDonePageLoader.setSource("xmlHttpRequest.qml",
                                      { "serverUrl": 'http://patrick.ga:8080/api/user?',
                                        "functionalFlag": 'user'
-                                     }
-                                   );
+                                     });
         }
     }
 

@@ -70,22 +70,13 @@ Page
                 name: "osm.mapping.highdpi_tiles"
                 value: "true"
             }
-            /*PluginParameter
-            {
-                name: "osm.mapping.custom.mapcopyright"
-                value: mapCopyright
-            }
-            PluginParameter
-            {
-                name: "osm.mapping.custom.datacopyright"
-                value: mapDataCopyright
-            }*/
             PluginParameter
             {
                 name: "osm.useragent"
                 value: "VersalityClub"
             }
         }
+
         //necessary to display custom tiles
         Component.onCompleted:
         {
@@ -138,27 +129,29 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
+                        //saving promotion info for further using
+                        AppSettings.beginGroup("promotion");
+                        AppSettings.setValue("id", id);
+                        AppSettings.setValue("lat", lat);
+                        AppSettings.setValue("lon", lon);
+                        AppSettings.setValue("picture", picture);
+                        AppSettings.setValue("title", title);
+                        AppSettings.setValue("description", description);
+                        AppSettings.setValue("is_marked", is_marked);
+                        AppSettings.setValue("promo_code", promo_code);
+                        AppSettings.setValue("store_hours", store_hours);
+                        AppSettings.setValue("company_id", company_id);
+                        AppSettings.setValue("company_logo", company_logo);
+                        AppSettings.setValue("company_name", company_name);
+                        AppSettings.endGroup();
+
                         PageNameHolder.push("mapPage.qml");
-                        mapPageLoader.setSource("previewPromotionPage.qml",
-                                               {"p_id": id,
-                                                "p_lat": lat,
-                                                "p_lon": lon,
-                                                "p_picture": picture,
-                                                "p_title": title,
-                                                "p_description": description,
-                                                "p_is_marked": is_marked,
-                                                "p_promo_code": promo_code,
-                                                "p_store_hours": store_hours,
-                                                "p_company_id": company_id,
-                                                "p_company_logo": company_logo,
-                                                "p_company_name": company_name
-                                               });
+                        mapPageLoader.source = "previewPromotionPage.qml";
                     }
                 }
-            }
-
-        }
-    }
+            }//delegate: MapQuickItem
+        }//MapItemView
+    }//Map
 
     ListModel { id: promMarkersModel }
 
@@ -183,8 +176,8 @@ Page
         }
         onClicked:
         {
-            mainMap.center = QtPositioning.coordinate(UserSettings.value("user_data/lat"),
-                                                      UserSettings.value("user_data/lon"));
+            mainMap.center = QtPositioning.coordinate(AppSettings.value("user/lat"),
+                                                      AppSettings.value("user/lon"));
             mainMap.zoomLevel = 16;
             userLocationMarker.coordinate = mainMap.center;
             userLocationMarker.visible = true;

@@ -41,15 +41,16 @@ public:
         if(!this->empty())
         {
             QString poped = pageNames.pop();
-             qDebug() << "Poped: " << poped;
+            qDebug() << "Poped:" << poped;
             return poped;
         }
-        qDebug() << "Poped: \"\"";
+
+        qDebug() << "Poped:\"\"";
         return "";
     }
     Q_INVOKABLE void push(const QString& pageName)
         {
-            qDebug() << "Pushed: " << pageName;
+            qDebug() << "Pushed:" << pageName;
             pageNames.push(pageName);
         }
     Q_INVOKABLE void clear()

@@ -28,8 +28,6 @@ import QtQuick.Layouts 1.3
 
 Page
 {
-    property string email: ''
-
     id: passInputPage
     height: Style.screenHeight
     width: Style.screenWidth
@@ -79,16 +77,16 @@ Page
             {
                 var encryptedPass = Helper.encryptPassword(passField.text,
                                                            Style.xorStr);
+                AppSettings.beginGroup("user");
+                AppSettings.setValue("password", encryptedPass);
+                AppSettings.endGroup();
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
                                                   { "serverUrl": 'http://patrick.ga:8082/api/login?',
-                                                    "password": encryptedPass,
-                                                    "email": email,
                                                     "functionalFlag": 'login'
-                                                  }
-                                                );
+                                                  });
             }
         }
-    }
+    }//ColumnLayout
 
     Loader
     {

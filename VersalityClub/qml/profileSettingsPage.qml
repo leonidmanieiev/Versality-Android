@@ -66,7 +66,7 @@ Page
             {
                 id: sexButton
                 Layout.fillWidth: true
-                buttonText: UserSettings.value("user_data/sex");
+                buttonText: AppSettings.value("user/sex");
                 labelContentColor: Style.backgroundWhite
                 backgroundColor: Style.mainPurple
                 setBorderColor: Style.backgroundWhite
@@ -76,9 +76,9 @@ Page
                         buttonText = "Ж";
                     else buttonText = "M";
 
-                    UserSettings.beginGroup("user_data");
-                    UserSettings.setValue("sex", buttonText);
-                    UserSettings.endGroup();
+                    AppSettings.beginGroup("user");
+                    AppSettings.setValue("sex", buttonText);
+                    AppSettings.endGroup();
                 }
             }
 
@@ -93,12 +93,12 @@ Page
                 id: dateofbirthField
                 inputMask: "00.00.0000"
                 inputMethodHints: Qt.ImhDigitsOnly
-                text: UserSettings.value("user_data/birthday"); 
+                text: AppSettings.value("user/birthday");
                 onTextChanged:
                 {
-                    UserSettings.beginGroup("user_data");
-                    UserSettings.setValue("birthday", text);
-                    UserSettings.endGroup();
+                    AppSettings.beginGroup("user");
+                    AppSettings.setValue("birthday", text);
+                    AppSettings.endGroup();
                 }
             }
 
@@ -111,7 +111,7 @@ Page
             CustomTextField
             {
                 id: emailField
-                text: UserSettings.value("user_data/email");
+                text: AppSettings.value("user/email");
                 inputMethodHints: Qt.ImhEmailCharactersOnly
                 validator: RegExpValidator
                 { regExp: Style.emailRegEx }
@@ -141,13 +141,13 @@ Page
             CustomTextField
             {
                 id: firstNameField
-                text: UserSettings.value("user_data/name");
+                text: AppSettings.value("user/name");
                 placeholderText: qsTr("ВВЕДИТЕ ИМЯ")
                 onTextChanged:
                 {
-                    UserSettings.beginGroup("user_data");
-                    UserSettings.setValue("name", text);
-                    UserSettings.endGroup();
+                    AppSettings.beginGroup("user");
+                    AppSettings.setValue("name", text);
+                    AppSettings.endGroup();
                 }
             }
 
@@ -173,10 +173,9 @@ Page
                                                           "functionalFlag": 'categories'
                                                         });
                 }
-            }
-
-        }
-    }
+            }//ControlButton
+        }//ColumnLayout
+    }//Flickable
 
     Rectangle
     {
@@ -199,13 +198,16 @@ Page
             opacity: pressed ? 0.8 : 1
             onClicked:
             {
+                AppSettings.beginGroup("user");
+                AppSettings.setValue("sex", sexButton.buttonText);
+                AppSettings.setValue("name", firstNameField.text);
+                AppSettings.setValue("birthday", dateofbirthField.text);
+                AppSettings.endGroup();
+
                 profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
-                                                              { "serverUrl": 'http://patrick.ga:8080/api/user?',
-                                                                "functionalFlag": 'user/refresh-snb',
-                                                                "sex": sexButton.buttonText,
-                                                                "name": firstNameField.text,
-                                                                "birthday": dateofbirthField.text
-                                                              });
+                                                    { "serverUrl": 'http://patrick.ga:8080/api/user?',
+                                                      "functionalFlag": 'user/refresh-snb'
+                                                    });
             }
 
             contentItem: Text
@@ -225,9 +227,28 @@ Page
                 border.width: height*0.06
                 radius: Style.listItemRadius
             }
+        }//RoundButton
+    }//Rectangle
+
+    Component.onCompleted: profileSettingsPage.forceActiveFocus();
+
+    Keys.onReleased:
+    {
+        //back button pressed for android and windows
+        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
+        {
+            event.accepted = true;
+            var pageName = PageNameHolder.pop();
+
+            //if no pages in sequence
+            if(pageName === "")
+                appWindow.close();
+            else profileSettingsPageLoader.source = pageName;
+
+            //to avoid not loading bug
+            profileSettingsPageLoader.reload();
         }
     }
-
 
     Loader
     {
@@ -235,5 +256,12 @@ Page
         asynchronous: true
         anchors.fill: parent
         visible: status == Loader.Ready
+
+        function reload()
+        {
+            var oldSource = source;
+            source = "";
+            source = oldSource;
+        }
     }
 }

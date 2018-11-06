@@ -24,7 +24,7 @@
 #include <QQmlApplicationEngine>
 #include <QSslSocket>
 #include <QtWebView/QtWebView>
-#include "usersettings.h"
+#include "appsettings.h"
 #include "networkinfo.h"
 #include "pagenameholder.h"
 
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
     QtWebView::initialize();
 
-    qmlRegisterType<UserSettings>("org.leonman.versalityclub", 1, 0, "UserSettings");
+    qmlRegisterType<AppSettings>("org.leonman.versalityclub", 1, 0, "AppSettings");
     qmlRegisterType<NetworkInfo>("org.leonman.versalityclub", 1, 0, "NetworkInfo");
     qmlRegisterType<PageNameHolder>("org.leonman.versalityclub", 1, 0, "PageNameHolder");
 

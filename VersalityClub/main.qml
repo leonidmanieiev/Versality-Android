@@ -40,8 +40,7 @@ ApplicationWindow
         anchors.fill: parent
         visible: status == Loader.Ready
         //whether user was signed(loged) in
-        source: UserSettings.value("user_security/user_hash") === undefined ?
-                                                        "qml/initialPage.qml" :
-                                                        "qml/mapPage.qml"
+        source: AppSettings.value("user/hash") === undefined ?
+                     "qml/initialPage.qml" : "qml/mapPage.qml"
     }
 }

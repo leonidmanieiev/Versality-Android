@@ -30,17 +30,17 @@ Item
 {
     id: httpRequestItem
 
-    //those few become "not empty" depending on request (functionalFlag)
+    //depend on request (functionalFlag)
     property string serverUrl: ''
-    property string email: ''
-    property string sex: ''
-    property string name: ''
-    property string birthday: ''
-    property string password: ''
-    property string cats: UserSettings.getCatsAmount() === 0 ? '0' : UserSettings.getStrCats()
-    property string promo_id: ''
+    //user data
+    property string sex: AppSettings.value("user/sex")
+    property string birthday: AppSettings.value("user/birthday")
+    property string email: AppSettings.value("user/email")
+    property string password: AppSettings.value("user/password")
+    property string name: AppSettings.value("user/name")
+    property string cats: AppSettings.getCatsAmount() === 0 ? '0' : AppSettings.getStrCats()
     //to authenticate client on server side
-    property string secret: UserSettings.value("user_security/user_hash")
+    property string secret: AppSettings.value("user/hash")
     //flag to determine type of request
     property string functionalFlag: ''
     //beg and end possition of code of error from server
@@ -67,9 +67,9 @@ Item
             //request for refreshing sex, name and birthday
             case 'user/refresh-snb': return 'secret='+secret+'&sex='+sex+'&name='+name+'&birthday='+birthday;
             //request for adding promotion to favourite
-            case 'user/mark': return 'secret='+secret+'&promo='+promo_id;
+            case 'user/mark': return 'secret='+secret+'&promo='+AppSettings.value("promotion/id");
             //request for erasing promotion from favourite
-            case 'user/unmark': return 'secret='+secret+'&promo='+promo_id;
+            case 'user/unmark': return 'secret='+secret+'&promo='+AppSettings.value("promotion/id");
             //request for getting all merked promotions
             case 'user/marked': return 'secret='+secret;
             //unknown request
@@ -135,41 +135,38 @@ Item
                         {
                             case 'categories':
                                 xmlHttpRequestLoader.setSource("selectCategoryPage.qml",
-                                                               { "strCatsJSON": request.responseText }
-                                                              );
+                                                               { "strCatsJSON": request.responseText });
                                 break;
                             case 'register':
-                                xmlHttpRequestLoader.setSource("passwordInputPage.qml",
-                                                                { "email": email }
-                                                              );
+                                xmlHttpRequestLoader.source = "passwordInputPage.qml";
                                 break;
                             case 'login':
                                 //saving hash(secret) for further auto authentication
-                                UserSettings.beginGroup("user_security");
-                                UserSettings.setValue("user_hash", request.responseText);
-                                UserSettings.endGroup();
+                                AppSettings.beginGroup("user");
+                                AppSettings.setValue("hash", request.responseText);
+                                AppSettings.endGroup();
 
                                 //determine whether user seen app instructions
-                                if(UserSettings.value("user_data/seen_almost_done_page") === undefined)
+                                if(AppSettings.value("user/seen_almost_done_page") === undefined)
                                 {
                                     //setting key to 1, so user won't get app instructions anymore
-                                    UserSettings.beginGroup("user_data");
-                                    UserSettings.setValue("seen_almost_done_page", 1);
-                                    UserSettings.endGroup();
+                                    AppSettings.beginGroup("user");
+                                    AppSettings.setValue("seen_almost_done_page", 1);
+                                    AppSettings.endGroup();
                                     xmlHttpRequestLoader.source = "almostDonePage.qml";
                                 }
                                 else xmlHttpRequestLoader.source = "mapPage.qml"; break;
                             case 'user':
                                 var uInfoRespJSON = strJSONtoJSON(request.responseText);
                                 //saving user info to fill fields
-                                UserSettings.beginGroup("user_data");
-                                UserSettings.setValue("email", uInfoRespJSON.email);
-                                UserSettings.setValue("sex", uInfoRespJSON.sex);
-                                UserSettings.setValue("birthday", uInfoRespJSON.birthday);
-                                UserSettings.setValue("name", uInfoRespJSON.name);
-                                UserSettings.endGroup();
+                                AppSettings.beginGroup("user");
+                                AppSettings.setValue("email", uInfoRespJSON.email);
+                                AppSettings.setValue("sex", uInfoRespJSON.sex);
+                                AppSettings.setValue("birthday", uInfoRespJSON.birthday);
+                                AppSettings.setValue("name", uInfoRespJSON.name);
+                                AppSettings.endGroup();
                                 for(var i in uInfoRespJSON.categories)
-                                    UserSettings.insertCat(uInfoRespJSON.categories[i]);
+                                    AppSettings.insertCat(uInfoRespJSON.categories[i]);
                                 xmlHttpRequestLoader.source = "profileSettingsPage.qml";
                                 break;
                             case 'user/refresh-cats':
@@ -183,24 +180,18 @@ Item
                                 xmlHttpRequestLoader.source = "favouritePage.qml";
                                 break;
                             default: console.log("Unknown functionalFlag"); break;
-                        }
-                    }
-                    //showing response error
+                        }//switch(functionalFlag)
+                    }//if(errorStatus === 'NO_ERROR')
                     else toastMessage.setTextAndRun(errorStatus);
-                }
-                //showing connection error
-                else
-                {
-                    console.log("xml HTTP error: " + request.status);
-                    toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
-                }
-            }
+                }//if(request.status === 200)
+                else toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
+            }//if(request.readyState === XMLHttpRequest.DONE)
             else console.log("Pending: " + request.readyState);
-        }
+        }//request.onreadystatechange = function()
 
         request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         request.send(params);
-    }
+    }//function xhr()
 
     ToastMessage { id: toastMessage }
 

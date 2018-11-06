@@ -25,4 +25,4 @@ pragma Singleton
 import QtQuick 2.11
 import org.leonman.versalityclub 1.0
 
-UserSettings { }
+AppSettings { }

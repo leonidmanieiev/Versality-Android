@@ -41,12 +41,6 @@ Page
         color: Style.mainPurple
     }
 
-    Component.onCompleted:
-    {
-        var catsJSON = JSON.parse(strCatsJSON);
-        Helper.catsJsonToListModel(catsJSON);
-    }
-
     ListView
     {
         id: catsListView
@@ -106,7 +100,7 @@ Page
                     anchors.fill: parent
                     onClicked: catsModel.setProperty(index, "collapsed", !collapsed)
                 }
-            }
+            }//Rectangle
 
             Loader
             {
@@ -116,8 +110,8 @@ Page
                 sourceComponent: collapsed ? null : subCatsDelegate
                 onStatusChanged: if (status == Loader.Ready) item.model = subCatsModel
             }
-        }
-    }
+        }//Column
+    }//Component
 
     Component
     {
@@ -134,7 +128,7 @@ Page
                 delegate: Rectangle
                 {
                     id: subCatsItem
-                    color: UserSettings.contains(subid) ? Style.toastGrey : "transparent"
+                    color: AppSettings.contains(subid) ? Style.toastGrey : "transparent"
                     height: Style.screenHeight*0.09
                     width: Style.screenWidth*0.8
                     radius: height*0.5
@@ -148,7 +142,7 @@ Page
                         width: parent.width*0.7
                         anchors.verticalCenter: parent.verticalCenter
                         font.pixelSize: Helper.toDp(15, Style.dpi)
-                        color: UserSettings.contains(subid) ? Style.backgroundBlack : Style.backgroundWhite
+                        color: AppSettings.contains(subid) ? Style.backgroundBlack : Style.backgroundWhite
                         wrapMode: Text.WordWrap
                         text: subtitle
                     }
@@ -156,7 +150,7 @@ Page
                     Rectangle
                     {
                         id: catsSelectedIcon
-                        visible: UserSettings.contains(subid)
+                        visible: AppSettings.contains(subid)
                         color: "green"
                         width: parent.radius
                         height: parent.radius
@@ -177,15 +171,17 @@ Page
                                 subCatsItem.color = "transparent";
                                 subCatsText.color = Style.backgroundWhite
                                 catsSelectedIcon.visible = false;
+                                AppSettings.removeCat(subid);
                             }
                             else
                             {
                                 subCatsItem.color = Style.toastGrey;
                                 subCatsText.color = Style.backgroundBlack;
                                 catsSelectedIcon.visible = true;
+                                AppSettings.insertCat(subid);
                             }
                         }
-                    }//MouseArea
+                    }
                 }//delegate: Rectangle
             }//Repeater
         }//Column
@@ -209,11 +205,41 @@ Page
         }
     }
 
+    Component.onCompleted:
+    {
+        //setting active focus for key capturing
+        selectCategoryPage.forceActiveFocus();
+
+        var catsJSON = JSON.parse(strCatsJSON);
+        Helper.catsJsonToListModel(catsJSON);
+    }
+
+    Keys.onReleased:
+    {
+        //back button pressed for android and windows
+        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
+        {
+            event.accepted = true;
+            var pageName = PageNameHolder.pop();
+            chooseCategoryPageLoader.source = pageName;
+
+            //to avoid not loading bug
+            chooseCategoryPageLoader.reload();
+        }
+    }
+
     Loader
     {
         id: chooseCategoryPageLoader
         asynchronous: true
         anchors.fill: parent
         visible: status == Loader.Ready
+
+        function reload()
+        {
+            var oldSource = source;
+            source = "";
+            source = oldSource;
+        }
     }
 }

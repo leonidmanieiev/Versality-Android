@@ -107,20 +107,27 @@ Page
             backgroundColor: Style.mainPurple
             onClicked:
             {
-                //check for input corresponds to regex
-                if(emailField.acceptableInput === false)
+                //check for valid inputs
+                if(sexButton.buttonText === 'М/Ж')
+                    sexButton.labelContentColor = Style.errorRed;
+                else if(dateofbirthField.text === '..')
+                    dateofbirthField.color = Style.errorRed;
+                else if(emailField.acceptableInput === false)
                 {
                     emailField.color = Style.errorRed;
                     emailField.text = "Некорректный E-mail";
                 }
                 else
                 {
-                    PageNameHolder.push("signUpPage.qml");
+                    //saving user info for further using
+                    AppSettings.beginGroup("user");
+                    AppSettings.setValue("email", emailField.text.toLowerCase());
+                    AppSettings.setValue("sex", sexButton.buttonText);
+                    AppSettings.setValue("birthday", dateofbirthField.text);
+                    AppSettings.endGroup();
+
                     signUpPageLoader.setSource("xmlHttpRequest.qml",
                                                { "serverUrl": 'http://patrick.ga:8082/api/register?',
-                                                 "email": emailField.text.toLowerCase(),
-                                                 "sex": sexButton.buttonText,
-                                                 "birthday": dateofbirthField.text,
                                                  "functionalFlag": 'register' });
                 }
             }

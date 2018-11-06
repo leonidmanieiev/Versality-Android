@@ -75,13 +75,16 @@ Page
                 }
                 else
                 {
+                    AppSettings.beginGroup("user");
+                    AppSettings.setValue("email", emailField.text.toLowerCase());
+                    AppSettings.endGroup();
+
                     PageNameHolder.push("logInPage.qml");
-                    logInPageLoader.setSource("passwordInputPage.qml",
-                                              { "email": emailField.text.toLowerCase()});
+                    logInPageLoader.source = "passwordInputPage.qml";
                 }
             }
         }
-    }
+    }//ColumnLayout
 
     Loader
     {

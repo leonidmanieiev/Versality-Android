@@ -75,7 +75,7 @@ Page
                 }
             }
         }
-    }
+    }//ColumnLayout
 
     ToastMessage { id: toastMessage }
 
@@ -96,7 +96,6 @@ Page
 
     //setting active focus for key capturing
     Component.onCompleted: initialPage.forceActiveFocus();
-
 
     Keys.onReleased:
     {

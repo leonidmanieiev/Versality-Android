@@ -86,13 +86,18 @@ function promsJsonToListModel(promsJSON)
 //get store hours depend on day
 function currStoreHours(p_store_hours)
 {
-    //deserialize work hours
-    var hours = p_store_hours.split(' ');
-    var currDate = new Date();
-    //adjust for russian locale
-    var currDay = currDate.getDay()-1 == -1 ? 6 : currDate.getDay()-1;
+    if(p_store_hours !== '')
+    {
+        //deserialize work hours
+        var hours = p_store_hours.split(' ');
+        var currDate = new Date();
+        //adjust for russian locale
+        var currDay = currDate.getDay()-1 == -1 ? 6 : currDate.getDay()-1;
 
-    return hours[currDay];
+        return hours[currDay];
+    }
+
+    return 'Not set';
 }
 
 //puts promotions from JSON to model for mapMarkers

@@ -88,7 +88,7 @@ Rectangle
             text: "F"
             onClicked:
             {
-                if(pressedFromPageName != "favouritePage.qml")
+                if(pressedFromPageName !== "favouritePage.qml")
                     PageNameHolder.push(pressedFromPageName);
 
                 appWindowLoader.setSource("xmlHttpRequest.qml",
@@ -97,7 +97,7 @@ Rectangle
                                           });
             }
         }
-    }
+    }//RowLayout
 
     Loader
     {
