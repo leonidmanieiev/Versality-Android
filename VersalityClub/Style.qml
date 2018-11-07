@@ -72,7 +72,6 @@ QtObject
     //LISTVIEW CONSTANTS
     readonly property int listItemRadius: 20
 
-    //INTERTEN ACCESS CKECH
-    property int isConnected: NetworkInfo.networkStatus() === 1
-                              && Qt.platform.os !== "windows" ? true : false
+    //INTERTEN ACCESS FLAG          //check QTBUG-40328
+    property bool isConnected: Qt.platform.os === "windows" ? true : false
 }

@@ -30,6 +30,13 @@ Popup
 {
     property color backgroundColor: Style.toastGrey
 
+    function setTextNoAutoClose(messageText)
+    {
+        toastMessage.closePolicy = Popup.NoAutoClose;
+        popupContent.text = messageText;
+        open();
+    }
+
     function setText(messageText)
     {
         popupContent.text = messageText;
@@ -44,7 +51,7 @@ Popup
     }
 
     id: toastMessage
-    x: (Style.screenWidth-popupContent.width)*0.5
+    x: (parent.width-popupBackground.width)*0.5
     y: Style.screenHeight - height
     contentItem: Text
     {

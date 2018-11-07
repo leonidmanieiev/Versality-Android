@@ -33,5 +33,7 @@
         <file>icons/geoLocationIcon.svg</file>
         <file>icons/promotionMarkerIcon.svg</file>
         <file>icons/userLocationMarkerIcon.svg</file>
+        <file>qml/Network.qml</file>
+        <file>qml/StaticNotifier.qml</file>
     </qresource>
 </RCC>

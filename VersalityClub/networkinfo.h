@@ -35,7 +35,12 @@ public:
     explicit NetworkInfo(QObject *parent = nullptr) :
         QNetworkAccessManager(parent)
         {
-            oldNetworkStatus = QNetworkAccessManager::networkAccessible();
+            //workaround for initial network flag setting
+            QNetworkAccessManager::NetworkAccessibility currNetworkStatus =
+                QNetworkAccessManager::networkAccessible();
+            oldNetworkStatus = currNetworkStatus == QNetworkAccessManager::Accessible
+                                                  ? QNetworkAccessManager::NotAccessible
+                                                  : QNetworkAccessManager::Accessible;
             startTimer(1000);
         }
     void timerEvent(QTimerEvent *e)

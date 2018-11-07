@@ -23,7 +23,6 @@
 //favourites promotions in list view
 import "../"
 import "../js/helpFunc.js" as Helper
-import Network 1.0
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
@@ -35,24 +34,7 @@ Page
     width: Style.screenWidth
 
     //checking internet connetion
-    NetworkInfo
-    {
-        onNetworkStatusChanged:
-        {
-            if(accessible === 1)
-            {
-                Style.isConnected = true;
-                favouritePage.enabled = true;
-                toastMessage.setTextAndRun(qsTr("Internet re-established"));
-            }
-            else
-            {
-                Style.isConnected = false;
-                favouritePage.enabled = false;
-                toastMessage.setTextAndRun(qsTr("No Internet connection"));
-            }
-        }
-    }
+    Network { toastMessage: toastMessage }
 
     background: Rectangle
     {
@@ -68,6 +50,7 @@ Page
         //making request for favourites when getting to this page by pressing back button
         if(Style.promsResponse === '')
         {
+            notifier.visible = false;
             favouritePageLoader.setSource("xmlHttpRequest.qml",
                                           { "serverUrl": 'http://patrick.ga:8080/api/user/marked?',
                                             "functionalFlag": 'user/marked'
@@ -75,11 +58,18 @@ Page
         }
         else if(Style.promsResponse !== '[]')
         {
+            notifier.visible = false;
             var promsJSON = JSON.parse(Style.promsResponse);
             //applying promotions at ListModel
             Helper.promsJsonToListModel(promsJSON);
         }
-        else toastMessage.setTextAndRun(qsTr('No favourite promotions.'));
+        else notifier.visible = true;
+    }
+
+    StaticNotifier
+    {
+        id: notifier
+        notifierText: qsTr("No favourite promotions.")
     }
 
     Keys.onReleased:

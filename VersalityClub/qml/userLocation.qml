@@ -23,7 +23,6 @@
 //request for user location
 import "../"
 import "../js/helpFunc.js" as Helper
-import Network 1.0
 import QtQuick 2.11
 import QtQml 2.2
 import QtPositioning 5.8
@@ -32,26 +31,6 @@ Item
 {
     id: userLocationItem
     enabled: Style.isConnected
-
-    //checking internet connetion
-    NetworkInfo
-    {
-        onNetworkStatusChanged:
-        {
-            if(accessible === 1)
-            {
-                Style.isConnected = true;
-                userLocationItem.enabled = true;
-                toastMessage.setTextAndRun(qsTr("Internet re-established"));
-            }
-            else
-            {
-                Style.isConnected = false;
-                userLocationItem.enabled = false;
-                toastMessage.setTextAndRun(qsTr("No Internet connection"));
-            }
-        }
-    }
 
     PositionSource
     {

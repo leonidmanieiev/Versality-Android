@@ -22,7 +22,6 @@
 
 import "../"
 import "../js/helpFunc.js" as Helper
-import Network 1.0
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
@@ -35,24 +34,7 @@ Page
     width: Style.screenWidth
 
     //checking internet connetion
-    NetworkInfo
-    {
-        onNetworkStatusChanged:
-        {
-            if(accessible === 1)
-            {
-                Style.isConnected = true;
-                passInputPage.enabled = true;
-                toastMessage.setTextAndRun(qsTr("Internet re-established"));
-            }
-            else
-            {
-                Style.isConnected = false;
-                passInputPage.enabled = false;
-                toastMessage.setTextAndRun(qsTr("No Internet connection"));
-            }
-        }
-    }
+    Network { toastMessage: toastMessage }
 
     ColumnLayout
     {
