@@ -49,6 +49,7 @@ QtObject
     readonly property int posTimeOut: 30*60000//minutes to milliseconds
     readonly property int posGetFar: 500//in meters
     readonly property int promCloseDist: 50//in meters
+    readonly property int maxLineCnt: 3
     property string promsResponse: ''
 
     //FOOTERBUTTONS CONSTANTS
@@ -72,6 +73,9 @@ QtObject
     //LISTVIEW CONSTANTS
     readonly property int listItemRadius: 20
 
-    //INTERTEN ACCESS FLAG          //check QTBUG-40328
+    //INTERTEN ACCESS FLAG          check QTBUG-40328
     property bool isConnected: Qt.platform.os === "windows" ? true : false
+
+    //LOCATION ACCESS FLAG
+    property bool isLocated: false
 }

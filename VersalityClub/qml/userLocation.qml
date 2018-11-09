@@ -26,11 +26,35 @@ import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQml 2.2
 import QtPositioning 5.8
+import QtLocation 5.9
+import GeoLocation 1.0
 
 Item
 {
+    property bool isGpsOff: false
+
     id: userLocationItem
     enabled: Style.isConnected
+
+    GeoLocationInfo
+    {
+        onPositionUpdated:
+        {
+            if(isGpsOff)
+            {
+                isGpsOff = false;
+                console.log("onPositionUpdated");
+
+                AppSettings.beginGroup("user");
+                AppSettings.setValue("lat", getLat());
+                AppSettings.setValue("lon", getLon());
+                AppSettings.endGroup();
+                Style.isLocated = true;
+                userLocation.requestForPromotions();
+                toastMessage.close();
+            }
+        }
+    }
 
     PositionSource
     {
@@ -50,14 +74,14 @@ Item
         //handling errors
         function sourceErrorMessage(sourceError)
         {
-            var sem;
+            var sem = '';
 
             switch(sourceError)
             {
                 case PositionSource.AccessError:
                     sem = qsTr("Нет привилегий на получение местоположения"); break;
                 case PositionSource.ClosedError:
-                    sem = qsTr("Включите определение местоположения"); break;
+                    sem = qsTr("Включите определение местоположения и ждите закрытия popup"); break;
                 case PositionSource.UnknownSourceError:
                     sem = qsTr("Неизвестная ошибка PositionSource"); break;
                 case PositionSource.SocketError:
@@ -73,8 +97,6 @@ Item
         {
             switch(supportedPositioningMethods)
             {
-                case PositionSource.NoPositioningMethods:
-                    return false;
                 case PositionSource.AllPositioningMethods:
                     preferredPositioningMethods=PositionSource.AllPositioningMethods; break;
                 case PositionSource.SatellitePositioningMethods :
@@ -130,7 +152,8 @@ Item
                         //saving response for further using
                         Style.promsResponse = request.responseText;
                     }
-                    else toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
+                    else if(!isNaN(lat) && !isNaN(lon))
+                        toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
                 }
                 else console.log("Pending: " + request.readyState);
             }
@@ -141,66 +164,50 @@ Item
 
         onSourceErrorChanged:
         {
-            var sem = sourceErrorMessage(sourceError);
-
-            if(sem === undefined)
+            if(sourceError === PositionSource.NoError)
+            {
+                console.log("PositionSource.NoError");
+                isGpsOff = false;
+                Style.isLocated = true;
                 return;
+            }
 
-            toastMessage.setTextAndRun(qsTr(sem));
+            var sem = sourceErrorMessage(sourceError);
+            toastMessage.setTextNoAutoClose(sem);
+            isGpsOff = true;
+            Style.isLocated = false;
             stop();
         }
 
-        onUpdateTimeout: toastMessage.setTextAndRun(qsTr("Невозможно получить местоположение"));
+        onUpdateTimeout: toastMessage.setText(qsTr("Невозможно получить местоположение"));
 
         onPositionChanged:
         {
-            if(posMethodSet)
+            if(!initialCoordSet)
             {
-                //if android, there will be no onPositionChanged triggered
-                //so initializing in Component.onComplete
-                if(!initialCoordSet && Qt.platform.os === "windows")
-                {
-                    console.log("initial onPositionChanged")
-                    initialCoordSet = true;
-                    //saving initial position and timeCheckPoint of user
-                    saveUserPositionInfo();
-                    //making request for promotions which depend on position
-                    requestForPromotions();
-                }
-                if(isGetFar(position.coordinate) || isTimePassed())
-                {
-                    console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
-                                " | isTimePassed: " + isTimePassed()) + ")";
-                    //out of date, saving data and making request for promotions
-                    saveUserPositionInfo();
-                    requestForPromotions();
-                }
+                console.log("initial onPositionChanged")
+                initialCoordSet = true;
+                //saving initial position and timeCheckPoint of user
+                saveUserPositionInfo();
+                //making request for promotions which depend on position
+                requestForPromotions();
+            }
+            if(isGetFar(position.coordinate) || isTimePassed())
+            {
+                console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
+                            " | isTimePassed: " + isTimePassed()) + ")";
+                //out of date, saving data and making request for promotions
+                saveUserPositionInfo();
+                requestForPromotions();
             }
         }//onPositionChanged
 
         Component.onCompleted:
         {
             if(isPositioningMethodSet(supportedPositioningMethods))
-            {
                 posMethodSet = true;
-                //if windows, coordinates will be NaN because of .nmea file
-                //so initializing in onPositionChanged
-                if(!initialCoordSet && Qt.platform.os !== "windows")
-                {
-                    console.log("initial onPositionChanged")
-                    initialCoordSet = true;
-                    //saving initial position and timeCheckPoint of user
-                    saveUserPositionInfo();
-                    //making request for promotions which depend on position
-                    requestForPromotions();
-                }
-            }
-            else
-            {
-                toastMessage.setTextAndRun(qsTr("Ошибка установки метода определения местоположения"));
-                return;
-            }
-        }//Component.onCompleted:
+            else toastMessage.setText(qsTr("Ошибка установки метода определения местоположения"));
+        }
     }//PositionSource
 
     ToastMessage { id: toastMessage }

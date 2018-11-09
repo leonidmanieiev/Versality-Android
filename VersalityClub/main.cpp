@@ -26,6 +26,7 @@
 #include <QtWebView/QtWebView>
 #include "appsettings.h"
 #include "networkinfo.h"
+#include "geolocationinfo.h"
 #include "pagenameholder.h"
 
 int main(int argc, char *argv[])
@@ -37,6 +38,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<AppSettings>("org.leonman.versalityclub", 1, 0, "AppSettings");
     qmlRegisterType<NetworkInfo>("Network", 1, 0, "NetworkInfo");
+    qmlRegisterType<GeoLocationInfo>("GeoLocation", 1, 0, "GeoLocationInfo");
     qmlRegisterType<PageNameHolder>("org.leonman.versalityclub", 1, 0, "PageNameHolder");
 
     QQmlApplicationEngine engine;

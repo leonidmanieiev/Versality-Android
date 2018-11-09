@@ -52,7 +52,7 @@ Popup
 
     id: toastMessage
     x: (parent.width-popupBackground.width)*0.5
-    y: Style.screenHeight - height
+    y: parent.height*0.8
     contentItem: Text
     {
         id: popupContent
@@ -63,11 +63,13 @@ Popup
         font.pixelSize: Helper.toDp(15, Style.dpi)
         color: Style.backgroundWhite
         wrapMode: Text.WordWrap
+        horizontalAlignment: Text.AlignHCenter
     }
     background: Rectangle
     {
         id: popupBackground
-        width: popupContent.width*1.2
+        width: popupContent.width*1.2 < toastMessage.parent.width*0.8
+               ? popupContent.width*1.2 : toastMessage.parent.width*0.8
         height: popupContent.height*2
         radius: parent.height*0.5
         color: backgroundColor

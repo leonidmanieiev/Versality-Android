@@ -1,4 +1,4 @@
-QT += quick network webview svg
+QT += quick network webview svg positioning
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -44,6 +44,7 @@ ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 HEADERS += \
     networkinfo.h \
     pagenameholder.h \
-    appsettings.h
+    appsettings.h \
+    geolocationinfo.h
 
 include(android-openssl.pri)

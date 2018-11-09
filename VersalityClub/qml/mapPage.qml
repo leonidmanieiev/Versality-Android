@@ -162,6 +162,7 @@ Page
     RoundButton
     {
         id: userLocationButton
+        enabled: Style.isLocated
         opacity: pressed ? 0.8 : 1
         icon.height: Style.mapButtonSize
         icon.width: Style.mapButtonSize
@@ -203,7 +204,7 @@ Page
             color: Style.backgroundWhite
             textFormat: Text.RichText;
             text: mapCopyright+mapDataCopyright
-            font.pixelSize: Helper.toDp(15, Style.dpi)
+            font.pixelSize: Helper.toDp(10, Style.dpi)
             onLinkActivated: Qt.openUrlExternally(link)
         }
     }

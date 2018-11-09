@@ -148,9 +148,10 @@ Page
                     id: promotionDescription
                     width: parent.width
                     text: AppSettings.value("promotion/description")
-                    maximumLineCount: 3
+                    maximumLineCount: Style.maxLineCnt
                     font.pixelSize: Helper.toDp(13, Style.dpi)
                     color: Style.backgroundBlack
+                    elide: Text.ElideRight
                     wrapMode: Label.WordWrap
                 }
             }
