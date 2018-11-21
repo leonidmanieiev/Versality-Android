@@ -77,5 +77,5 @@ QtObject
     property bool isConnected: Qt.platform.os === "windows" ? true : false
 
     //LOCATION ACCESS FLAG
-    property bool isLocated: false
+    property bool isLocated: Qt.platform.os === "windows" ? true : false
 }

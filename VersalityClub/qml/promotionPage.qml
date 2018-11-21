@@ -126,7 +126,13 @@ Page
                     onClicked:
                     {
                         if(closeEnough())
+                        {
                             promoCodePopup.setText(AppSettings.value("promotion/promo_code"));
+                            //inform server about coupon was activated
+                            promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                          {"serverUrl": 'http://patrick.ga:8080/api/user/activate?',
+                                                           "functionalFlag": "user/activate"});
+                        }
                         else toastMessage.setTextAndRun(qsTr("Get closer to promotoion"));
                     }
                     function closeEnough()

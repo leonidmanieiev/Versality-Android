@@ -73,6 +73,8 @@ Item
             case 'user/unmark': return 'secret='+secret+'&promo='+AppSettings.value("promotion/id");
             //request for getting all merked promotions
             case 'user/marked': return 'secret='+secret;
+            //request for inform server about coupon was activeted
+            case 'user/activate': return 'secret='+secret+'&promo='+AppSettings.value("promotion/id");
             //unknown request
             default: return -1;
         }
@@ -96,6 +98,7 @@ Item
             case 'CAT-1': return 'Неизвестный токен аутентификации';
             case 'CAT-2': return 'Неизвестный id подкатегории';
             case 'ERR-1': return 'Неизвестный токен аутентификации';
+            case 'ERR-2': return 'Неизвестный id акции';
             default: return 'NO_ERROR';
         }
     }
@@ -129,6 +132,7 @@ Item
                 if(request.status === 200)
                 {
                     var errorStatus = responseHandler(request.responseText);
+                    console.log("server responseText:" + request.responseText);
 
                     if(errorStatus === 'NO_ERROR')
                     {

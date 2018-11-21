@@ -183,9 +183,8 @@ Item
 
         onPositionChanged:
         {
-            if(!initialCoordSet)
+            if(!initialCoordSet && posMethodSet)
             {
-                console.log("initial onPositionChanged")
                 initialCoordSet = true;
                 //saving initial position and timeCheckPoint of user
                 saveUserPositionInfo();
