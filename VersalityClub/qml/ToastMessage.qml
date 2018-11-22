@@ -32,22 +32,31 @@ Popup
 
     function setTextNoAutoClose(messageText)
     {
-        toastMessage.closePolicy = Popup.NoAutoClose;
-        popupContent.text = messageText;
-        open();
+        if(popupContent.text === '')
+        {
+            toastMessage.closePolicy = Popup.NoAutoClose;
+            popupContent.text = messageText;
+            open();
+        }
     }
 
     function setText(messageText)
     {
-        popupContent.text = messageText;
-        open();
+        if(popupContent.text === '')
+        {
+            popupContent.text = messageText;
+            open();
+        }
     }
 
     function setTextAndRun(messageText)
     {
-        popupContent.text = messageText;
-        open();
-        toastMessageTimer.running = true;
+        if(popupContent.text === '')
+        {
+            popupContent.text = messageText;
+            open();
+            toastMessageTimer.running = true;
+        }
     }
 
     id: toastMessage
@@ -84,6 +93,8 @@ Popup
     {
         NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }
     }
+
+    onClosed: popupContent.text = ''
 
     //defines period of time that popup is visiable
     Timer

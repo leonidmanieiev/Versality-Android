@@ -34,7 +34,22 @@ Item
     property bool isGpsOff: false
 
     id: userLocationItem
-    enabled: Style.isConnected
+    enabled: true
+
+    function disableUsability()
+    {
+        isGpsOff = true;
+        Style.isLocated = false;
+        //disable parent of userLocationItem which is mapPage or listViewPage
+        userLocationItem.parent.parent.enabled = false;
+    }
+
+    function enableUsability()
+    {
+        isGpsOff = false;
+        Style.isLocated = true;
+        userLocationItem.parent.parent.enabled = true;
+    }
 
     GeoLocationInfo
     {
@@ -42,14 +57,12 @@ Item
         {
             if(isGpsOff)
             {
-                isGpsOff = false;
-                console.log("onPositionUpdated");
+                enableUsability();
 
                 AppSettings.beginGroup("user");
                 AppSettings.setValue("lat", getLat());
                 AppSettings.setValue("lon", getLon());
                 AppSettings.endGroup();
-                Style.isLocated = true;
                 userLocation.requestForPromotions();
                 toastMessage.close();
             }
@@ -133,6 +146,16 @@ Item
             AppSettings.endGroup();
         }
 
+        //making request for promotions when started app but user did not move
+        //so onPositionChanged won't emit
+        function initialPromRequest()
+        {
+            //saving initial position and timeCheckPoint of user
+            saveUserPositionInfo();
+            //making request for promotions which depend on position
+            requestForPromotions();
+        }
+
         //request promotion info
         function requestForPromotions()
         {
@@ -140,20 +163,23 @@ Item
             var params = 'secret='+secret+'&lat='+AppSettings.value("user/lat")+
                          '&lon='+AppSettings.value("user/lon");
 
-            console.log("userLocation request url: " + serverUrl + params);
+            console.log("request url: " + serverUrl + params);
 
             request.open('POST', serverUrl);
             request.onreadystatechange = function()
             {
                 if(request.readyState === XMLHttpRequest.DONE)
                 {
-                    if(request.status === 200)
+                    if(isNaN(AppSettings.value("user/lat")) || isNaN(AppSettings.value("user/lon")))
+                    {
+                        disableUsability();
+                        console.log("user location is NaN");
+                    }
+                    else if(request.status === 200)
                     {
                         //saving response for further using
                         Style.promsResponse = request.responseText;
                     }
-                    else if(!isNaN(lat) && !isNaN(lon))
-                        toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
                 }
                 else console.log("Pending: " + request.readyState);
             }
@@ -166,46 +192,54 @@ Item
         {
             if(sourceError === PositionSource.NoError)
             {
-                console.log("PositionSource.NoError");
-                isGpsOff = false;
-                Style.isLocated = true;
+                enableUsability();
                 return;
             }
 
-            var sem = sourceErrorMessage(sourceError);
-            toastMessage.setTextNoAutoClose(sem);
-            isGpsOff = true;
-            Style.isLocated = false;
+            toastMessage.setTextNoAutoClose(sourceErrorMessage(sourceError));
+            disableUsability();
             stop();
         }
 
-        onUpdateTimeout: toastMessage.setText(qsTr("Невозможно получить местоположение"));
+        onUpdateTimeout: toastMessage.setText(qsTr("Невозможно получить местоположение"))
 
         onPositionChanged:
         {
-            if(!initialCoordSet && posMethodSet)
+            if(posMethodSet)
             {
-                initialCoordSet = true;
-                //saving initial position and timeCheckPoint of user
-                saveUserPositionInfo();
-                //making request for promotions which depend on position
-                requestForPromotions();
-            }
-            if(isGetFar(position.coordinate) || isTimePassed())
-            {
-                console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
-                            " | isTimePassed: " + isTimePassed()) + ")";
-                //out of date, saving data and making request for promotions
-                saveUserPositionInfo();
-                requestForPromotions();
+                if(Qt.platform.os === "windows" && !initialCoordSet)
+                {
+                    initialCoordSet = true;
+                    initialPromRequest();
+                    console.log("initialPromRequest() for windows version");
+                }
+                if((isGetFar(position.coordinate) || isTimePassed()))
+                {
+                    console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
+                                " | isTimePassed: " + isTimePassed()) + ")";
+                    //out of date, saving data and making request for promotions
+                    saveUserPositionInfo();
+                    requestForPromotions();
+                }
             }
         }//onPositionChanged
 
         Component.onCompleted:
         {
             if(isPositioningMethodSet(supportedPositioningMethods))
+            {
+                if(Qt.platform.os !== "windows")
+                {
+                    initialPromRequest();
+                    console.log("initialPromRequest() for android version");
+                }
                 posMethodSet = true;
-            else toastMessage.setText(qsTr("Ошибка установки метода определения местоположения"));
+                console.log("posMethodSet = true");
+                //activating user location button
+                Style.isLocated = true;
+                console.log("Style.isLocated = true");
+            }
+            else toastMessage.setText(qsTr("Ошибка установки метода определения местоположения"))
         }
     }//PositionSource
 

@@ -53,7 +53,8 @@ Page
 
     function runParsing()
     {
-        if(Style.promsResponse.substring(0, 6) !== 'PROM-1')
+        if(Style.promsResponse.substring(0, 6) !== 'PROM-1'
+           && Style.promsResponse.substring(0, 6) !== '[]')
         {
             notifier.visible = false;
             var promsJSON = JSON.parse(Style.promsResponse);

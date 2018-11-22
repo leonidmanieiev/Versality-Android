@@ -114,12 +114,12 @@ Item
         var request = new XMLHttpRequest();
         var params = makeParams();
 
-        console.log("xml request url: " + serverUrl + params);
+        console.log("request url: " + serverUrl + params);
 
         //if -1, there was unknown request
         if(params === -1)
         {
-            console.log("function xhr() faild. Params = -1");
+            console.log("Params = -1");
             return;
         }
 
