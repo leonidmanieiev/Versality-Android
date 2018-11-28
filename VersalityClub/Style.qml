@@ -47,9 +47,9 @@ QtObject
 
     //PROMOTION CONSTANTS
     readonly property int posTimeOut: 30*60000//minutes to milliseconds
-    readonly property int posGetFar: 500//in meters
-    readonly property int promCloseDist: 50//in meters
-    readonly property int maxLineCnt: 3
+    readonly property int posGetFar: 200//in meters
+    readonly property int promCloseDist: 100//in meters
+    readonly property int maxLineCnt: 3//promotion description text preview
     property string promsResponse: ''
 
     //FOOTERBUTTONS CONSTANTS
@@ -59,6 +59,8 @@ QtObject
 
     //MAP CONSTANTS
     readonly property int mapButtonSize: screenWidth*0.09
+    readonly property int fromButtonZoomLevel: 16
+    readonly property int fromLocUpdZoomLevel: 13
 
     //SCREEN CONSTANTS
     readonly property int dpi: Screen.pixelDensity * 25.4

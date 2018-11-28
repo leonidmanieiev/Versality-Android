@@ -32,6 +32,7 @@ import QtPositioning 5.8
 
 Page
 {
+    property bool locButtClicked: false
     readonly property int defaultZoomLevel: 11
     readonly property real defaultLat: 59.933284
     readonly property real defaultLon: 30.343614
@@ -43,6 +44,22 @@ Page
     readonly property string mapDataCopyright: ' Data © <a href="https://www.openstreetmap.org/'
                                                +'copyright" style="color: '+Style.mainPurple+'">'
                                                +'OpenStreetMap</a>'
+
+    function setUserLocationMarker(lat, lon, _zoomLevel, follow)
+    {
+        if(locButtClicked)
+        {
+            userLocationMarker.coordinate =
+                    QtPositioning.coordinate(lat, lon);
+            userLocationMarker.visible = true;
+
+            if(follow)
+                mainMap.center = userLocationMarker.coordinate;
+
+            if(_zoomLevel !== 0)
+                mainMap.zoomLevel = _zoomLevel;
+        }
+    }
 
     id: mapPage
     enabled: Style.isConnected
@@ -181,11 +198,10 @@ Page
         }
         onClicked:
         {
-            mainMap.center = QtPositioning.coordinate(AppSettings.value("user/lat"),
-                                                      AppSettings.value("user/lon"));
-            mainMap.zoomLevel = 16;
-            userLocationMarker.coordinate = mainMap.center;
-            userLocationMarker.visible = true;
+            locButtClicked = true;
+            setUserLocationMarker(AppSettings.value("user/lat"),
+                                  AppSettings.value("user/lon"),
+                                  Style.fromButtonZoomLevel, true)
         }
     }
 
@@ -232,7 +248,8 @@ Page
         //setting active focus for key capturing
         mapPage.forceActiveFocus();
         //start capturing user location and getting promotions
-        mapPageLoader.source = "userLocation.qml";
+        mapPageLoader.setSource("userLocation.qml",
+                                {"callFromPageName": 'mapPage'})
     }
 
     function runParsing()

@@ -30,6 +30,12 @@ import QtPositioning 5.8
 
 Page
 {
+    function forceUpdateUserCoords()
+    {
+        promotionPageLoader.setSource("userLocation.qml",
+                    {"callFromPageName": 'promotionPage'});
+    }
+
     id: promotionPage
     enabled: Style.isConnected
     height: Style.pageHeight
@@ -125,6 +131,8 @@ Page
                     setBorderColor: "transparent"
                     onClicked:
                     {
+                        forceUpdateUserCoords();
+
                         if(closeEnough())
                         {
                             promoCodePopup.setText(AppSettings.value("promotion/promo_code"));
@@ -280,7 +288,11 @@ Page
 
     FooterButtons { pressedFromPageName: 'promotionPage.qml' }
 
-    Component.onCompleted: promotionPage.forceActiveFocus()
+    Component.onCompleted:
+    {
+        promotionPage.forceActiveFocus();
+        forceUpdateUserCoords();
+    }
 
     Keys.onReleased:
     {

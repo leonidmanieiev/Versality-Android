@@ -32,6 +32,7 @@ import GeoLocation 1.0
 Item
 {
     property bool isGpsOff: false
+    property string callFromPageName: ''
 
     id: userLocationItem
     enabled: true
@@ -137,8 +138,18 @@ Item
             return Math.abs(new Date() - oldTime) > Style.posTimeOut;
         }
 
+        function updateUserMarker()
+        {
+            console.log("updateUserMarker()");
+            //if loader was mapPageLoader we calling user locariot marker setter
+            if(callFromPageName === 'mapPage')
+                parent.parent.parent.setUserLocationMarker(lat, lon, 0, false);
+        }
+
+        //for isGetFar() check
         function saveUserPositionInfo()
         {
+            console.log("saveUserPositionInfo()");
             AppSettings.beginGroup("user");
             AppSettings.setValue("lat", lat);
             AppSettings.setValue("lon", lon);
@@ -150,6 +161,9 @@ Item
         //so onPositionChanged won't emit
         function initialPromRequest()
         {
+            console.log("initialPromRequest()");
+            //initial setting of user marker
+            updateUserMarker();
             //saving initial position and timeCheckPoint of user
             saveUserPositionInfo();
             //making request for promotions which depend on position
@@ -209,17 +223,23 @@ Item
             {
                 if(Qt.platform.os === "windows" && !initialCoordSet)
                 {
+                    console.log("Windows:");
                     initialCoordSet = true;
                     initialPromRequest();
-                    console.log("initialPromRequest() for windows version");
                 }
-                if((isGetFar(position.coordinate) || isTimePassed()))
+                //update user coordinates
+                else
                 {
-                    console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
-                                " | isTimePassed: " + isTimePassed()) + ")";
-                    //out of date, saving data and making request for promotions
-                    saveUserPositionInfo();
-                    requestForPromotions();
+                    updateUserMarker();
+
+                    if((isGetFar(position.coordinate) || isTimePassed()))
+                    {
+                        console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
+                                    " | isTimePassed: " + isTimePassed()) + ")";
+                        //out of date, saving timeCheckPoint and making request for promotions
+                        saveUserPositionInfo();
+                        requestForPromotions();
+                    }
                 }
             }
         }//onPositionChanged
@@ -230,14 +250,16 @@ Item
             {
                 if(Qt.platform.os !== "windows")
                 {
-                    initialPromRequest();
-                    console.log("initialPromRequest() for android version");
+                    console.log("Android:");
+                    //if loader is promotionPageLoader wee just need
+                    //to save coords. Otherwise full circle
+                    if(callFromPageName === 'promotionPage')
+                        saveUserPositionInfo();
+                    else initialPromRequest();
                 }
                 posMethodSet = true;
-                console.log("posMethodSet = true");
                 //activating user location button
                 Style.isLocated = true;
-                console.log("Style.isLocated = true");
             }
             else toastMessage.setText(qsTr("Ошибка установки метода определения местоположения"))
         }
