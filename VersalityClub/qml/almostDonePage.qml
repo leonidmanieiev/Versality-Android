@@ -49,14 +49,14 @@ Page
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: Helper.toDp(parent.height/14, Style.dpi)
-        buttonText: qsTr("Все понятно, начать работу!")
+        buttonText: Style.everythingIsClearStart
         labelContentColor: Style.backgroundWhite
         backgroundColor: Style.mainPurple
         setBorderColor: Style.backgroundWhite
         onClicked:
         {
             almostDonePageLoader.setSource("xmlHttpRequest.qml",
-                                     { "serverUrl": 'http://patrick.ga:8080/api/user?',
+                                     { "serverUrl": Style.userInfo,
                                        "functionalFlag": 'user'
                                      });
         }

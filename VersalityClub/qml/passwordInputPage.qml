@@ -28,6 +28,9 @@ import QtQuick.Layouts 1.3
 
 Page
 {
+    //for pass encryption
+    readonly property string xorStr: "8fdda158eeb8c0ed9d151991aff3c84c"
+
     id: passInputPage
     enabled: Style.isConnected
     height: Style.screenHeight
@@ -50,7 +53,7 @@ Page
             Layout.fillWidth: true
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            text: qsTr("Пароль:")
+            text: Style.pass
             font.pixelSize: Helper.toDp(15, Style.dpi)
             color: Style.mainPurple
         }
@@ -74,18 +77,18 @@ Page
             id: enterButton
             padding: middleLayout.spacing*2
             Layout.fillWidth: true
-            buttonText: "ВОЙТИ"
+            buttonText: Style.login
             labelContentColor: Style.backgroundWhite
             backgroundColor: Style.mainPurple
             onClicked:
             {
                 var encryptedPass = Helper.encryptPassword(passField.text,
-                                                           Style.xorStr);
+                                                           xorStr);
                 AppSettings.beginGroup("user");
                 AppSettings.setValue("password", encryptedPass);
                 AppSettings.endGroup();
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
-                                                  { "serverUrl": 'http://patrick.ga:8082/api/login?',
+                                                  { "serverUrl": Style.userLogin,
                                                     "functionalFlag": 'login'
                                                   });
             }

@@ -63,7 +63,7 @@ Page
             CustomLabel
             {
                 id: sexLabel
-                labelText: qsTr("Пол:")
+                labelText: Style.sex
             }
 
             ControlButton
@@ -89,15 +89,15 @@ Page
             CustomLabel
             {
                 id: dateofbirthLabel
-                labelText: qsTr("Дата рождения:")
+                labelText: Style.birthday
             }
 
             CustomTextField
             {
                 id: dateofbirthField
-                inputMask: "00.00.0000"
-                inputMethodHints: Qt.ImhDigitsOnly
                 text: AppSettings.value("user/birthday");
+                inputMask: Style.birthdayMask
+                inputMethodHints: Qt.ImhDigitsOnly
                 onTextChanged:
                 {
                     AppSettings.beginGroup("user");
@@ -109,7 +109,7 @@ Page
             CustomLabel
             {
                 id: emailLabel
-                labelText: qsTr("E-mail:")
+                labelText: Style.email
             }
 
             CustomTextField
@@ -124,7 +124,7 @@ Page
             CustomLabel
             {
                 id: changePasswordLabel
-                labelText: qsTr("Изменить пароль:")
+                labelText: Style.changePass
             }
 
             CustomTextField
@@ -133,20 +133,20 @@ Page
                 echoMode: TextInput.Password
                 inputMethodHints: Qt.ImhSensitiveData
                 selectByMouse: false
-                placeholderText: qsTr("ВВЕДИТЕ НОВЫЙ ПАРОЛЬ")
+                placeholderText: Style.enterNewPass
             }
 
             CustomLabel
             {
                 id: firstNameLabel
-                labelText: qsTr("Имя (не обязательно):")
+                labelText: Style.nameNotNecessary
             }
 
             CustomTextField
             {
                 id: firstNameField
                 text: AppSettings.value("user/name");
-                placeholderText: qsTr("ВВЕДИТЕ ИМЯ")
+                placeholderText: Style.enterName
                 onTextChanged:
                 {
                     AppSettings.beginGroup("user");
@@ -158,14 +158,14 @@ Page
             CustomLabel
             {
                 id: selectCategoryLabel
-                labelText: qsTr("Выберите категории:")
+                labelText: Style.chooseCats
             }
 
             ControlButton
             {
                 id: selectCategoryButton
                 Layout.fillWidth: true
-                buttonText: qsTr("ВВЫБОР")
+                buttonText: Style.choose
                 labelContentColor: Style.backgroundWhite
                 backgroundColor: Style.mainPurple
                 setBorderColor: Style.backgroundWhite
@@ -173,7 +173,7 @@ Page
                 {
                     PageNameHolder.push("profileSettingsPage.qml");
                     profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
-                                                        { "serverUrl": 'http://patrick.ga:8080/api/categories',
+                                                        { "serverUrl": Style.allCats,
                                                           "functionalFlag": 'categories'
                                                         });
                 }
@@ -209,14 +209,14 @@ Page
                 AppSettings.endGroup();
 
                 profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
-                                                    { "serverUrl": 'http://patrick.ga:8080/api/user?',
+                                                    { "serverUrl": Style.userInfo,
                                                       "functionalFlag": 'user/refresh-snb'
                                                     });
             }
 
             contentItem: Text
             {
-                text: qsTr("СОХРАНИТЬ")
+                text: Style.save
                 color: Style.mainPurple
                 font.pixelSize: Helper.toDp(15, Style.dpi)
                 horizontalAlignment: Text.AlignHCenter

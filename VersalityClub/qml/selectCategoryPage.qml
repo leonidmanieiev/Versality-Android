@@ -198,12 +198,12 @@ Page
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottomMargin: parent.height*0.1
-        buttonText: qsTr("СОХРАНИТЬ\nИ ВЕРНУТЬСЯ К НАСТРОЙКАМ")
+        buttonText: Style.saveAndBackToSetting
         onClicked:
         {
             PageNameHolder.pop();
             chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
-                                              { "serverUrl": 'http://patrick.ga:8080/api/user/categories?',
+                                              { "serverUrl": Style.userSelectCats,
                                                 "functionalFlag": 'user/refresh-cats'
                                               });
         }

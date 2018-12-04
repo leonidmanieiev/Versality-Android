@@ -46,7 +46,7 @@ Page
         CustomLabel
         {
             id: sexLabel
-            labelText: qsTr("Пол:")
+            labelText: Style.sex
             labelColor: Style.mainPurple
         }
 
@@ -54,7 +54,7 @@ Page
         {
             id: sexButton
             Layout.fillWidth: true
-            buttonText: qsTr("М/Ж")
+            buttonText: Style.m_f
             labelContentColor: Style.backgroundBlack
             onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
             onFocusChanged:
@@ -68,7 +68,7 @@ Page
         CustomLabel
         {
             id: dateofbirthLabel
-            labelText: qsTr("Дата рождения:")
+            labelText: Style.birthday
             labelColor: Style.mainPurple
         }
 
@@ -78,14 +78,14 @@ Page
             setTextColor: Style.backgroundBlack
             setFillColor: Style.backgroundWhite
             setBorderColor: Style.mainPurple
-            inputMask: "00.00.0000"
+            inputMask: Style.birthdayMask
             inputMethodHints: Qt.ImhDigitsOnly
         }
 
         CustomLabel
         {
             id: emailLabel
-            labelText: qsTr("E-mail:")
+            labelText: Style.email
             labelColor: Style.mainPurple
         }
 
@@ -95,7 +95,7 @@ Page
             setFillColor: Style.backgroundWhite
             setBorderColor: Style.mainPurple
             setTextColor: Style.backgroundBlack
-            placeholderText: "*****@****.**"
+            placeholderText: Style.emailPlaceHolder
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
             { regExp: Style.emailRegEx }
@@ -106,20 +106,20 @@ Page
             id: signUpButton
             Layout.fillWidth: true
             padding: middleFieldsColumns.spacing * 2
-            buttonText: "ЗАРЕГИСТРИРОВАТЬСЯ"
+            buttonText: Style.signup
             labelContentColor: Style.backgroundWhite
             backgroundColor: Style.mainPurple
             onClicked:
             {
                 //check for valid inputs
-                if(sexButton.buttonText === 'М/Ж')
+                if(sexButton.buttonText === Style.m_f)
                     sexButton.labelContentColor = Style.errorRed;
                 else if(dateofbirthField.text === '..')
                     dateofbirthField.color = Style.errorRed;
                 else if(emailField.acceptableInput === false)
                 {
                     emailField.color = Style.errorRed;
-                    emailField.text = "Некорректный E-mail";
+                    emailField.text = Style.incorrectEmail;
                 }
                 else
                 {
@@ -131,7 +131,7 @@ Page
                     AppSettings.endGroup();
 
                     signUpPageLoader.setSource("xmlHttpRequest.qml",
-                                               { "serverUrl": 'http://patrick.ga:8082/api/register?',
+                                               { "serverUrl": Style.userSignup,
                                                  "functionalFlag": 'register' });
                 }
             }

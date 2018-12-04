@@ -57,7 +57,7 @@ Rectangle
             {
                 PageNameHolder.push(pressedFromPageName);
                 appWindowLoader.setSource("xmlHttpRequest.qml",
-                                          { "serverUrl": 'http://patrick.ga:8080/api/user?',
+                                          { "serverUrl": Style.userInfo,
                                             "functionalFlag": 'user'
                                           });
             }
@@ -92,7 +92,7 @@ Rectangle
                     PageNameHolder.push(pressedFromPageName);
 
                 appWindowLoader.setSource("xmlHttpRequest.qml",
-                                          { "serverUrl": 'http://patrick.ga:8080/api/user/marked?',
+                                          { "serverUrl": Style.userMarkedProms,
                                             "functionalFlag": 'user/marked'
                                           });
             }

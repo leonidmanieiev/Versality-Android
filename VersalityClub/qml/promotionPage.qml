@@ -30,6 +30,8 @@ import QtPositioning 5.8
 
 Page
 {
+    readonly property int promCloseDist: 100//in meters
+
     function forceUpdateUserCoords()
     {
         promotionPageLoader.setSource("userLocation.qml",
@@ -125,7 +127,7 @@ Page
                 {
                     id: activeCoupon
                     setWidth: Style.screenWidth*0.6
-                    buttonText: qsTr("АКТИВИРОВАТЬ КУПОН")
+                    buttonText: Style.activateCoupon
                     labelContentColor: Style.backgroundWhite
                     backgroundColor: Style.activeCouponColor
                     setBorderColor: "transparent"
@@ -138,10 +140,10 @@ Page
                             promoCodePopup.setText(AppSettings.value("promotion/promo_code"));
                             //inform server about coupon was activated
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                          {"serverUrl": 'http://patrick.ga:8080/api/user/activate?',
+                                                          {"serverUrl": Style.userActivateProm,
                                                            "functionalFlag": "user/activate"});
                         }
-                        else toastMessage.setTextAndRun(qsTr("Get closer to promotoion"));
+                        else toastMessage.setTextAndRun(Style.getCloserToProm);
                     }
                     function closeEnough()
                     {
@@ -149,7 +151,7 @@ Page
                                                                AppSettings.value("promotion/lon"));
                         var userPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
                                                                AppSettings.value("user/lon"));
-                        return promPos.distanceTo(userPos) < Style.promCloseDist;
+                        return promPos.distanceTo(userPos) < promCloseDist;
                     }
                 }
 
@@ -174,7 +176,7 @@ Page
 
                             backgroundColor = Style.activeCouponColor;
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                          {"serverUrl": 'http://patrick.ga:8080/api/user/mark?',
+                                                          {"serverUrl": Style.userMarkProm,
                                                            "functionalFlag": "user/mark"});
                         }
                         else
@@ -185,7 +187,7 @@ Page
 
                             backgroundColor = Style.listViewGrey;
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                          {"serverUrl": 'http://patrick.ga:8080/api/user/unmark?',
+                                                          {"serverUrl": Style.userUnmarkProm,
                                                            "functionalFlag": "user/unmark"});
                         }
                     }
@@ -239,7 +241,7 @@ Page
             {
                 id: nearestStoreButton
                 Layout.fillWidth: true
-                buttonText: qsTr("БЛИЖАЙШИЙ КО МНЕ АДРЕС")
+                buttonText: Style.closestAddress
                 labelContentColor: Style.mainPurple
                 backgroundColor: Style.backgroundWhite
                 setBorderColor: Style.mainPurple
@@ -251,7 +253,7 @@ Page
             {
                 id: companyCardButton
                 Layout.fillWidth: true
-                buttonText: qsTr("ОТКРЫТЬ КАРТОЧКУ КОМПАНИИ")
+                buttonText: Style.openCompanyCard
                 labelContentColor: Style.backgroundBlack
                 backgroundColor: Style.backgroundWhite
                 setBorderColor: Style.backgroundBlack
@@ -282,7 +284,7 @@ Page
         anchors.top: parent.top
         anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
         buttonWidth: Style.screenWidth*0.55
-        buttonText: qsTr("Назад к выбору акций")
+        buttonText: Style.backToPromsPicking
         onClicked: promotionPageLoader.source = "mapPage.qml"
     }
 

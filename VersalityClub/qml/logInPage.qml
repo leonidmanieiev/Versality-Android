@@ -45,14 +45,14 @@ Page
         CustomLabel
         {
             id: emailLabel
-            labelText: qsTr("E-mail:")
+            labelText: Style.email
             labelColor: Style.mainPurple
         }
 
         CustomTextField
         {
             id: emailField
-            placeholderText: "*****@****.**"
+            placeholderText: Style.emailPlaceHolder
             setFillColor: Style.backgroundWhite
             setBorderColor: Style.mainPurple
             setTextColor: Style.backgroundBlack
@@ -68,14 +68,14 @@ Page
             padding: middleLayout.spacing*2
             labelContentColor: Style.backgroundWhite
             backgroundColor: Style.mainPurple
-            buttonText: "ВОЙТИ"
+            buttonText: Style.login
             onClicked:
             {
                 //check for input corresponds to regex
                 if(emailField.acceptableInput === false)
                 {
                     emailField.color = Style.errorRed;
-                    emailField.text = "Некорректный e-mail";
+                    emailField.text = Style.incorrectEmail;
                 }
                 else
                 {

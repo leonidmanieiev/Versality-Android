@@ -67,7 +67,7 @@ Page
     StaticNotifier
     {
         id: notifier
-        notifierText: qsTr("No suitable promotions nearby.")
+        notifierText: Style.noSuitablePromsNearby
     }
 
     ToastMessage { id: toastMessage }
@@ -175,7 +175,7 @@ Page
         anchors.top: parent.top
         anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
         buttonWidth: Style.screenWidth*0.5
-        buttonText: qsTr("Показать на карте")
+        buttonText: Style.showOnMap
         onClicked: listViewPageLoader.source = "mapPage.qml"
     }
 

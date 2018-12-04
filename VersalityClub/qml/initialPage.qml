@@ -47,7 +47,7 @@ Page
         {
             id: signUpButton
             Layout.fillWidth: true
-            buttonText: qsTr("ЗАРЕГИСТРИРОВАТЬСЯ")
+            buttonText: Style.signup
             onClicked:
             {
                 PageNameHolder.push("initialPage.qml");
@@ -59,7 +59,7 @@ Page
         {
             id: logInButton
             Layout.fillWidth: true
-            buttonText: qsTr("ВОЙТИ")
+            buttonText: Style.login
             onClicked:
             {
                 PageNameHolder.push("initialPage.qml");

@@ -44,7 +44,7 @@ NetworkInfo
             {
                 Style.isConnected = false;
                 parent.enabled = false;
-                toastMessage.setTextNoAutoClose(qsTr("No Internet connection"));
+                toastMessage.setTextNoAutoClose(Style.noInternetConnection);
             }
         }
     }

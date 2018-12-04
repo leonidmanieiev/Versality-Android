@@ -33,6 +33,8 @@ Item
 {
     property bool isGpsOff: false
     property string callFromPageName: ''
+    readonly property int posTimeOut: 30*60000//minutes to milliseconds
+    readonly property int posGetFar: 200//in meters
 
     id: userLocationItem
     enabled: true
@@ -74,7 +76,7 @@ Item
     {
         property bool initialCoordSet: false
         property bool posMethodSet: false
-        property string serverUrl: 'http://patrick.ga:8080/api/promotions?'
+        property string serverUrl: Style.allProms
         property string secret: AppSettings.value("user/hash")
         property real lat: position.coordinate.latitude
         property real lon: position.coordinate.longitude
@@ -93,13 +95,13 @@ Item
             switch(sourceError)
             {
                 case PositionSource.AccessError:
-                    sem = qsTr("Нет привилегий на получение местоположения"); break;
+                    sem = Style.noLocationPrivileges; break;
                 case PositionSource.ClosedError:
-                    sem = qsTr("Включите определение местоположения и ждите закрытия popup"); break;
+                    sem = Style.turnOnLocationAndWait; break;
                 case PositionSource.UnknownSourceError:
-                    sem = qsTr("Неизвестная ошибка PositionSource"); break;
+                    sem = Style.unknownPosSrcErr; break;
                 case PositionSource.SocketError:
-                    sem = qsTr("Ошибка подключения к источнику NMEA через socket"); break;
+                    sem = Style.nmeaConnectionViaSocketErr; break;
                 default: break;
             }
 
@@ -123,33 +125,31 @@ Item
             return true;
         }
 
-        //check if user gets further than Style.posGetFar(500) meters from initial position
+        //check if user gets further than posGetFar(500) meters from initial position
         function isGetFar(curPosCoord)
         {
             var oldPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
                                                   AppSettings.value("user/lon"));
-            return curPosCoord.distanceTo(oldPos) > Style.posGetFar;
+            return curPosCoord.distanceTo(oldPos) > posGetFar;
         }
 
-        //check if user set his initial position more than Style.posTimeOut(30) minutes ago
+        //check if user set his initial position more than posTimeOut(30) minutes ago
         function isTimePassed()
         {
             var oldTime = AppSettings.value("user/timeCheckPoint");
-            return Math.abs(new Date() - oldTime) > Style.posTimeOut;
+            return Math.abs(new Date() - oldTime) > posTimeOut;
         }
 
         function updateUserMarker()
         {
-            console.log("updateUserMarker()");
             //if loader was mapPageLoader we calling user locariot marker setter
-            if(callFromPageName === 'mapPage')
+            if(callFromPageName === Style.mapPageId)
                 parent.parent.parent.setUserLocationMarker(lat, lon, 0, false);
         }
 
         //for isGetFar() check
         function saveUserPositionInfo()
         {
-            console.log("saveUserPositionInfo()");
             AppSettings.beginGroup("user");
             AppSettings.setValue("lat", lat);
             AppSettings.setValue("lon", lon);
@@ -161,7 +161,6 @@ Item
         //so onPositionChanged won't emit
         function initialPromRequest()
         {
-            console.log("initialPromRequest()");
             //initial setting of user marker
             updateUserMarker();
             //saving initial position and timeCheckPoint of user
@@ -187,7 +186,7 @@ Item
                     if(isNaN(AppSettings.value("user/lat")) || isNaN(AppSettings.value("user/lon")))
                     {
                         disableUsability();
-                        console.log("user location is NaN");
+                        console.log(Style.userLocationIsNAN);
                     }
                     else if(request.status === 200)
                     {
@@ -215,7 +214,7 @@ Item
             stop();
         }
 
-        onUpdateTimeout: toastMessage.setText(qsTr("Невозможно получить местоположение"))
+        onUpdateTimeout: toastMessage.setText(Style.unableToGetLocation)
 
         onPositionChanged:
         {
@@ -223,7 +222,6 @@ Item
             {
                 if(Qt.platform.os === "windows" && !initialCoordSet)
                 {
-                    console.log("Windows:");
                     initialCoordSet = true;
                     initialPromRequest();
                 }
@@ -250,10 +248,9 @@ Item
             {
                 if(Qt.platform.os !== "windows")
                 {
-                    console.log("Android:");
                     //if loader is promotionPageLoader wee just need
                     //to save coords. Otherwise full circle
-                    if(callFromPageName === 'promotionPage')
+                    if(callFromPageName === Style.promotionPageId)
                         saveUserPositionInfo();
                     else initialPromRequest();
                 }
@@ -261,7 +258,7 @@ Item
                 //activating user location button
                 Style.isLocated = true;
             }
-            else toastMessage.setText(qsTr("Ошибка установки метода определения местоположения"))
+            else toastMessage.setText(Style.estabLocationMethodErr)
         }
     }//PositionSource
 

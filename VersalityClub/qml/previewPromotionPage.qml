@@ -29,6 +29,8 @@ import QtQuick.Layouts 1.3
 
 Page
 {
+    readonly property int maxLineCnt: 3//promotion description text preview
+
     id: previewPromPage
     enabled: Style.isConnected
     height: Style.pageHeight
@@ -90,7 +92,7 @@ Page
 
                         buttonBackground.color = Style.activeCouponColor;
                         previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                            {"serverUrl": 'http://patrick.ga:8080/api/user/mark?',
+                                                            {"serverUrl": Style.userMarkProm,
                                                              "functionalFlag": "user/mark"});
                     }
                     else
@@ -101,7 +103,7 @@ Page
 
                         buttonBackground.color = Style.listViewGrey;
                         previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                            {"serverUrl": 'http://patrick.ga:8080/api/user/unmark?',
+                                                            {"serverUrl": Style.userUnmarkProm,
                                                              "functionalFlag": "user/unmark"});
                     }
                 }
@@ -148,7 +150,7 @@ Page
                     id: promotionDescription
                     width: parent.width
                     text: AppSettings.value("promotion/description")
-                    maximumLineCount: Style.maxLineCnt
+                    maximumLineCount: maxLineCnt
                     font.pixelSize: Helper.toDp(13, Style.dpi)
                     color: Style.backgroundBlack
                     elide: Text.ElideRight
@@ -160,7 +162,7 @@ Page
             {
                 id: moreButton
                 Layout.fillWidth: true
-                buttonText: qsTr("ПОДРОБНЕЕ")
+                buttonText: Style.more
                 labelContentColor: Style.mainPurple
                 backgroundColor: Style.backgroundWhite
                 setBorderColor: Style.mainPurple
@@ -181,7 +183,7 @@ Page
         anchors.top: parent.top
         anchors.topMargin: Style.screenWidth*0.25
         buttonWidth: Style.screenWidth*0.55
-        buttonText: qsTr("Назад к выбору акций")
+        buttonText: Style.backToPromsPicking
         onClicked: previewPromotionPageLoader.source = "mapPage.qml"
     }
 

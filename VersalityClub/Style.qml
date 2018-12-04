@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-//help properties
+//general use properties
 pragma Singleton
 import "."
 import QtQuick 2.11
@@ -42,25 +42,13 @@ QtObject
     //REGEX
     readonly property var emailRegEx: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
-    //FOR PASS
-    readonly property string xorStr: "8fdda158eeb8c0ed9d151991aff3c84c"
-
     //PROMOTION CONSTANTS
-    readonly property int posTimeOut: 30*60000//minutes to milliseconds
-    readonly property int posGetFar: 200//in meters
-    readonly property int promCloseDist: 100//in meters
-    readonly property int maxLineCnt: 3//promotion description text preview
     property string promsResponse: ''
 
     //FOOTERBUTTONS CONSTANTS
     readonly property int footerButtonsFieldHeight: screenHeight*0.125
     readonly property int footerButtonsHeight: screenWidth*0.1
     readonly property int footerButtonsSpacing: screenWidth*0.05
-
-    //MAP CONSTANTS
-    readonly property int mapButtonSize: screenWidth*0.09
-    readonly property int fromButtonZoomLevel: 16
-    readonly property int fromLocUpdZoomLevel: 13
 
     //SCREEN CONSTANTS
     readonly property int dpi: Screen.pixelDensity * 25.4
@@ -80,4 +68,59 @@ QtObject
 
     //LOCATION ACCESS FLAG
     property bool isLocated: Qt.platform.os === "windows" ? true : false
+
+    //API REQUESTS
+    readonly property string userInfo: "http://patrick.ga:8080/api/user?"
+    readonly property string userMarkedProms: "http://patrick.ga:8080/api/user/marked?"
+    readonly property string userLogin: "http://patrick.ga:8082/api/login?"
+    readonly property string userMarkProm: "http://patrick.ga:8080/api/user/mark?"
+    readonly property string userUnmarkProm: "http://patrick.ga:8080/api/user/unmark?"
+    readonly property string allCats: "http://patrick.ga:8080/api/categories"
+    readonly property string userActivateProm: "http://patrick.ga:8080/api/user/activate?"
+    readonly property string userSelectCats: "http://patrick.ga:8080/api/user/categories?"
+    readonly property string userSignup: "http://patrick.ga:8082/api/register?"
+    readonly property string allProms: "http://patrick.ga:8080/api/promotions?"
+
+    //POPUP TEXT CONSTS
+    readonly property string getCloserToProm: "Подойдите ближе к акции"
+    readonly property string noSuitablePromsNearby: "Рядом нет подходящих для Вас акций"
+    readonly property string noFavouriteProms: "У Вас нет избранных акций"
+    readonly property string noInternetConnection: "Нет соединения с интернетом"
+    readonly property string noLocationPrivileges: "Нет привилегий на получение местоположения"
+    readonly property string turnOnLocationAndWait: "Включите определение местоположения и ждите закрытия popup"
+    readonly property string unknownPosSrcErr: "Неизвестная ошибка PositionSource"
+    readonly property string nmeaConnectionViaSocketErr: "Ошибка подключения к источнику NMEA через socket"
+    readonly property string unableToGetLocation: "Невозможно получить местоположение"
+    readonly property string estabLocationMethodErr: "Ошибка установки метода определения местоположения"
+
+    //TEXT CONSTS
+    readonly property string everythingIsClearStart: "Все понятно, начать работу!"
+    readonly property string showOnMap: "Показать на карте"
+    readonly property string showListView: "Показать в виде списка"
+    readonly property string signup: "ЗАРЕГИСТРИРОВАТЬСЯ"
+    readonly property string login: "ВОЙТИ"
+    readonly property string email: "E-mail:"
+    readonly property string emailPlaceHolder: "*****@****.**"
+    readonly property string incorrectEmail: "Некорректный e-mail"
+    readonly property string pass: "Пароль:"
+    readonly property string more: "ПОДРОБНЕЕ"
+    readonly property string backToPromsPicking: "Назад к выбору акций"
+    readonly property string sex: "Пол:"
+    readonly property string birthday: "Дата рождения:"
+    readonly property string birthdayMask: "00.00.0000"
+    readonly property string changePass: "Изменить пароль:"
+    readonly property string enterNewPass: "ВВЕДИТЕ НОВЫЙ ПАРОЛЬ"
+    readonly property string nameNotNecessary: "Имя (не обязательно):"
+    readonly property string enterName: "ВВЕДИТЕ ИМЯ"
+    readonly property string chooseCats: "Выберите категории:"
+    readonly property string choose: "ВВЫБОР"
+    readonly property string save: "СОХРАНИТЬ"
+    readonly property string activateCoupon: "АКТИВИРОВАТЬ КУПОН"
+    readonly property string closestAddress: "БЛИЖАЙШИЙ КО МНЕ АДРЕС"
+    readonly property string openCompanyCard: "ОТКРЫТЬ КАРТОЧКУ КОМПАНИИ"
+    readonly property string saveAndBackToSetting: "СОХРАНИТЬ\nИ ВЕРНУТЬСЯ К НАСТРОЙКАМ"
+    readonly property string m_f: "М/Ж"
+    readonly property string mapPageId: "mapPage"
+    readonly property string promotionPageId: "promotionPage"
+    readonly property string userLocationIsNAN: "user location is NaN"
 }

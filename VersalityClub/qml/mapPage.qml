@@ -34,6 +34,7 @@ Page
 {
     property bool locButtClicked: false
     readonly property int defaultZoomLevel: 11
+    readonly property int minZoomLevel: 8
     readonly property real defaultLat: 59.933284
     readonly property real defaultLon: 30.343614
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
@@ -44,6 +45,8 @@ Page
     readonly property string mapDataCopyright: ' Data © <a href="https://www.openstreetmap.org/'
                                                +'copyright" style="color: '+Style.mainPurple+'">'
                                                +'OpenStreetMap</a>'
+    readonly property int mapButtonSize: Style.screenWidth*0.09
+    readonly property int fromButtonZoomLevel: 16
 
     function setUserLocationMarker(lat, lon, _zoomLevel, follow)
     {
@@ -72,6 +75,7 @@ Page
     Map
     {
         id: mainMap
+        minimumZoomLevel: minZoomLevel
         anchors.fill: parent
         width: Style.screenWidth
         anchors.bottomMargin: Style.footerButtonsFieldHeight
@@ -116,10 +120,56 @@ Page
             {
                 id: userMarkerImage
                 source: "../icons/userLocationMarkerIcon.svg"
-                sourceSize.width: Style.mapButtonSize
-                sourceSize.height: Style.mapButtonSize
+                sourceSize.width: mapButtonSize
+                sourceSize.height: mapButtonSize
             }
         }
+
+        //for clusterization testing
+        /*onZoomLevelChanged: console.log('zoomLevel: ' + zoomLevel)
+
+        MapQuickItem
+        {
+            id: initMarker
+            visible: true
+            anchorPoint.x: userMarkerImage.width*0.5
+            anchorPoint.y: userMarkerImage.height
+            coordinate: QtPositioning.coordinate(59.932708, 30.347914)
+            sourceItem: Image
+            {
+                id: initMarkerImage
+                source: "../icons/userLocationMarkerIcon.svg"
+                sourceSize.width: mapButtonSize
+                sourceSize.height: mapButtonSize
+            }
+        }
+
+        MapQuickItem
+        {
+            id: mouseMarker
+            visible: false
+            anchorPoint.x: userMarkerImage.width*0.5
+            anchorPoint.y: userMarkerImage.height
+            sourceItem: Image
+            {
+                id: mouseMarkerImage
+                source: "../icons/promotionMarkerIcon.svg"
+                sourceSize.width: mapButtonSize
+                sourceSize.height: mapButtonSize
+            }
+        }
+
+        MouseArea
+        {
+            id: mouseArea
+            anchors.fill: parent
+            onPressed:
+            {
+                mouseMarker.coordinate = mainMap.toCoordinate(Qt.point(mouseArea.mouseX, mouseArea.mouseY));
+                mouseMarker.visible = true;
+                console.log("dist: " + mouseMarker.coordinate.distanceTo(initMarker.coordinate))
+            }
+        }*/
 
 
         //displays multiple promotion marks
@@ -139,8 +189,8 @@ Page
                 {
                     id: promMarkersImage
                     source: "../icons/promotionMarkerIcon.svg"
-                    sourceSize.width: Style.mapButtonSize
-                    sourceSize.height: Style.mapButtonSize
+                    sourceSize.width: mapButtonSize
+                    sourceSize.height: mapButtonSize
                 }
 
                 //show promotion preview after click on mark
@@ -181,8 +231,8 @@ Page
         id: userLocationButton
         enabled: Style.isLocated
         opacity: pressed ? 0.8 : 1
-        icon.height: Style.mapButtonSize
-        icon.width: Style.mapButtonSize
+        icon.height: mapButtonSize
+        icon.width: mapButtonSize
         icon.color: "transparent"
         icon.source: "../icons/geoLocationIcon.svg"
         anchors.verticalCenter: parent.verticalCenter
@@ -201,7 +251,7 @@ Page
             locButtClicked = true;
             setUserLocationMarker(AppSettings.value("user/lat"),
                                   AppSettings.value("user/lon"),
-                                  Style.fromButtonZoomLevel, true)
+                                  fromButtonZoomLevel, true)
         }
     }
 
@@ -232,7 +282,7 @@ Page
         anchors.top: parent.top
         anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
         buttonWidth: Style.screenWidth*0.6
-        buttonText: qsTr("Показать в виде списка")
+        buttonText: Style.showListView
         onClicked:
         {
             PageNameHolder.push("mapPage.qml");
@@ -268,7 +318,7 @@ Page
     StaticNotifier
     {
         id: notifier
-        notifierText: qsTr("No suitable promotions nearby.")
+        notifierText: Style.noSuitablePromsNearby
     }
 
     ToastMessage { id: toastMessage }

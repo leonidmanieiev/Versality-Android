@@ -52,7 +52,7 @@ Page
         {
             notifier.visible = false;
             favouritePageLoader.setSource("xmlHttpRequest.qml",
-                                          { "serverUrl": 'http://patrick.ga:8080/api/user/marked?',
+                                          { "serverUrl": Style.userMarkedProms,
                                             "functionalFlag": 'user/marked'
                                          });
         }
@@ -69,7 +69,7 @@ Page
     StaticNotifier
     {
         id: notifier
-        notifierText: qsTr("No favourite promotions.")
+        notifierText: Style.noFavouriteProms
     }
 
     Keys.onReleased:
@@ -185,7 +185,7 @@ Page
         anchors.top: parent.top
         anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
         buttonWidth: Style.screenWidth*0.5
-        buttonText: qsTr("Показать на карте")
+        buttonText: Style.showOnMap
         onClicked: favouritePageLoader.source = "mapPage.qml"
     }
 
