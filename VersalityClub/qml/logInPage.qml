@@ -28,9 +28,9 @@ import QtQuick.Layouts 1.3
 Page
 {
     id: logInPage
-    enabled: Style.isConnected
-    height: Style.screenHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.screenHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -45,20 +45,20 @@ Page
         CustomLabel
         {
             id: emailLabel
-            labelText: Style.email
-            labelColor: Style.mainPurple
+            labelText: Vars.email
+            labelColor: Vars.mainPurple
         }
 
         CustomTextField
         {
             id: emailField
-            placeholderText: Style.emailPlaceHolder
-            setFillColor: Style.backgroundWhite
-            setBorderColor: Style.mainPurple
-            setTextColor: Style.backgroundBlack
+            placeholderText: Vars.emailPlaceHolder
+            setFillColor: Vars.backgroundWhite
+            setBorderColor: Vars.mainPurple
+            setTextColor: Vars.backgroundBlack
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
-            { regExp: Style.emailRegEx }
+            { regExp: Vars.emailRegEx }
         }
 
         ControlButton
@@ -66,16 +66,16 @@ Page
             id: enterButton
             Layout.fillWidth: true
             padding: middleLayout.spacing*2
-            labelContentColor: Style.backgroundWhite
-            backgroundColor: Style.mainPurple
-            buttonText: Style.login
+            labelContentColor: Vars.backgroundWhite
+            backgroundColor: Vars.mainPurple
+            buttonText: Vars.login
             onClicked:
             {
                 //check for input corresponds to regex
                 if(emailField.acceptableInput === false)
                 {
-                    emailField.color = Style.errorRed;
-                    emailField.text = Style.incorrectEmail;
+                    emailField.color = Vars.errorRed;
+                    emailField.text = Vars.incorrectEmail;
                 }
                 else
                 {

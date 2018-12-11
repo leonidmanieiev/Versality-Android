@@ -31,9 +31,9 @@ Page
     property string strCatsJSON: ''
 
     id: selectCategoryPage
-    enabled: Style.isConnected
-    height: Style.screenHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.screenHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -42,7 +42,7 @@ Page
     {
         id: background
         anchors.fill: parent
-        color: Style.mainPurple
+        color: Vars.mainPurple
     }
 
     ListView
@@ -63,17 +63,17 @@ Page
         id: catsDelegate
         Column
         {
-            width: Style.screenWidth*0.8
+            width: Vars.screenWidth*0.8
             anchors.horizontalCenter: parent.horizontalCenter
-            bottomPadding: Style.screenHeight*0.03
+            bottomPadding: Vars.screenHeight*0.03
             Rectangle
             {
                 id: catsItem
-                height: Style.screenHeight*0.09
-                width: Style.screenWidth*0.8
+                height: Vars.screenHeight*0.09
+                width: Vars.screenWidth*0.8
                 radius: height*0.5
                 color: "transparent"
-                border.color: Style.backgroundWhite
+                border.color: Vars.backgroundWhite
                 border.width: height*0.06
 
                 Text
@@ -81,8 +81,9 @@ Page
                     id: catsItemText
                     x: parent.radius
                     anchors.verticalCenter: parent.verticalCenter
-                    color: Style.backgroundWhite
-                    font.pixelSize: Helper.toDp(15, Style.dpi)
+                    color: Vars.backgroundWhite
+                    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                                Vars.dpi)
                     text: title
                 }
 
@@ -123,20 +124,20 @@ Page
         Column
         {
             property alias model: subCatsRepeater.model
-            width: Style.screenWidth*0.8
+            width: Vars.screenWidth*0.8
             anchors.horizontalCenter: parent.horizontalCenter
-            bottomPadding: Style.screenHeight*0.01
+            bottomPadding: Vars.screenHeight*0.01
             Repeater
             {
                 id: subCatsRepeater
                 delegate: Rectangle
                 {
                     id: subCatsItem
-                    color: AppSettings.contains(subid) ? Style.toastGrey : "transparent"
-                    height: Style.screenHeight*0.09
-                    width: Style.screenWidth*0.8
+                    color: AppSettings.contains(subid) ? Vars.toastGrey : "transparent"
+                    height: Vars.screenHeight*0.09
+                    width: Vars.screenWidth*0.8
                     radius: height*0.5
-                    border.color: Style.mainPurple
+                    border.color: Vars.mainPurple
                     border.width: height*0.06
 
                     Text
@@ -145,8 +146,9 @@ Page
                         x: parent.radius*2
                         width: parent.width*0.7
                         anchors.verticalCenter: parent.verticalCenter
-                        font.pixelSize: Helper.toDp(15, Style.dpi)
-                        color: AppSettings.contains(subid) ? Style.backgroundBlack : Style.backgroundWhite
+                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                                    Vars.dpi)
+                        color: AppSettings.contains(subid) ? Vars.backgroundBlack : Vars.backgroundWhite
                         wrapMode: Text.WordWrap
                         text: subtitle
                     }
@@ -170,17 +172,17 @@ Page
                         anchors.fill: parent
                         onClicked:
                         {
-                            if(subCatsItem.color == Style.toastGrey)
+                            if(subCatsItem.color == Vars.toastGrey)
                             {
                                 subCatsItem.color = "transparent";
-                                subCatsText.color = Style.backgroundWhite
+                                subCatsText.color = Vars.backgroundWhite
                                 catsSelectedIcon.visible = false;
                                 AppSettings.removeCat(subid);
                             }
                             else
                             {
-                                subCatsItem.color = Style.toastGrey;
-                                subCatsText.color = Style.backgroundBlack;
+                                subCatsItem.color = Vars.toastGrey;
+                                subCatsText.color = Vars.backgroundBlack;
                                 catsSelectedIcon.visible = true;
                                 AppSettings.insertCat(subid);
                             }
@@ -194,16 +196,16 @@ Page
     ControlButton
     {
         id: saveSelectedButton
-        setWidth: Style.screenWidth*0.8
+        setWidth: Vars.screenWidth*0.8
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottomMargin: parent.height*0.1
-        buttonText: Style.saveAndBackToSetting
+        buttonText: Vars.saveAndBackToSetting
         onClicked:
         {
             PageNameHolder.pop();
             chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
-                                              { "serverUrl": Style.userSelectCats,
+                                              { "api": Vars.userSelectCats,
                                                 "functionalFlag": 'user/refresh-cats'
                                               });
         }

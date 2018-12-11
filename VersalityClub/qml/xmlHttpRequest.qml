@@ -29,10 +29,10 @@ import QtQuick.Controls 2.4
 Item
 {
     id: httpRequestItem
-    enabled: Style.isConnected
+    enabled: Vars.isConnected
 
     //depend on request (functionalFlag)
-    property string serverUrl: ''
+    property string api: ''
     //user data
     property string sex: AppSettings.value("user/sex")
     property string birthday: AppSettings.value("user/birthday")
@@ -47,6 +47,9 @@ Item
     //beg and end possition of code of error from server
     readonly property int errorFlagBeg: 0
     readonly property int errorFlagEnd: 5
+    //promotions data
+    property string promo_id: ''
+    property string promo_desc: ''
 
     //creates params for request
     function makeParams()
@@ -68,13 +71,17 @@ Item
             //request for refreshing sex, name and birthday
             case 'user/refresh-snb': return 'secret='+secret+'&sex='+sex+'&name='+name+'&birthday='+birthday;
             //request for adding promotion to favourite
-            case 'user/mark': return 'secret='+secret+'&promo='+AppSettings.value("promotion/id");
+            case 'user/mark': return 'secret='+secret+'&promo='+promo_id;
             //request for erasing promotion from favourite
-            case 'user/unmark': return 'secret='+secret+'&promo='+AppSettings.value("promotion/id");
+            case 'user/unmark': return 'secret='+secret+'&promo='+promo_id;
             //request for getting all merked promotions
             case 'user/marked': return 'secret='+secret;
             //request for inform server about coupon was activeted
-            case 'user/activate': return 'secret='+secret+'&promo='+AppSettings.value("promotion/id");
+            case 'user/activate': return 'secret='+secret+'&promo='+promo_id;
+            //request for data for promotion preview
+            case 'user/preprom': return 'promo_id='+promo_id+'&secret='+secret;
+            //request for full data for promotion
+            case 'user/fullprom': return 'promo_id='+promo_id+'&secret='+secret;
             //unknown request
             default: return -1;
         }
@@ -114,7 +121,7 @@ Item
         var request = new XMLHttpRequest();
         var params = makeParams();
 
-        console.log("request url: " + serverUrl + params);
+        console.log("request url: " + api + params);
 
         //if -1, there was unknown request
         if(params === -1)
@@ -123,7 +130,7 @@ Item
             return;
         }
 
-        request.open('POST', serverUrl);
+        request.open('POST', api);
 
         request.onreadystatechange = function()
         {
@@ -181,8 +188,17 @@ Item
                                 xmlHttpRequestLoader.source = "mapPage.qml";
                                 break;
                             case 'user/marked':
-                                Style.promsResponse = request.responseText;
+                                Vars.markedPromsData = request.responseText;
                                 xmlHttpRequestLoader.source = "favouritePage.qml";
+                                break;
+                            case 'user/preprom':
+                                Vars.previewPromData = request.responseText;
+                                xmlHttpRequestLoader.source = "previewPromotionPage.qml";
+                                break;
+                            case 'user/fullprom':
+                                Vars.fullPromData = request.responseText;
+                                xmlHttpRequestLoader.setSource("promotionPage.qml",
+                                                               { "p_desc": promo_desc });
                                 break;
                             default: console.log("Unknown functionalFlag"); break;
                         }//switch(functionalFlag)

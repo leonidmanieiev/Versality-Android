@@ -29,15 +29,15 @@ import QtQuick.Controls 2.4
 Button
 {
     property string buttonText: ''
-    property color labelContentColor: Style.mainPurple
-    property color backgroundColor: Style.backgroundWhite
-    property color setBorderColor: Style.mainPurple
-    property real setHeight: Style.screenHeight*0.09
-    property real setWidth: Style.screenWidth*0.8
-    property int fontPixelSize: 15
+    property color labelContentColor: Vars.mainPurple
+    property color backgroundColor: Vars.backgroundWhite
+    property color setBorderColor: Vars.mainPurple
+    property real setHeight: Vars.screenHeight*0.09
+    property real setWidth: Vars.screenWidth*0.8
+    property int fontPixelSize: Vars.defaultFontPixelSize
 
     id: controlButton
-    opacity: pressed ? 0.8 : 1
+    opacity: pressed ? Vars.defaultOpacity : 1
     background: ControlBackground
     {
         id: background
@@ -50,7 +50,7 @@ Button
     {
         id: labelContent
         text: buttonText
-        font.pixelSize: Helper.toDp(fontPixelSize, Style.dpi)
+        font.pixelSize: Helper.toDp(fontPixelSize, Vars.dpi)
         color: labelContentColor
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter

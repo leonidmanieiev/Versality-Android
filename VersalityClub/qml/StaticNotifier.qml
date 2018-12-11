@@ -34,9 +34,9 @@ Rectangle
     width: textContent.width*1.2
     height: textContent.height*2
     anchors.top: parent.top
-    anchors.topMargin: parent.height*0.2
+    anchors.topMargin: parent.height*0.3
     anchors.horizontalCenter: parent.horizontalCenter
-    color: Style.mainPurple
+    color: Vars.mainPurple
     radius: height*0.5
     opacity: 0.9
 
@@ -45,7 +45,8 @@ Rectangle
         id: textContent
         text: notifierText
         anchors.centerIn: parent
-        color: Style.backgroundWhite
-        font.pixelSize: Helper.toDp(15, Style.dpi)
+        color: Vars.backgroundWhite
+        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                    Vars.dpi)
     }
 }

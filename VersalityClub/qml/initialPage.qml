@@ -29,9 +29,9 @@ import QtQuick.Layouts 1.3
 Page
 {
     id: initialPage
-    enabled: Style.isConnected
-    height: Style.screenHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.screenHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -39,7 +39,7 @@ Page
     ColumnLayout
     {
         id: middleButtonsColumn
-        spacing: Style.screenHeight*0.07
+        spacing: Vars.screenHeight*0.07
         width: parent.width*0.8
         anchors.centerIn: parent
 
@@ -47,7 +47,7 @@ Page
         {
             id: signUpButton
             Layout.fillWidth: true
-            buttonText: Style.signup
+            buttonText: Vars.signup
             onClicked:
             {
                 PageNameHolder.push("initialPage.qml");
@@ -59,7 +59,7 @@ Page
         {
             id: logInButton
             Layout.fillWidth: true
-            buttonText: Style.login
+            buttonText: Vars.login
             onClicked:
             {
                 PageNameHolder.push("initialPage.qml");

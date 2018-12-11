@@ -30,7 +30,7 @@ import QtQuick.Layouts 1.3
 Label
 {
     property string labelText: ''
-    property color labelColor: Style.backgroundWhite
+    property color labelColor: Vars.backgroundWhite
 
     id: customLable
     clip: true
@@ -38,6 +38,7 @@ Label
     verticalAlignment: Text.AlignVCenter
     horizontalAlignment: Text.AlignHCenter
     text: labelText
-    font.pixelSize: Helper.toDp(15, Style.dpi)
+    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                Vars.dpi)
     color: labelColor
 }

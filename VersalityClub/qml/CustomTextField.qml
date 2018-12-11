@@ -29,9 +29,9 @@ import QtQuick.Layouts 1.3
 
 TextField
 {
-    property color setFillColor: Style.mainPurple
-    property color setBorderColor: Style.backgroundWhite
-    property color setTextColor: Style.backgroundWhite
+    property color setFillColor: Vars.mainPurple
+    property color setBorderColor: Vars.backgroundWhite
+    property color setTextColor: Vars.backgroundWhite
 
     id: customTextFiled
     Layout.fillWidth: true
@@ -41,14 +41,15 @@ TextField
         fillColor: setFillColor
         borderColor: setBorderColor
     }
-    font.pixelSize: Helper.toDp(15, Style.dpi)
+    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                Vars.dpi)
     color: setTextColor
     onFocusChanged:
     {
         //workaround to get default text color after incorrect input
-        if(color === Style.errorRed)
+        if(color === Vars.errorRed)
         {
-            color = Style.backgroundBlack;
+            color = Vars.backgroundBlack;
             text = ''
         }
     }

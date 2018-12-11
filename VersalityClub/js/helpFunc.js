@@ -41,6 +41,43 @@ function encryptPassword(pass, strForXor)
     return Qt.btoa(result);
 }
 
+//HTTP status code decoder
+function httpErrorDecoder(statusCode)
+{
+    var decodedError;
+    switch(statusCode)
+    {
+        case 0: decodedError = "Server not responding."; break;
+        case 400: decodedError = "Bad request."; break;
+        case 403: decodedError = "Forbidden."; break;
+        case 404: decodedError = "Not found."; break;
+        case 408: decodedError = "Request timeout."; break;
+        case 500: decodedError = "Server error."; break;
+        default: decodedError = "Unknown error."; break;
+    }
+
+    return decodedError + " Try again later.";
+}
+
+//get store hours depend on day
+function currStoreHours(p_store_hours)
+{
+    if(p_store_hours !== '')
+    {
+        //deserialize work hours
+        var hours = p_store_hours.split(' ');
+        var currDate = new Date();
+        //adjust for russian locale
+        var currDay = currDate.getDay()-1 == -1 ? 6 : currDate.getDay()-1;
+
+        return hours[currDay];
+    }
+
+    return 'Not set';
+}
+
+/*****************MODELS GENERATION**************/
+
 //puts categories from JSON to model for listview
 function catsJsonToListModel(catsJSON)
 {
@@ -71,33 +108,16 @@ function promsJsonToListModel(promsJSON)
                              //"lat": promsJSON[i].lat,
                              //"lon": promsJSON[i].lon,
                              "picture": promsJSON[i].picture.url,
-                             "title": promsJSON[i].title,
-                             "description": promsJSON[i].desc,
-                             "is_marked": promsJSON[i].is_marked,
-                             "promo_code": promsJSON[i].promo_code,
+                             //"title": promsJSON[i].title,
+                             "description": promsJSON[i].description,
+                             //"is_marked": promsJSON[i].is_marked,
+                             //"promo_code": promsJSON[i].promo_code,
                              //"store_hours": promsJSON[i].store_hours,
-                             "company_id": promsJSON[i].company_id,
-                             "company_name": promsJSON[i].company_name,
-                             "company_logo": promsJSON[i].company_logo.url
+                             //"company_id": promsJSON[i].company_id,
+                             //"company_name": promsJSON[i].company_name,
+                             //"company_logo": promsJSON[i].company_logo.url
                          });
     }
-}
-
-//get store hours depend on day
-function currStoreHours(p_store_hours)
-{
-    if(p_store_hours !== '')
-    {
-        //deserialize work hours
-        var hours = p_store_hours.split(' ');
-        var currDate = new Date();
-        //adjust for russian locale
-        var currDay = currDate.getDay()-1 == -1 ? 6 : currDate.getDay()-1;
-
-        return hours[currDay];
-    }
-
-    return 'Not set';
 }
 
 //puts promotions from JSON to model for mapMarkers
@@ -122,20 +142,30 @@ function promsJsonToListModelForMap(promsJSON)
     }
 }
 
-//HTTP status code decoder
-function httpErrorDecoder(statusCode)
+//puts promotion info from JSON to model for markers
+function promsJsonToListModelForMarkers(promJSON)
 {
-    var decodedError;
-    switch(statusCode)
+    for(var i in promJSON)
     {
-        case 0: decodedError = "Server not responding."; break;
-        case 400: decodedError = "Bad request."; break;
-        case 403: decodedError = "Forbidden."; break;
-        case 404: decodedError = "Not found."; break;
-        case 408: decodedError = "Request timeout."; break;
-        case 500: decodedError = "Server error."; break;
-        default: decodedError = "Unknown error."; break;
+        promsMarkersModel.append({
+                                    "id": promJSON[i].id,
+                                    "title": promJSON[i].title,
+                                    "icon": promJSON[i].icon,
+                                    "lat": promJSON[i].lat,
+                                    "lon": promJSON[i].lon
+                                });
     }
+}
 
-    return decodedError + " Try again later.";
+//put store info from JSON to model for promotion page
+function promsJsonToListModelForPromPage(promJSON)
+{
+    for(var i in promJSON.stores)
+    {
+        storeInfoModel.append({
+                                  "store_hours": promJSON.stores[i].store_hours,
+                                  "s_lat": promJSON.stores[i].lat,
+                                  "s_lon": promJSON.stores[i].lon
+                              });
+    }
 }

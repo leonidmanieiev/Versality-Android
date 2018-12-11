@@ -36,15 +36,15 @@ NetworkInfo
         {
             if(accessible === 1)
             {
-                Style.isConnected = true;
+                Vars.isConnected = true;
                 parent.enabled = true;
                 toastMessage.close();
             }
             else
             {
-                Style.isConnected = false;
+                Vars.isConnected = false;
                 parent.enabled = false;
-                toastMessage.setTextNoAutoClose(Style.noInternetConnection);
+                toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
             }
         }
     }

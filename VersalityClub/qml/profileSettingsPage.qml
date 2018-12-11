@@ -20,6 +20,7 @@
 **
 ****************************************************************************/
 
+//user settings page
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
@@ -30,9 +31,9 @@ import QtQuick.Controls.Styles 1.4
 Page
 {
     id: profileSettingsPage
-    enabled: Style.isConnected
-    height: Style.screenHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.screenHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -41,15 +42,15 @@ Page
     {
         id: background
         anchors.fill: parent
-        color: Style.mainPurple
+        color: Vars.mainPurple
     }
 
     Flickable
     {
         id: flickableArea
         clip: true
-        width: Style.screenWidth
-        height: Style.screenHeight*0.6
+        width: Vars.screenWidth
+        height: Vars.screenHeight*0.6
         contentHeight: middleFieldsColumns.height*1.05
         anchors.centerIn: parent
         boundsBehavior: Flickable.DragOverBounds
@@ -57,13 +58,13 @@ Page
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: Style.screenWidth
-            spacing: Style.screenHeight*0.05
+            width: Vars.screenWidth
+            spacing: Vars.screenHeight*0.05
 
             CustomLabel
             {
                 id: sexLabel
-                labelText: Style.sex
+                labelText: Vars.sex
             }
 
             ControlButton
@@ -71,9 +72,9 @@ Page
                 id: sexButton
                 Layout.fillWidth: true
                 buttonText: AppSettings.value("user/sex");
-                labelContentColor: Style.backgroundWhite
-                backgroundColor: Style.mainPurple
-                setBorderColor: Style.backgroundWhite
+                labelContentColor: Vars.backgroundWhite
+                backgroundColor: Vars.mainPurple
+                setBorderColor: Vars.backgroundWhite
                 onClicked:
                 {
                     if(buttonText === "M")
@@ -89,14 +90,14 @@ Page
             CustomLabel
             {
                 id: dateofbirthLabel
-                labelText: Style.birthday
+                labelText: Vars.birthday
             }
 
             CustomTextField
             {
                 id: dateofbirthField
                 text: AppSettings.value("user/birthday");
-                inputMask: Style.birthdayMask
+                inputMask: Vars.birthdayMask
                 inputMethodHints: Qt.ImhDigitsOnly
                 onTextChanged:
                 {
@@ -104,12 +105,24 @@ Page
                     AppSettings.setValue("birthday", text);
                     AppSettings.endGroup();
                 }
+
+                MouseArea
+                {
+                    id: clickableArea
+                    anchors.fill: parent
+                    onClicked:
+                    {
+                        //open picker and disable flicker
+                        birthdayPicker.visible = true;
+                        flickableArea.enabled = false;
+                    }
+                }
             }
 
             CustomLabel
             {
                 id: emailLabel
-                labelText: Style.email
+                labelText: Vars.email
             }
 
             CustomTextField
@@ -118,13 +131,13 @@ Page
                 text: AppSettings.value("user/email");
                 inputMethodHints: Qt.ImhEmailCharactersOnly
                 validator: RegExpValidator
-                { regExp: Style.emailRegEx }
+                { regExp: Vars.emailRegEx }
             }
 
             CustomLabel
             {
                 id: changePasswordLabel
-                labelText: Style.changePass
+                labelText: Vars.changePass
             }
 
             CustomTextField
@@ -133,20 +146,20 @@ Page
                 echoMode: TextInput.Password
                 inputMethodHints: Qt.ImhSensitiveData
                 selectByMouse: false
-                placeholderText: Style.enterNewPass
+                placeholderText: Vars.enterNewPass
             }
 
             CustomLabel
             {
                 id: firstNameLabel
-                labelText: Style.nameNotNecessary
+                labelText: Vars.nameNotNecessary
             }
 
             CustomTextField
             {
                 id: firstNameField
                 text: AppSettings.value("user/name");
-                placeholderText: Style.enterName
+                placeholderText: Vars.enterName
                 onTextChanged:
                 {
                     AppSettings.beginGroup("user");
@@ -158,22 +171,22 @@ Page
             CustomLabel
             {
                 id: selectCategoryLabel
-                labelText: Style.chooseCats
+                labelText: Vars.chooseCats
             }
 
             ControlButton
             {
                 id: selectCategoryButton
                 Layout.fillWidth: true
-                buttonText: Style.choose
-                labelContentColor: Style.backgroundWhite
-                backgroundColor: Style.mainPurple
-                setBorderColor: Style.backgroundWhite
+                buttonText: Vars.choose
+                labelContentColor: Vars.backgroundWhite
+                backgroundColor: Vars.mainPurple
+                setBorderColor: Vars.backgroundWhite
                 onClicked:
                 {
                     PageNameHolder.push("profileSettingsPage.qml");
                     profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
-                                                        { "serverUrl": Style.allCats,
+                                                        { "api": Vars.allCats,
                                                           "functionalFlag": 'categories'
                                                         });
                 }
@@ -181,25 +194,47 @@ Page
         }//ColumnLayout
     }//Flickable
 
+    ScrollDatePicker
+    {
+        id: birthdayPicker
+        visible: false
+        anchors.centerIn: parent
+
+        doneButton.onClicked:
+        {
+            //show date
+            dateofbirthField.text = selectedDay+selectedMonth+selectedYear;
+
+            //save date fo futher usage
+            AppSettings.beginGroup("user");
+            AppSettings.setValue("birthday", dateofbirthField.text);
+            AppSettings.endGroup();
+
+            //close picker and enable flicker
+            birthdayPicker.visible = false;
+            flickableArea.enabled = true;
+        }
+    }
+
     Rectangle
     {
         //temporary background
         id: backOfButton
         width: parent.width
-        height: Style.screenHeight*0.2
+        height: Vars.screenHeight*0.2
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
-        color: Style.backgroundWhite
+        color: Vars.backgroundWhite
 
         RoundButton
         {
             id: mainButton
-            height: Style.screenHeight*0.09
-            width: Style.screenWidth*0.8
+            height: Vars.screenHeight*0.09
+            width: Vars.screenWidth*0.8
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: Style.screenHeight*0.08
+            anchors.bottomMargin: Vars.screenHeight*0.08
             anchors.horizontalCenter: parent.horizontalCenter
-            opacity: pressed ? 0.8 : 1
+            opacity: pressed ? Vars.defaultOpacity : 1
             onClicked:
             {
                 AppSettings.beginGroup("user");
@@ -209,16 +244,17 @@ Page
                 AppSettings.endGroup();
 
                 profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
-                                                    { "serverUrl": Style.userInfo,
+                                                    { "api": Vars.userInfo,
                                                       "functionalFlag": 'user/refresh-snb'
                                                     });
             }
 
             contentItem: Text
             {
-                text: Style.save
-                color: Style.mainPurple
-                font.pixelSize: Helper.toDp(15, Style.dpi)
+                text: Vars.save
+                color: Vars.mainPurple
+                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                            Vars.dpi)
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -227,9 +263,9 @@ Page
             {
                 implicitWidth: parent.width
                 implicitHeight: parent.height
-                border.color: Style.mainPurple
+                border.color: Vars.mainPurple
                 border.width: height*0.06
-                radius: Style.listItemRadius
+                radius: Vars.listItemRadius
             }
         }//RoundButton
     }//Rectangle
@@ -244,12 +280,21 @@ Page
         if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
         {
             event.accepted = true;
-            var pageName = PageNameHolder.pop();
 
-            //if no pages in sequence
-            if(pageName === "")
-                appWindow.close();
-            else profileSettingsPageLoader.source = pageName;
+            if(birthdayPicker.visible === true)
+            {
+                birthdayPicker.visible = false;
+                flickableArea.enabled = true;
+            }
+            else
+            {
+                var pageName = PageNameHolder.pop();
+
+                //if no pages in sequence
+                if(pageName === "")
+                    appWindow.close();
+                else profileSettingsPageLoader.source = pageName;
+            }
 
             //to avoid not loading bug
             profileSettingsPageLoader.reload();

@@ -29,9 +29,9 @@ import QtQuick.Controls.Styles 1.4
 Page
 {
     id: signUpPage
-    enabled: Style.isConnected
-    height: Style.screenHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.screenHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -46,59 +46,66 @@ Page
         CustomLabel
         {
             id: sexLabel
-            labelText: Style.sex
-            labelColor: Style.mainPurple
+            labelText: Vars.sex
+            labelColor: Vars.mainPurple
         }
 
         ControlButton
         {
             id: sexButton
             Layout.fillWidth: true
-            buttonText: Style.m_f
-            labelContentColor: Style.backgroundBlack
+            buttonText: Vars.m_f
+            labelContentColor: Vars.backgroundBlack
             onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
             onFocusChanged:
             {
                 //workaround to get default text color after incorrect input
-                if(labelContentColor === Style.errorRed)
-                    labelContentColor = Style.backgroundBlack;
+                if(labelContentColor === Vars.errorRed)
+                    labelContentColor = Vars.backgroundBlack;
             }
         }
 
         CustomLabel
         {
             id: dateofbirthLabel
-            labelText: Style.birthday
-            labelColor: Style.mainPurple
+            labelText: Vars.birthday
+            labelColor: Vars.mainPurple
         }
 
         CustomTextField
         {
             id: dateofbirthField
-            setTextColor: Style.backgroundBlack
-            setFillColor: Style.backgroundWhite
-            setBorderColor: Style.mainPurple
-            inputMask: Style.birthdayMask
+            setTextColor: Vars.backgroundBlack
+            setFillColor: Vars.backgroundWhite
+            setBorderColor: Vars.mainPurple
+            inputMask: Vars.birthdayMask
             inputMethodHints: Qt.ImhDigitsOnly
+
+            MouseArea
+            {
+                id: clickableArea
+                anchors.fill: parent
+                onClicked: birthdayPicker.visible = true;
+            }
         }
 
         CustomLabel
         {
             id: emailLabel
-            labelText: Style.email
-            labelColor: Style.mainPurple
+            labelText: Vars.email
+            labelColor: Vars.mainPurple
         }
 
         CustomTextField
         {
             id: emailField
-            setFillColor: Style.backgroundWhite
-            setBorderColor: Style.mainPurple
-            setTextColor: Style.backgroundBlack
-            placeholderText: Style.emailPlaceHolder
+            setFillColor: Vars.backgroundWhite
+            setBorderColor: Vars.mainPurple
+            setTextColor: Vars.backgroundBlack
+            placeholderText: Vars.emailPlaceHolder
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
-            { regExp: Style.emailRegEx }
+            { regExp: Vars.emailRegEx }
         }
 
         ControlButton
@@ -106,20 +113,20 @@ Page
             id: signUpButton
             Layout.fillWidth: true
             padding: middleFieldsColumns.spacing * 2
-            buttonText: Style.signup
-            labelContentColor: Style.backgroundWhite
-            backgroundColor: Style.mainPurple
+            buttonText: Vars.signup
+            labelContentColor: Vars.backgroundWhite
+            backgroundColor: Vars.mainPurple
             onClicked:
             {
                 //check for valid inputs
-                if(sexButton.buttonText === Style.m_f)
-                    sexButton.labelContentColor = Style.errorRed;
+                if(sexButton.buttonText === Vars.m_f)
+                    sexButton.labelContentColor = Vars.errorRed;
                 else if(dateofbirthField.text === '..')
-                    dateofbirthField.color = Style.errorRed;
+                    dateofbirthField.color = Vars.errorRed;
                 else if(emailField.acceptableInput === false)
                 {
-                    emailField.color = Style.errorRed;
-                    emailField.text = Style.incorrectEmail;
+                    emailField.color = Vars.errorRed;
+                    emailField.text = Vars.incorrectEmail;
                 }
                 else
                 {
@@ -131,12 +138,32 @@ Page
                     AppSettings.endGroup();
 
                     signUpPageLoader.setSource("xmlHttpRequest.qml",
-                                               { "serverUrl": Style.userSignup,
+                                               { "api": Vars.userSignup,
                                                  "functionalFlag": 'register' });
                 }
             }
         }//ControlButton
     }//ColumnLayout
+
+    ScrollDatePicker
+    {
+        id: birthdayPicker
+        visible: false
+        anchors.centerIn: parent
+
+        doneButton.onClicked:
+        {
+            //show date
+            dateofbirthField.text = selectedDay+selectedMonth+selectedYear;
+
+            //save date fo futher usage
+            AppSettings.beginGroup("user");
+            AppSettings.setValue("birthday", dateofbirthField.text);
+            AppSettings.endGroup();
+
+            birthdayPicker.visible = false;
+        }
+    }
 
     ToastMessage { id: toastMessage }
 

@@ -29,9 +29,9 @@ ApplicationWindow
 {
     id: appWindow
     visible: true
-    width: Style.screenWidth
-    height: Style.screenHeight
-    color: Style.backgroundWhite
+    width: Vars.screenWidth
+    height: Vars.screenHeight
+    color: Vars.backgroundWhite
 
     Loader
     {

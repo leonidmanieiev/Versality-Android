@@ -32,8 +32,8 @@ RoundButton
     property real buttonWidth: 0.0
 
     id: topControlButton
-    opacity: pressed ? 0.8 : 1
-    height: Style.screenHeight*0.05
+    opacity: pressed ? Vars.defaultOpacity : 1
+    height: Vars.screenHeight*0.05
     width: buttonWidth
     radius: height*0.5
     anchors.horizontalCenter: parent.horizontalCenter
@@ -41,8 +41,8 @@ RoundButton
     {
         id: buttonTextContent
         text: buttonText
-        font.pixelSize: Helper.toDp(13, Style.dpi)
-        color: Style.backgroundWhite
+        font.pixelSize: Helper.toDp(13, Vars.dpi)
+        color: Vars.backgroundWhite
         leftPadding: parent.radius*0.8
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
@@ -52,7 +52,7 @@ RoundButton
         id: buttonBackground
         anchors.fill: parent
         radius: height*0.5
-        color: Style.mainPurple
+        color: Vars.mainPurple
         border.color: "transparent"
     }
 

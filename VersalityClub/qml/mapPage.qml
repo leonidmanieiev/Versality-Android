@@ -29,24 +29,34 @@ import QtWebView 1.1
 import QtQuick.Controls 2.4
 import QtLocation 5.9
 import QtPositioning 5.8
+import QtQuick.Layouts 1.3
 
 Page
 {
     property bool locButtClicked: false
-    readonly property int defaultZoomLevel: 11
+    property int defaultZoomLevel: 11
     readonly property int minZoomLevel: 8
-    readonly property real defaultLat: 59.933284
-    readonly property real defaultLon: 30.343614
+    property real defaultLat: 59.933284
+    property real defaultLon: 30.343614
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
     readonly property string mapCopyright: 'Tiles style by <a href="http://corp.sputnik.ru/maps"'
-                                           +' style="color: '+Style.mainPurple+'">Cпутник</a> © '
+                                           +' style="color: '+Vars.mainPurple+'">Cпутник</a> © '
                                            +'<a href="https://www.rt.ru/" style="color: '+
-                                           Style.mainPurple+'">Ростелеком</a>'
+                                           Vars.mainPurple+'">Ростелеком</a>'
     readonly property string mapDataCopyright: ' Data © <a href="https://www.openstreetmap.org/'
-                                               +'copyright" style="color: '+Style.mainPurple+'">'
+                                               +'copyright" style="color: '+Vars.mainPurple+'">'
                                                +'OpenStreetMap</a>'
-    readonly property int mapButtonSize: Style.screenWidth*0.09
+    readonly property int mapButtonSize: Vars.screenWidth*0.09
     readonly property int fromButtonZoomLevel: 16
+    readonly property int promsTilesItemHeight: popupWindow.height/3
+    //enter window vars
+    property bool isPopupOpened: false
+    readonly property int popupWindowHeight: height*0.3
+    readonly property int popupWindowDurat: 400
+    readonly property real popupWindowOpacity: 0.8
+    readonly property int popupShowTo: height-Vars.footerButtonsFieldHeight-popupWindowHeight
+    readonly property int yToHide: height-Vars.footerButtonsFieldHeight-popupWindowHeight/2
+    readonly property int yToInvisible: height-Vars.footerButtonsFieldHeight
 
     function setUserLocationMarker(lat, lon, _zoomLevel, follow)
     {
@@ -65,20 +75,23 @@ Page
     }
 
     id: mapPage
-    enabled: Style.isConnected
-    height: Style.pageHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.pageHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
+
+    //model for tiles in popup window
+    ListModel { id: promsTilesModel }
 
     Map
     {
         id: mainMap
         minimumZoomLevel: minZoomLevel
         anchors.fill: parent
-        width: Style.screenWidth
-        anchors.bottomMargin: Style.footerButtonsFieldHeight
+        width: Vars.screenWidth
+        anchors.bottomMargin: Vars.footerButtonsFieldHeight
         center: QtPositioning.coordinate(defaultLat, defaultLon)
         zoomLevel: defaultZoomLevel
         plugin: Plugin
@@ -171,12 +184,11 @@ Page
             }
         }*/
 
-
-        //displays multiple promotion marks
+        //displays multiple promotion markers
         MapItemView
         {
             id: promMarkersView
-            model: promMarkersModel
+            model: ListModel { id: promsMarkersModel }
             delegate: MapQuickItem
             {
                 id: promMarkersDelegate
@@ -196,41 +208,176 @@ Page
                 //show promotion preview after click on mark
                 MouseArea
                 {
-                    id: clickableArea
+                    id: clickableMarkerArea
                     anchors.fill: parent
                     onClicked:
                     {
-                        //saving promotion info for further using
-                        AppSettings.beginGroup("promotion");
-                        AppSettings.setValue("id", id);
-                        AppSettings.setValue("lat", lat);
-                        AppSettings.setValue("lon", lon);
-                        AppSettings.setValue("picture", picture);
-                        AppSettings.setValue("title", title);
-                        AppSettings.setValue("description", description);
-                        AppSettings.setValue("is_marked", is_marked);
-                        AppSettings.setValue("promo_code", promo_code);
-                        AppSettings.setValue("store_hours", store_hours);
-                        AppSettings.setValue("company_id", company_id);
-                        AppSettings.setValue("company_logo", company_logo);
-                        AppSettings.setValue("company_name", company_name);
-                        AppSettings.endGroup();
-
-                        PageNameHolder.push("mapPage.qml");
-                        mapPageLoader.source = "previewPromotionPage.qml";
+                        promsTilesModel.clear();
+                        promsTilesModel.append({ id: id, lat: lat, lon: lon,
+                                                 title: title, icon: icon });
+                        popupWindow.show();
                     }
                 }
             }//delegate: MapQuickItem
         }//MapItemView
     }//Map
 
-    ListModel { id: promMarkersModel }
+    Rectangle
+    {
+        id: copyrightTextBackground
+        radius: Vars.defaultRadius
+        width: childrenRect.width
+        height: childrenRect.height
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: footerButton.top
+        color: Vars.copyrightBackgroundColor
+
+        Text
+        {
+            id: copyrightText
+            color: Vars.backgroundWhite
+            textFormat: Text.RichText;
+            text: mapCopyright+mapDataCopyright
+            font.pixelSize: Helper.toDp(10, Vars.dpi)
+            onLinkActivated: Qt.openUrlExternally(link)
+        }
+    }//copyrightTextBackground
+
+    Rectangle
+    {
+        id: popupWindow
+        visible: false
+        radius: Vars.defaultRadius
+        width: parent.width;
+        height: popupWindowHeight
+        color: Vars.copyrightBackgroundColor
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        NumberAnimation
+        {
+            id: popupAnim
+            target: popupWindow
+            property: "y"
+            duration: popupWindowDurat
+        }
+
+        function show()
+        {
+            popupAnim.from = Vars.screenHeight
+            popupAnim.to = popupShowTo
+            popupAnim.start();
+        }
+
+        function hide()
+        {
+            popupAnim.from = popupWindow.y
+            popupAnim.to = Vars.screenHeight;
+            popupAnim.start();
+        }
+
+        MouseArea
+        {
+            id: drager
+            anchors.fill: parent
+            drag.target: popupWindow
+            drag.axis: Drag.YAxis
+            drag.minimumY: popupShowTo
+            drag.maximumY: Vars.screenHeight
+        }
+
+        onYChanged:
+        {
+            //set flag if entire popup shows
+            if(y === popupShowTo)
+                isPopupOpened = true;
+            else if(isPopupOpened === true)
+            {
+                //if user swipes popup down enought to automaticly hide it
+                if(y > yToHide)
+                    hide();
+                //if popup hides enought to make it invisible
+                if(y > yToInvisible)
+                {
+                    popupWindow.visible = false;
+                    isPopupOpened = false;
+                }
+            }
+            else if(isPopupOpened === false)
+                //if popup shows enought to make it visible
+                if(y <= yToInvisible)
+                    popupWindow.visible = true;
+        }
+
+        ListView
+        {
+            id: promsTilesListView
+            clip: true
+            anchors.fill: parent
+            contentHeight: promsTilesItemHeight
+            model: promsTilesModel
+            delegate: promsTilesDelegate
+        }
+    }//popupWindow
+
+    Component
+    {
+        id: promsTilesDelegate
+        Column
+        {
+            width: popupWindow.width
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Rectangle
+            {
+                id: parentCategoryIcon
+                height: promsTilesItemHeight
+                width: parent.width
+                radius: height*0.5
+                color: "transparent"
+
+                //rounding company logo item background image
+                ImageRounder
+                {
+                    id: imageRouder
+                    width: parent.height
+                    imageSource: icon
+                    roundValue: parent.height*0.5
+                }
+
+                Label
+                {
+                    id: promotionTitle
+                    topPadding: parent.height/3
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: title
+                    font.pixelSize: Helper.toDp(16, Vars.dpi)
+                    font.bold: true
+                    color: Vars.backgroundBlack
+                }
+
+                MouseArea
+                {
+                    id: promsTilesClickableArea
+                    anchors.fill: parent
+                    onClicked:
+                    {
+                        PageNameHolder.push("mapPage.qml");
+                        mapPageLoader.setSource("xmlHttpRequest.qml",
+                                                { "api": Vars.promPreViewModel,
+                                                  "functionalFlag": 'user/preprom',
+                                                  "promo_id": id
+                                                });
+                    }
+                }
+            }//parentCategoryIcon rectangle
+        }//Column
+    }//Component
 
     RoundButton
     {
         id: userLocationButton
-        enabled: Style.isLocated
-        opacity: pressed ? 0.8 : 1
+        enabled: Vars.isLocated
+        opacity: pressed ? Vars.defaultOpacity : 1
         icon.height: mapButtonSize
         icon.width: mapButtonSize
         icon.color: "transparent"
@@ -255,34 +402,14 @@ Page
         }
     }
 
-    Rectangle
-    {
-        id: copyrightTextBackground
-        width: childrenRect.width
-        height: childrenRect.height
-        anchors.left: parent.left
-        anchors.bottom: footerButton.top
-        color: Style.copyrightBackgroundColor
-
-        Text
-        {
-            id: copyrightText
-            color: Style.backgroundWhite
-            textFormat: Text.RichText;
-            text: mapCopyright+mapDataCopyright
-            font.pixelSize: Helper.toDp(10, Style.dpi)
-            onLinkActivated: Qt.openUrlExternally(link)
-        }
-    }
-
     //switch to listViewPage (proms as list)
     TopControlButton
     {
         id: showInListViewButton
         anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
-        buttonWidth: Style.screenWidth*0.6
-        buttonText: Style.showListView
+        anchors.topMargin: Helper.toDp(parent.height/20, Vars.dpi)
+        buttonWidth: Vars.screenWidth*0.6
+        buttonText: Vars.showListView
         onClicked:
         {
             PageNameHolder.push("mapPage.qml");
@@ -297,20 +424,21 @@ Page
         PageNameHolder.clear();
         //setting active focus for key capturing
         mapPage.forceActiveFocus();
-        //start capturing user location and getting promotions
+        //start capturing user location and getting all promotions
         mapPageLoader.setSource("userLocation.qml",
-                                {"callFromPageName": 'mapPage'})
+                                {"callFromPageName": 'mapPage',
+                                 "api": Vars.allPromsTilesModel})
     }
 
     function runParsing()
     {
-        if(Style.promsResponse.substring(0, 6) !== 'PROM-1'
-           && Style.promsResponse.substring(0, 6) !== '[]')
+        if(Vars.allPromsData.substring(0, 6) !== 'PROM-1'
+           && Vars.allPromsData.substring(0, 6) !== '[]')
         {
             notifier.visible = false;
-            var promsJSON = JSON.parse(Style.promsResponse);
+            var promsJSON = JSON.parse(Vars.allPromsData);
             //applying promotions at ListModel
-            Helper.promsJsonToListModelForMap(promsJSON);
+            Helper.promsJsonToListModelForMarkers(promsJSON);
         }
         else notifier.visible = true;
     }
@@ -318,7 +446,7 @@ Page
     StaticNotifier
     {
         id: notifier
-        notifierText: Style.noSuitablePromsNearby
+        notifierText: Vars.noSuitablePromsNearby
     }
 
     ToastMessage { id: toastMessage }
@@ -327,7 +455,7 @@ Page
     Timer
     {
         id: waitForResponse
-        running: Style.promsResponse === '' ? false : true
+        running: Vars.allPromsData === '' ? false : true
         interval: 1
         onTriggered: runParsing()
     }

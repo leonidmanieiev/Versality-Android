@@ -1,3 +1,3 @@
-singleton Style 1.0 Style.qml
+singleton Vars 1.0 Vars.qml
 singleton AppSettings 1.0 AppSettings.qml
 singleton PageNameHolder 1.0 PageNameHolder.qml

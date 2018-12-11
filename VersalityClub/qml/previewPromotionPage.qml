@@ -29,12 +29,24 @@ import QtQuick.Layouts 1.3
 
 Page
 {
-    readonly property int maxLineCnt: 3//promotion description text preview
+    //preview promotion vars
+    property string p_id: ''
+    property string p_title: ''
+    property string p_desc: ''
+    property string p_pic: ''
+    property string c_icon: ''
+    property real s_lat: 0.0
+    property real s_lon: 0.0
+    property bool p_is_marked: false
+    //all good flag
+    property bool allGood: false
+    //promotion description text preview
+    readonly property int maxLineCnt: 3
 
     id: previewPromPage
-    enabled: Style.isConnected
-    height: Style.pageHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.pageHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -43,153 +55,175 @@ Page
     {
         id: pageBackground
         anchors.fill: parent
-        color: Style.listViewGrey
+        color: Vars.listViewGrey
     }
 
-    Flickable
+    ColumnLayout
     {
-        id: flickableArea
-        clip: true
-        width: Style.screenWidth
-        height: Style.screenHeight
-        contentHeight: middleFieldsColumns.height*1.05
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-        boundsBehavior: Flickable.DragOverBounds
+        id: middleFieldsColumns
+        visible: allGood
+        width: parent.width
+        spacing: Vars.screenHeight*0.05
 
-        ColumnLayout
+        Button
         {
-            id: middleFieldsColumns
-            width: parent.width
-            spacing: Style.screenHeight*0.05
-
-            Button
+            id: favouriteIndicator
+            Layout.topMargin: parent.spacing*0.5
+            Layout.alignment: Qt.AlignHCenter
+            width: Vars.screenWidth*0.16
+            height: width
+            text: qsTr("AtF")
+            background: Rectangle
             {
-                id: favouriteIndicator
-                Layout.topMargin: parent.spacing*0.5
-                Layout.alignment: Qt.AlignHCenter
-                width: Style.screenWidth*0.16
-                height: width
-                text: qsTr("AtF")
-                background: Rectangle
-                {
-                    id: buttonBackground
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height
-                    radius: Style.listItemRadius
-                    color: AppSettings.value("promotion/is_marked") ?
-                               Style.errorRed : Style.backgroundWhite
-                }
-                checkable: true
-                checked: AppSettings.value("promotion/is_marked")
-                onClicked:
-                {
-                    if(checked)
-                    {
-                        AppSettings.beginGroup("promotion");
-                        AppSettings.setValue("is_marked", true);
-                        AppSettings.endGroup();
-
-                        buttonBackground.color = Style.activeCouponColor;
-                        previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                            {"serverUrl": Style.userMarkProm,
-                                                             "functionalFlag": "user/mark"});
-                    }
-                    else
-                    {
-                        AppSettings.beginGroup("promotion");
-                        AppSettings.setValue("is_marked", false);
-                        AppSettings.endGroup();
-
-                        buttonBackground.color = Style.listViewGrey;
-                        previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                            {"serverUrl": Style.userUnmarkProm,
-                                                             "functionalFlag": "user/unmark"});
-                    }
-                }
-            }//Button
-
-            Rectangle
+                id: buttonBackground
+                implicitWidth: parent.width
+                implicitHeight: parent.height
+                radius: Vars.listItemRadius
+                color: p_is_marked ? Vars.errorRed : Vars.backgroundWhite
+            }
+            checkable: true
+            checked: p_is_marked
+            onClicked:
             {
-                id: promsImage
-                Layout.topMargin: parent.spacing*3
-                Layout.alignment: Qt.AlignHCenter
-                height: Style.screenHeight*0.25
-                width: Style.screenWidth*0.8
-                radius: Style.listItemRadius
-                color: "transparent"
-
-                //rounding promotion image
-                ImageRounder
+                if(checked)
                 {
-                    imageSource: AppSettings.value("promotion/picture")
-                    roundValue: Style.listItemRadius
+                    p_is_marked = true;
+                    buttonBackground.color = Vars.activeCouponColor;
+                    previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                        {"api": Vars.userMarkProm,
+                                                         "functionalFlag": "user/mark",
+                                                         "promo_id": p_id});
+                }
+                else
+                {
+                    p_is_marked = false;
+                    buttonBackground.color = Vars.listViewGrey;
+                    previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                        {"api": Vars.userUnmarkProm,
+                                                         "functionalFlag": "user/unmark",
+                                                         "promo_id": p_id});
                 }
             }
+        }//favouriteIndicator
+
+        Rectangle
+        {
+            id: promsImage
+            Layout.topMargin: parent.spacing*3
+            Layout.alignment: Qt.AlignHCenter
+            height: Vars.screenHeight*0.25
+            width: Vars.screenWidth*0.8
+            radius: Vars.listItemRadius
+            color: "transparent"
+
+            //rounding promotion image
+            ImageRounder
+            {
+                imageSource: p_pic
+                roundValue: Vars.listItemRadius
+            }
+        }
+
+        Label
+        {
+            id: promotionTitle
+            text: p_title
+            font.pixelSize: Helper.toDp(16, Vars.dpi)
+            font.bold: true
+            color: Vars.backgroundBlack
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        Rectangle
+        {
+            id: textArea
+            width: promsImage.width
+            height: promotionDescription.height
+            Layout.alignment: Qt.AlignHCenter
+            color: Vars.listViewGrey
 
             Label
             {
-                id: promotionTitle
-                text: AppSettings.value("promotion/title")
-                font.pixelSize: Helper.toDp(16, Style.dpi)
-                font.bold: true
-                color: Style.backgroundBlack
-                Layout.alignment: Qt.AlignHCenter
+                id: promotionDescription
+                width: parent.width
+                text: p_desc === '' ? '\n\n\n' : p_desc
+                maximumLineCount: maxLineCnt
+                font.pixelSize: Helper.toDp(13, Vars.dpi)
+                color: Vars.backgroundBlack
+                elide: Text.ElideRight
+                wrapMode: Label.WordWrap
             }
+        }
 
-            Rectangle
+        ControlButton
+        {
+            id: moreButton
+            Layout.fillWidth: true
+            buttonText: Vars.more
+            labelContentColor: Vars.mainPurple
+            backgroundColor: Vars.backgroundWhite
+            setBorderColor: Vars.mainPurple
+            Layout.alignment: Qt.AlignHCenter
+            onClicked:
             {
-                id: textArea
-                width: promsImage.width
-                height: promotionDescription.height
-                Layout.alignment: Qt.AlignHCenter
-                color: Style.listViewGrey
-
-                Label
-                {
-                    id: promotionDescription
-                    width: parent.width
-                    text: AppSettings.value("promotion/description")
-                    maximumLineCount: maxLineCnt
-                    font.pixelSize: Helper.toDp(13, Style.dpi)
-                    color: Style.backgroundBlack
-                    elide: Text.ElideRight
-                    wrapMode: Label.WordWrap
-                }
+                PageNameHolder.push("previewPromotionPage.qml");
+                previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
+                                        { "api": Vars.promFullViewModel,
+                                          "functionalFlag": 'user/fullprom',
+                                          "promo_id": p_id,
+                                          "promo_desc": p_desc
+                                        });
             }
-
-            ControlButton
-            {
-                id: moreButton
-                Layout.fillWidth: true
-                buttonText: Style.more
-                labelContentColor: Style.mainPurple
-                backgroundColor: Style.backgroundWhite
-                setBorderColor: Style.mainPurple
-                Layout.alignment: Qt.AlignHCenter
-                onClicked:
-                {
-                    PageNameHolder.push("previewPromotionPage.qml");
-                    previewPromotionPageLoader.source = "promotionPage.qml";
-                }
-            }//ControlButton
-        }//ColumnLayout
-    }//Flickable
+        }//ControlButton
+    }//ColumnLayout
 
     //back to promotions choose button
     TopControlButton
     {
         id: backButton
+        visible: allGood
         anchors.top: parent.top
-        anchors.topMargin: Style.screenWidth*0.25
-        buttonWidth: Style.screenWidth*0.55
-        buttonText: Style.backToPromsPicking
+        anchors.topMargin: Vars.screenWidth*0.25
+        buttonWidth: Vars.screenWidth*0.55
+        buttonText: Vars.backToPromsPicking
         onClicked: previewPromotionPageLoader.source = "mapPage.qml"
     }
 
     FooterButtons { pressedFromPageName: 'previewPromotionPage.qml' }
 
-    Component.onCompleted: previewPromPage.forceActiveFocus()
+    Component.onCompleted:
+    {
+        //if we got correct response
+        if(Vars.previewPromData.length > 50)
+        {
+            allGood = true;
+            notifier.visible = false;
+            //formating data
+            var ppdInJSON = JSON.parse(Vars.previewPromData);
+            //initializing vars
+            p_id = ppdInJSON[0].id;
+            p_title = ppdInJSON[0].title;
+            p_desc = ppdInJSON[0].desc;
+            p_pic = ppdInJSON[0].pic;
+            c_icon = ppdInJSON[0].icon;
+            s_lat = ppdInJSON[0].lat;
+            s_lon = ppdInJSON[0].lon;
+            p_is_marked = ppdInJSON[0].is_marked;
+            //setting active focus for key capturing
+            previewPromPage.forceActiveFocus()
+        }
+        else
+        {
+            allGood = false;
+            notifier.visible = true;
+        }
+    }//Component.onCompleted:
+
+    StaticNotifier
+    {
+        id: notifier
+        notifierText: Vars.smthWentWrong
+    }
 
     Keys.onReleased:
     {

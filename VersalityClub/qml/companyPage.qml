@@ -28,9 +28,9 @@ import QtQuick.Controls 2.4
 Page
 {
     id: companyPage
-    enabled: Style.isConnected
-    height: Style.pageHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.pageHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -39,7 +39,7 @@ Page
     {
         id: pageBackground
         anchors.fill: parent
-        color: Style.backgroundBlack
+        color: Vars.backgroundBlack
     }
 
     FooterButtons { pressedFromPageName: 'companyPage.qml' }

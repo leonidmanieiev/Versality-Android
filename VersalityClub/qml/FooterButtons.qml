@@ -32,32 +32,32 @@ Rectangle
     property string pressedFromPageName: ''
 
     id: rowLayoutBackground
-    height: Style.footerButtonsFieldHeight
+    height: Vars.footerButtonsFieldHeight
     width: parent.width
     anchors.bottom: parent.bottom
-    color: Style.backgroundWhite
+    color: Vars.backgroundWhite
 
     //footer buttons
     RowLayout
     {
         id: footerButtonsLayout
         anchors.fill: parent
-        spacing: Style.footerButtonsSpacing
+        spacing: Vars.footerButtonsSpacing
 
         RoundButton
         {
             id: userSettingsButton
-            height: Style.footerButtonsHeight
+            height: Vars.footerButtonsHeight
             width: height
             Layout.alignment: Qt.AlignHCenter
             radius: height/2
-            opacity: pressed ? 0.8 : 1
+            opacity: pressed ? Vars.defaultOpacity : 1
             text: "S"
             onClicked:
             {
                 PageNameHolder.push(pressedFromPageName);
                 appWindowLoader.setSource("xmlHttpRequest.qml",
-                                          { "serverUrl": Style.userInfo,
+                                          { "api": Vars.userInfo,
                                             "functionalFlag": 'user'
                                           });
             }
@@ -66,25 +66,25 @@ Rectangle
         RoundButton
         {
             id: mainButton
-            height: Style.footerButtonsHeight
+            height: Vars.footerButtonsHeight
             width: height
             Layout.alignment: Qt.AlignHCenter
             radius: height/2
-            opacity: pressed ? 0.8 : 1
+            opacity: pressed ? Vars.defaultOpacity : 1
             text: "M"
             onClicked: appWindowLoader.setSource("mapPage.qml");
             //need to clear data for getting fresh one
-            Component.onCompleted: Style.promsResponse = '';
+            Component.onCompleted: Vars.allPromsData = '';
         }
 
         RoundButton
         {
             id: favouritesButton
-            height: Style.footerButtonsHeight
+            height: Vars.footerButtonsHeight
             width: height
             Layout.alignment: Qt.AlignHCenter
             radius: height/2
-            opacity: pressed ? 0.8 : 1
+            opacity: pressed ? Vars.defaultOpacity : 1
             text: "F"
             onClicked:
             {
@@ -92,7 +92,7 @@ Rectangle
                     PageNameHolder.push(pressedFromPageName);
 
                 appWindowLoader.setSource("xmlHttpRequest.qml",
-                                          { "serverUrl": Style.userMarkedProms,
+                                          { "api": Vars.userMarkedProms,
                                             "functionalFlag": 'user/marked'
                                           });
             }
@@ -103,8 +103,8 @@ Rectangle
     {
         id: footerButtonsLoader
         asynchronous: true
-        height: Style.screenHeight
-        width: Style.screenWidth
+        height: Vars.screenHeight
+        width: Vars.screenWidth
         anchors.bottom: parent.bottom
         visible: status == Loader.Ready
     }

@@ -29,9 +29,9 @@ import QtQuick.Controls 2.4
 Page
 {
     id: favouritePage
-    enabled: Style.isConnected
-    height: Style.pageHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.pageHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -40,7 +40,7 @@ Page
     {
         id: pageBackground
         anchors.fill: parent
-        color: Style.listViewGrey
+        color: Vars.listViewGrey
     }
 
     Component.onCompleted:
@@ -48,18 +48,18 @@ Page
         favouritePage.forceActiveFocus();
 
         //making request for favourites when getting to this page by pressing back button
-        if(Style.promsResponse === '')
+        if(Vars.markedPromsData === '')
         {
             notifier.visible = false;
             favouritePageLoader.setSource("xmlHttpRequest.qml",
-                                          { "serverUrl": Style.userMarkedProms,
+                                          { "api": Vars.userMarkedProms,
                                             "functionalFlag": 'user/marked'
                                          });
         }
-        else if(Style.promsResponse !== '[]')
+        else if(Vars.markedPromsData !== '[]')
         {
             notifier.visible = false;
-            var promsJSON = JSON.parse(Style.promsResponse);
+            var promsJSON = JSON.parse(Vars.markedPromsData);
             //applying promotions at ListModel
             Helper.promsJsonToListModel(promsJSON);
         }
@@ -69,7 +69,7 @@ Page
     StaticNotifier
     {
         id: notifier
-        notifierText: Style.noFavouriteProms
+        notifierText: Vars.noFavouriteProms
     }
 
     Keys.onReleased:
@@ -110,22 +110,22 @@ Page
         id: promsDelegate
         Column
         {
-            width: Style.screenWidth*0.8
+            width: Vars.screenWidth*0.8
             anchors.horizontalCenter: parent.horizontalCenter
-            bottomPadding: Style.screenHeight*0.1
+            bottomPadding: Vars.screenHeight*0.1
             Rectangle
             {
                 id: promsItem
-                height: Style.screenHeight*0.25
-                width: Style.screenWidth*0.8
-                radius: Style.listItemRadius
+                height: Vars.screenHeight*0.25
+                width: Vars.screenWidth*0.8
+                radius: Vars.listItemRadius
                 color: "transparent"
 
                 //rounding promotion item background image
                 ImageRounder
                 {
                     imageSource: picture
-                    roundValue: Style.listItemRadius
+                    roundValue: Vars.listItemRadius
                 }
 
                 Rectangle
@@ -142,7 +142,7 @@ Page
                     //rounding company logo item background image
                     ImageRounder
                     {
-                        imageSource: company_logo
+                        imageSource: 'https://fonsports.ru/wp-content/uploads/2018/07/logo-rpl.jpg'//company_logo
                         roundValue: parent.height*0.5
                     }
                 }
@@ -154,24 +154,13 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
-                        //saving promotion info for further using
-                        AppSettings.beginGroup("promotion");
-                        AppSettings.setValue("id", id);
-                        AppSettings.setValue("lat", 0.0);//CHANGE AFTER
-                        AppSettings.setValue("lon", 0.0);//CHANGE AFTER
-                        AppSettings.setValue("picture", picture);
-                        AppSettings.setValue("title", title);
-                        AppSettings.setValue("description", description);
-                        AppSettings.setValue("is_marked", is_marked);
-                        AppSettings.setValue("promo_code", promo_code);
-                        AppSettings.setValue("store_hours", '');//CHANGE AFTER
-                        AppSettings.setValue("company_id", company_id);
-                        AppSettings.setValue("company_logo", company_logo);
-                        AppSettings.setValue("company_name", company_name);
-                        AppSettings.endGroup();
-
-                        PageNameHolder.push("favouritePage.qml");
-                        favouritePageLoader.source = "promotionPage.qml"
+                        PageNameHolder.push("previewPromotionPage.qml");
+                        favouritePageLoader.setSource("xmlHttpRequest.qml",
+                                                { "api": Vars.promFullViewModel,
+                                                  "functionalFlag": 'user/fullprom',
+                                                  "promo_id": id,
+                                                  "promo_desc": description
+                                                });
                     }
                 }//MouseArea
             }//Rectangle
@@ -183,9 +172,9 @@ Page
     {
         id: showOnMapButton
         anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
-        buttonWidth: Style.screenWidth*0.5
-        buttonText: Style.showOnMap
+        anchors.topMargin: Helper.toDp(parent.height/20, Vars.dpi)
+        buttonWidth: Vars.screenWidth*0.5
+        buttonText: Vars.showOnMap
         onClicked: favouritePageLoader.source = "mapPage.qml"
     }
 

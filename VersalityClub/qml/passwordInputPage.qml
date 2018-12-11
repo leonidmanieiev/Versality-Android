@@ -32,9 +32,9 @@ Page
     readonly property string xorStr: "8fdda158eeb8c0ed9d151991aff3c84c"
 
     id: passInputPage
-    enabled: Style.isConnected
-    height: Style.screenHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.screenHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -53,9 +53,10 @@ Page
             Layout.fillWidth: true
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            text: Style.pass
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.mainPurple
+            text: Vars.pass
+            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                        Vars.dpi)
+            color: Vars.mainPurple
         }
 
         TextField
@@ -65,8 +66,9 @@ Page
             horizontalAlignment: Text.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
             background: ControlBackground { }
-            font.pixelSize: Helper.toDp(15, Style.dpi)
-            color: Style.backgroundBlack
+            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                        Vars.dpi)
+            color: Vars.backgroundBlack
             echoMode: TextInput.Password
             inputMethodHints: Qt.ImhSensitiveData
             selectByMouse: false
@@ -77,9 +79,9 @@ Page
             id: enterButton
             padding: middleLayout.spacing*2
             Layout.fillWidth: true
-            buttonText: Style.login
-            labelContentColor: Style.backgroundWhite
-            backgroundColor: Style.mainPurple
+            buttonText: Vars.login
+            labelContentColor: Vars.backgroundWhite
+            backgroundColor: Vars.mainPurple
             onClicked:
             {
                 var encryptedPass = Helper.encryptPassword(passField.text,
@@ -88,7 +90,7 @@ Page
                 AppSettings.setValue("password", encryptedPass);
                 AppSettings.endGroup();
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
-                                                  { "serverUrl": Style.userLogin,
+                                                  { "api": Vars.userLogin,
                                                     "functionalFlag": 'login'
                                                   });
             }

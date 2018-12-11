@@ -29,9 +29,9 @@ import QtQuick.Controls 2.4
 Page
 {
     id: listViewPage
-    enabled: Style.isConnected
-    height: Style.pageHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.pageHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -40,7 +40,7 @@ Page
     {
         id: pageBackground
         anchors.fill: parent
-        color: Style.listViewGrey
+        color: Vars.listViewGrey
     }
 
     Component.onCompleted:
@@ -53,11 +53,11 @@ Page
 
     function runParsing()
     {
-        if(Style.promsResponse.substring(0, 6) !== 'PROM-1'
-           && Style.promsResponse.substring(0, 6) !== '[]')
+        if(Vars.allPromsData.substring(0, 6) !== 'PROM-1'
+           && Vars.allPromsData.substring(0, 6) !== '[]')
         {
             notifier.visible = false;
-            var promsJSON = JSON.parse(Style.promsResponse);
+            var promsJSON = JSON.parse(Vars.allPromsData);
             //applying promotions at ListModel
             Helper.promsJsonToListModel(promsJSON);
         }
@@ -67,7 +67,7 @@ Page
     StaticNotifier
     {
         id: notifier
-        notifierText: Style.noSuitablePromsNearby
+        notifierText: Vars.noSuitablePromsNearby
     }
 
     ToastMessage { id: toastMessage }
@@ -75,7 +75,7 @@ Page
     Timer
     {
         id: waitForResponse
-        running: Style.promsResponse === '' ? false : true
+        running: Vars.allPromsData === '' ? false : true
         interval: 1
         onTriggered: runParsing()
     }
@@ -84,38 +84,36 @@ Page
     {
         id: promsListView
         clip: true
-        width: Style.screenWidth
-        height: Style.screenHeight
+        width: Vars.screenWidth
+        height: Vars.screenHeight
         contentHeight: promsDelegate.height*1.1
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-        model: promsModel
+        model: ListModel { id: promsModel }
         delegate: promsDelegate
     }
-
-    ListModel { id: promsModel }
 
     Component
     {
         id: promsDelegate
         Column
         {
-            width: Style.screenWidth*0.8
+            width: Vars.screenWidth*0.8
             anchors.horizontalCenter: parent.horizontalCenter
-            bottomPadding: Style.screenHeight*0.1
+            bottomPadding: Vars.screenHeight*0.1
             Rectangle
             {
                 id: promsItem
-                height: Style.screenHeight*0.25
-                width: Style.screenWidth*0.8
-                radius: Style.listItemRadius
+                height: Vars.screenHeight*0.25
+                width: Vars.screenWidth*0.8
+                radius: Vars.listItemRadius
                 color: "transparent"
 
                 //rounding promotion item background image
                 ImageRounder
                 {
                     imageSource: picture
-                    roundValue: Style.listItemRadius
+                    roundValue: Vars.listItemRadius
                 }
 
                 Rectangle
@@ -173,9 +171,9 @@ Page
     {
         id: showOnMapButton
         anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
-        buttonWidth: Style.screenWidth*0.5
-        buttonText: Style.showOnMap
+        anchors.topMargin: Helper.toDp(parent.height/20, Vars.dpi)
+        buttonWidth: Vars.screenWidth*0.5
+        buttonText: Vars.showOnMap
         onClicked: listViewPageLoader.source = "mapPage.qml"
     }
 

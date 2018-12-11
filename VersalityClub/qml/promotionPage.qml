@@ -30,18 +30,27 @@ import QtPositioning 5.8
 
 Page
 {
-    readonly property int promCloseDist: 100//in meters
-
-    function forceUpdateUserCoords()
-    {
-        promotionPageLoader.setSource("userLocation.qml",
-                    {"callFromPageName": 'promotionPage'});
-    }
+    //promotion vars
+    property string p_id: ''
+    property string p_title: ''
+    property string p_desc: ''
+    property string p_pic: ''
+    property string p_promo_code: ''
+    property string c_icon: ''
+    property string comp_id: ''
+    property bool p_is_marked: false
+    //all good flag
+    property bool allGood: false
+    //dist (in meters) to be able to active coupon
+    readonly property int promCloseDist: 100
+    //other
+    property real minDistToStore: 500000
+    readonly property int storeInfoItemHeight: Vars.screenHeight*0.07
 
     id: promotionPage
-    enabled: Style.isConnected
-    height: Style.pageHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.pageHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -50,15 +59,16 @@ Page
     {
         id: pageBackground
         anchors.fill: parent
-        color: Style.listViewGrey
+        color: Vars.listViewGrey
     }
 
     Flickable
     {
         id: flickableArea
+        visible: allGood
         clip: true
-        width: Style.screenWidth
-        height: Style.screenHeight
+        width: Vars.screenWidth
+        height: Vars.screenHeight
         contentHeight: middleFieldsColumns.height*1.1
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
@@ -68,32 +78,32 @@ Page
         {
             id: middleFieldsColumns
             width: parent.width
-            spacing: Style.screenHeight*0.05
+            spacing: Vars.screenHeight*0.05
 
             Rectangle
             {
                 id: promsImage
                 Layout.alignment: Qt.AlignHCenter
-                height: Style.screenHeight*0.25
-                width: Style.screenWidth*0.8
-                radius: Style.listItemRadius
+                height: Vars.screenHeight*0.25
+                width: Vars.screenWidth*0.8
+                radius: Vars.listItemRadius
                 color: "transparent"
 
                 //rounding promotion image
                 ImageRounder
                 {
-                    imageSource: AppSettings.value("promotion/picture")
-                    roundValue: Style.listItemRadius
+                    imageSource: p_pic
+                    roundValue: Vars.listItemRadius
                 }
             }
 
             Label
             {
                 id: promotionTitle
-                text: AppSettings.value("promotion/title")
-                font.pixelSize: Helper.toDp(16, Style.dpi)
+                text: p_title
+                font.pixelSize: Helper.toDp(16, Vars.dpi)
                 font.bold: true
-                color: Style.backgroundBlack
+                color: Vars.backgroundBlack
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -103,15 +113,15 @@ Page
                 width: promsImage.width
                 height: promotionDescription.height
                 Layout.alignment: Qt.AlignHCenter
-                color: Style.listViewGrey
+                color: Vars.listViewGrey
 
                 Label
                 {
                     id: promotionDescription
                     width: parent.width
-                    text: AppSettings.value("promotion/description")
-                    font.pixelSize: Helper.toDp(13, Style.dpi)
-                    color: Style.backgroundBlack
+                    text: p_desc
+                    font.pixelSize: Helper.toDp(13, Vars.dpi)
+                    color: Vars.backgroundBlack
                     wrapMode: Label.WordWrap
                 }
             }
@@ -119,39 +129,31 @@ Page
             RowLayout
             {
                 id: rowLayout1
+                enabled: p_desc !== ''
                 width: parent.width
                 Layout.alignment: Qt.AlignHCenter
-                spacing: Style.screenWidth*0.1
+                spacing: Vars.screenWidth*0.1
 
                 ControlButton
                 {
                     id: activeCoupon
-                    setWidth: Style.screenWidth*0.6
-                    buttonText: Style.activateCoupon
-                    labelContentColor: Style.backgroundWhite
-                    backgroundColor: Style.activeCouponColor
+                    setWidth: Vars.screenWidth*0.6
+                    buttonText: Vars.activateCoupon
+                    labelContentColor: Vars.backgroundWhite
+                    backgroundColor: Vars.activeCouponColor
                     setBorderColor: "transparent"
                     onClicked:
                     {
-                        forceUpdateUserCoords();
-
-                        if(closeEnough())
+                        if(minDistToStore < promCloseDist)
                         {
-                            promoCodePopup.setText(AppSettings.value("promotion/promo_code"));
+                            promoCodePopup.setText(p_promo_code);
                             //inform server about coupon was activated
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                          {"serverUrl": Style.userActivateProm,
-                                                           "functionalFlag": "user/activate"});
+                                                          {"api": Vars.userActivateProm,
+                                                           "functionalFlag": "user/activate",
+                                                           "promo_id": p_id});
                         }
-                        else toastMessage.setTextAndRun(Style.getCloserToProm);
-                    }
-                    function closeEnough()
-                    {
-                        var promPos = QtPositioning.coordinate(AppSettings.value("promotion/lat"),
-                                                               AppSettings.value("promotion/lon"));
-                        var userPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
-                                                               AppSettings.value("user/lon"));
-                        return promPos.distanceTo(userPos) < promCloseDist;
+                        else toastMessage.setTextAndRun(Vars.getCloserToProm);
                     }
                 }
 
@@ -160,119 +162,157 @@ Page
                     id: addToFavourite
                     setWidth: setHeight
                     buttonText: qsTr("AtF")
-                    labelContentColor: Style.backgroundWhite
-                    backgroundColor: AppSettings.value("promotion/is_marked") ?
-                                   Style.activeCouponColor : Style.listViewGrey
+                    labelContentColor: Vars.backgroundWhite
+                    backgroundColor: p_is_marked ? Vars.activeCouponColor :
+                                                   Vars.listViewGrey
                     setBorderColor: "transparent"
                     checkable: true
-                    checked: AppSettings.value("promotion/is_marked")
+                    checked: p_is_marked
                     onClicked:
                     {
                         if(checked)
                         {
-                            AppSettings.beginGroup("promotion");
-                            AppSettings.setValue("is_marked", true);
-                            AppSettings.endGroup();
-
-                            backgroundColor = Style.activeCouponColor;
+                            p_is_marked = true;
+                            backgroundColor = Vars.activeCouponColor;
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                          {"serverUrl": Style.userMarkProm,
-                                                           "functionalFlag": "user/mark"});
+                                                          {"api": Vars.userMarkProm,
+                                                           "functionalFlag": "user/mark",
+                                                           "promo_id": p_id});
                         }
                         else
                         {
-                            AppSettings.beginGroup("promotion");
-                            AppSettings.setValue("is_marked", false);
-                            AppSettings.endGroup();
-
-                            backgroundColor = Style.listViewGrey;
+                            p_is_marked = false;
+                            backgroundColor = Vars.listViewGrey;
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                          {"serverUrl": Style.userUnmarkProm,
-                                                           "functionalFlag": "user/unmark"});
+                                                          {"api": Vars.userUnmarkProm,
+                                                           "functionalFlag": "user/unmark",
+                                                           "promo_id": p_id});
                         }
                     }
-                }//ControlButton
-            }//RowLayout
+                }//addToFavourite
+            }//RowLayout1
 
-            RowLayout
+            ListView
             {
-                id: rowLayout2
-                width: Style.screenWidth*0.8
+                id: storeInfoListView
+                clip: true
                 Layout.alignment: Qt.AlignHCenter
-                spacing: Style.screenWidth*0.05
+                width: Vars.screenWidth*0.8
+                height: (storeInfoItemHeight+Vars.screenWidth*0.01)*2
+                contentHeight: storeInfoItemHeight
+                model: ListModel { id: storeInfoModel }
+                delegate: storeInfoDelegate
+            }
 
-                Rectangle
+            Component
+            {
+                id: storeInfoDelegate
+
+                MouseArea
                 {
-                    id: companyLogo
-                    height: Style.screenWidth*0.16
-                    width: height
-                    radius: height*0.5
-                    color: "transparent"
-
-                    //rounding company logo item background image
-                    ImageRounder
+                    id: storeInfoClickableArea
+                    width: childrenRect.width
+                    height: childrenRect.height
+                    onClicked:
                     {
-                        imageSource: AppSettings.value("promotion/company_logo")
-                        roundValue: parent.height*0.5
+                        PageNameHolder.push("promotionPage.qml");
+                        promotionPageLoader.setSource("mapPage.qml",
+                                                { "defaultLat": s_lat,
+                                                  "defaultLon": s_lon,
+                                                  "defaultZoomLevel": 16
+                                                });
                     }
-                }
 
-                Rectangle
-                {
-                    id: textBox
-                    width: Style.screenWidth*0.6
-                    height: Style.screenWidth*0.15
-                    Layout.alignment: Qt.AlignHCenter
-                    color: Style.listViewGrey
-
-                    Label
+                    RowLayout
                     {
-                        id: nameAndHours
-                        topPadding: Helper.toDp(7, Style.dpi)
-                        text: AppSettings.value("promotion/company_name")+'\n'
-                              +Helper.currStoreHours(AppSettings.value("promotion/store_hours"))
-                        font.pixelSize: Helper.toDp(13, Style.dpi)
-                        color: Style.backgroundBlack
-                    }
-                }
-            }//RowLayout
+                        id: rowLayout2
+                        width: Vars.screenWidth*0.8
+                        Layout.alignment: Qt.AlignHCenter
 
-            ControlButton
+                        Rectangle
+                        {
+                            id: textBox1
+                            width: Vars.screenWidth*0.2
+                            height: storeInfoItemHeight
+                            Layout.alignment: Qt.AlignHCenter
+                            color: "transparent"
+
+                            Label
+                            {
+                                id: distToStore
+                                text: distBetweenCoords() + ' m'
+                                font.pixelSize: Helper.toDp(13, Vars.dpi)
+                                color: Vars.backgroundBlack
+
+                                function distBetweenCoords()
+                                {
+                                    var storePos = QtPositioning.coordinate(s_lat, s_lon);
+                                    var userPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
+                                                                           AppSettings.value("user/lon"));
+                                    var currDistToStore = Math.round(storePos.distanceTo(userPos));
+                                    minDistToStore = minDistToStore > currDistToStore ? currDistToStore : minDistToStore
+
+                                    return currDistToStore;
+                                }
+                            }
+                        }
+
+                        Rectangle
+                        {
+                            id: textBox2
+                            width: Vars.screenWidth*0.2
+                            height: storeInfoItemHeight
+                            Layout.alignment: Qt.AlignHCenter
+                            color: "transparent"
+
+                            Label
+                            {
+                                id: workingHours
+                                text: Helper.currStoreHours(store_hours)
+                                font.pixelSize: Helper.toDp(13, Vars.dpi)
+                                color: Vars.backgroundBlack
+                            }
+                        }
+                    }//rowLayout2
+                }//storeInfoClickableArea
+            }//Component
+
+            /*ControlButton
             {
                 id: nearestStoreButton
                 Layout.fillWidth: true
-                buttonText: Style.closestAddress
-                labelContentColor: Style.mainPurple
-                backgroundColor: Style.backgroundWhite
-                setBorderColor: Style.mainPurple
+                buttonText: Vars.closestAddress
+                labelContentColor: Vars.mainPurple
+                backgroundColor: Vars.backgroundWhite
+                setBorderColor: Vars.mainPurple
                 Layout.alignment: Qt.AlignHCenter
                 //onClicked:
-            }
+            }*/
 
             ControlButton
             {
                 id: companyCardButton
                 Layout.fillWidth: true
-                buttonText: Style.openCompanyCard
-                labelContentColor: Style.backgroundBlack
-                backgroundColor: Style.backgroundWhite
-                setBorderColor: Style.backgroundBlack
+                buttonText: Vars.openCompanyCard
+                labelContentColor: Vars.backgroundBlack
+                backgroundColor: Vars.backgroundWhite
+                setBorderColor: Vars.backgroundBlack
                 Layout.alignment: Qt.AlignHCenter
-                Layout.topMargin: Style.screenHeight*0.03
+                //Layout.topMargin: Vars.screenHeight*0.03
                 onClicked:
                 {
                     PageNameHolder.push("promotionPage.qml");
                     promotionPageLoader.source = "companyPage.qml";
                 }
             }
-        }//ColumnLayout
+        }//middleFieldsColumns
     }//Flickable
 
     ToastMessage
     {
         id: promoCodePopup
-        backgroundColor: Style.mainPurple
-        y: Style.screenHeight*0.5
+        backgroundColor: Vars.mainPurple
+        y: Vars.screenHeight*0.5
     }
 
     ToastMessage { id: toastMessage }
@@ -281,10 +321,11 @@ Page
     TopControlButton
     {
         id: backButton
+        visible: allGood
         anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/20, Style.dpi)
-        buttonWidth: Style.screenWidth*0.55
-        buttonText: Style.backToPromsPicking
+        anchors.topMargin: Helper.toDp(parent.height/20, Vars.dpi)
+        buttonWidth: Vars.screenWidth*0.55
+        buttonText: Vars.backToPromsPicking
         onClicked: promotionPageLoader.source = "mapPage.qml"
     }
 
@@ -292,8 +333,37 @@ Page
 
     Component.onCompleted:
     {
-        promotionPage.forceActiveFocus();
-        forceUpdateUserCoords();
+        //if we got correct response
+        if(Vars.fullPromData.length > 50)
+        {
+            allGood = true;
+            notifier.visible = false;
+            //formating data
+            var ppdInJSON = JSON.parse(Vars.fullPromData);
+            Helper.promsJsonToListModelForPromPage(ppdInJSON);
+            //initializing vars
+            p_id = ppdInJSON.id;
+            p_title = ppdInJSON.title;
+            p_desc = ppdInJSON.desc;
+            p_pic = ppdInJSON.pic;
+            p_promo_code = ppdInJSON.promo_code;
+            c_icon = ppdInJSON.icon;
+            comp_id = ppdInJSON.company_id;
+            p_is_marked = ppdInJSON.is_marked;
+            //setting active focus for key capturing
+            promotionPage.forceActiveFocus()
+        }
+        else
+        {
+            allGood = false;
+            notifier.visible = true;
+        }
+    }//Component.onCompleted:
+
+    StaticNotifier
+    {
+        id: notifier
+        notifierText: Vars.smthWentWrong
     }
 
     Keys.onReleased:

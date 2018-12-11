@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>Style.qml</file>
+        <file>Vars.qml</file>
         <file>main.qml</file>
         <file>qmldir</file>
         <file>qml/initialPage.qml</file>
@@ -35,5 +35,7 @@
         <file>icons/userLocationMarkerIcon.svg</file>
         <file>qml/Network.qml</file>
         <file>qml/StaticNotifier.qml</file>
+        <file>qml/ScrollDatePicker.qml</file>
+        <file>qml/ScrollNumberPicker.qml</file>
     </qresource>
 </RCC>

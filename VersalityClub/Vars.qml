@@ -39,11 +39,22 @@ QtObject
     readonly property color activeCouponColor: "#f93738"
     readonly property color copyrightBackgroundColor: "#c4c5c6"
 
+    //OTHERS
+    readonly property int defaultRadius: 20
+    readonly property real defaultOpacity: 0.8
+    readonly property int defaultFontPixelSize: 15
+    readonly property int defaultDay: 15
+    readonly property string defaultMonth: '06'
+    readonly property int defaultYear: new Date().getYear()-30
+
     //REGEX
     readonly property var emailRegEx: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
     //PROMOTION CONSTANTS
-    property string promsResponse: ''
+    property string markedPromsData: ''
+    property string allPromsData: ''
+    property string previewPromData: ''
+    property string fullPromData: ''
 
     //FOOTERBUTTONS CONSTANTS
     readonly property int footerButtonsFieldHeight: screenHeight*0.125
@@ -79,9 +90,13 @@ QtObject
     readonly property string userActivateProm: "http://patrick.ga:8080/api/user/activate?"
     readonly property string userSelectCats: "http://patrick.ga:8080/api/user/categories?"
     readonly property string userSignup: "http://patrick.ga:8082/api/register?"
-    readonly property string allProms: "http://patrick.ga:8080/api/promotions?"
+    //readonly property string allProms: "http://patrick.ga:8080/api/promotions?"
+    readonly property string allPromsTilesModel: "http://patrick.ga:8080/api/promos1?"
+    readonly property string promPreViewModel: "http://patrick.ga:8080/api/promos2?"
+    readonly property string promFullViewModel: "http://patrick.ga:8080/api/promos3?"
 
     //POPUP TEXT CONSTS
+    readonly property string smthWentWrong: "Что-то пошло не так, попробуйте позже"
     readonly property string getCloserToProm: "Подойдите ближе к акции"
     readonly property string noSuitablePromsNearby: "Рядом нет подходящих для Вас акций"
     readonly property string noFavouriteProms: "У Вас нет избранных акций"
@@ -120,6 +135,7 @@ QtObject
     readonly property string openCompanyCard: "ОТКРЫТЬ КАРТОЧКУ КОМПАНИИ"
     readonly property string saveAndBackToSetting: "СОХРАНИТЬ\nИ ВЕРНУТЬСЯ К НАСТРОЙКАМ"
     readonly property string m_f: "М/Ж"
+    readonly property string proceed: "Готово"
     readonly property string mapPageId: "mapPage"
     readonly property string promotionPageId: "promotionPage"
     readonly property string userLocationIsNAN: "user location is NaN"

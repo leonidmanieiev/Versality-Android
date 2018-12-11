@@ -28,7 +28,7 @@ import "../js/helpFunc.js" as Helper
 
 Popup
 {
-    property color backgroundColor: Style.toastGrey
+    property color backgroundColor: Vars.toastGrey
 
     function setTextNoAutoClose(messageText)
     {
@@ -67,10 +67,11 @@ Popup
         id: popupContent
         clip: true
         anchors.centerIn: popupBackground
-        height: Helper.toDp(15, Style.dpi)
-        width: Helper.toDp(text.length, Style.dpi)
-        font.pixelSize: Helper.toDp(15, Style.dpi)
-        color: Style.backgroundWhite
+        height: Helper.toDp(15, Vars.dpi)
+        width: Helper.toDp(text.length, Vars.dpi)
+        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                    Vars.dpi)
+        color: Vars.backgroundWhite
         wrapMode: Text.WordWrap
         horizontalAlignment: Text.AlignHCenter
     }

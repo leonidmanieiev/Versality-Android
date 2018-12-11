@@ -33,6 +33,7 @@ Item
 {
     property bool isGpsOff: false
     property string callFromPageName: ''
+    property string api: ''
     readonly property int posTimeOut: 30*60000//minutes to milliseconds
     readonly property int posGetFar: 200//in meters
 
@@ -42,7 +43,7 @@ Item
     function disableUsability()
     {
         isGpsOff = true;
-        Style.isLocated = false;
+        Vars.isLocated = false;
         //disable parent of userLocationItem which is mapPage or listViewPage
         userLocationItem.parent.parent.enabled = false;
     }
@@ -50,7 +51,7 @@ Item
     function enableUsability()
     {
         isGpsOff = false;
-        Style.isLocated = true;
+        Vars.isLocated = true;
         userLocationItem.parent.parent.enabled = true;
     }
 
@@ -76,7 +77,6 @@ Item
     {
         property bool initialCoordSet: false
         property bool posMethodSet: false
-        property string serverUrl: Style.allProms
         property string secret: AppSettings.value("user/hash")
         property real lat: position.coordinate.latitude
         property real lon: position.coordinate.longitude
@@ -95,13 +95,13 @@ Item
             switch(sourceError)
             {
                 case PositionSource.AccessError:
-                    sem = Style.noLocationPrivileges; break;
+                    sem = Vars.noLocationPrivileges; break;
                 case PositionSource.ClosedError:
-                    sem = Style.turnOnLocationAndWait; break;
+                    sem = Vars.turnOnLocationAndWait; break;
                 case PositionSource.UnknownSourceError:
-                    sem = Style.unknownPosSrcErr; break;
+                    sem = Vars.unknownPosSrcErr; break;
                 case PositionSource.SocketError:
-                    sem = Style.nmeaConnectionViaSocketErr; break;
+                    sem = Vars.nmeaConnectionViaSocketErr; break;
                 default: break;
             }
 
@@ -143,7 +143,7 @@ Item
         function updateUserMarker()
         {
             //if loader was mapPageLoader we calling user locariot marker setter
-            if(callFromPageName === Style.mapPageId)
+            if(callFromPageName === Vars.mapPageId)
                 parent.parent.parent.setUserLocationMarker(lat, lon, 0, false);
         }
 
@@ -176,9 +176,9 @@ Item
             var params = 'secret='+secret+'&lat='+AppSettings.value("user/lat")+
                          '&lon='+AppSettings.value("user/lon");
 
-            console.log("request url: " + serverUrl + params);
+            console.log("request url: " + api + params);
 
-            request.open('POST', serverUrl);
+            request.open('POST', api);
             request.onreadystatechange = function()
             {
                 if(request.readyState === XMLHttpRequest.DONE)
@@ -186,12 +186,12 @@ Item
                     if(isNaN(AppSettings.value("user/lat")) || isNaN(AppSettings.value("user/lon")))
                     {
                         disableUsability();
-                        console.log(Style.userLocationIsNAN);
+                        console.log(Vars.userLocationIsNAN);
                     }
                     else if(request.status === 200)
                     {
                         //saving response for further using
-                        Style.promsResponse = request.responseText;
+                        Vars.allPromsData = request.responseText;
                     }
                 }
                 else console.log("Pending: " + request.readyState);
@@ -214,7 +214,7 @@ Item
             stop();
         }
 
-        onUpdateTimeout: toastMessage.setText(Style.unableToGetLocation)
+        onUpdateTimeout: toastMessage.setText(Vars.unableToGetLocation)
 
         onPositionChanged:
         {
@@ -250,15 +250,15 @@ Item
                 {
                     //if loader is promotionPageLoader wee just need
                     //to save coords. Otherwise full circle
-                    if(callFromPageName === Style.promotionPageId)
+                    if(callFromPageName === Vars.promotionPageId)
                         saveUserPositionInfo();
                     else initialPromRequest();
                 }
                 posMethodSet = true;
                 //activating user location button
-                Style.isLocated = true;
+                Vars.isLocated = true;
             }
-            else toastMessage.setText(Style.estabLocationMethodErr)
+            else toastMessage.setText(Vars.estabLocationMethodErr)
         }
     }//PositionSource
 

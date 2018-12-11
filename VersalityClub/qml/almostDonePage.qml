@@ -29,9 +29,9 @@ import QtQuick.Controls 2.4
 Page
 {
     id: almostDonePage
-    enabled: Style.isConnected
-    height: Style.screenHeight
-    width: Style.screenWidth
+    enabled: Vars.isConnected
+    height: Vars.screenHeight
+    width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
@@ -40,7 +40,7 @@ Page
     {
         id: background
         anchors.fill: parent
-        color: Style.mainPurple
+        color: Vars.mainPurple
     }
 
     ControlButton
@@ -48,15 +48,15 @@ Page
         id: startUsingAppButton
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: Helper.toDp(parent.height/14, Style.dpi)
-        buttonText: Style.everythingIsClearStart
-        labelContentColor: Style.backgroundWhite
-        backgroundColor: Style.mainPurple
-        setBorderColor: Style.backgroundWhite
+        anchors.bottomMargin: Helper.toDp(parent.height/14, Vars.dpi)
+        buttonText: Vars.everythingIsClearStart
+        labelContentColor: Vars.backgroundWhite
+        backgroundColor: Vars.mainPurple
+        setBorderColor: Vars.backgroundWhite
         onClicked:
         {
             almostDonePageLoader.setSource("xmlHttpRequest.qml",
-                                     { "serverUrl": Style.userInfo,
+                                     { "api": Vars.userInfo,
                                        "functionalFlag": 'user'
                                      });
         }
