@@ -37,5 +37,7 @@
         <file>qml/StaticNotifier.qml</file>
         <file>qml/ScrollDatePicker.qml</file>
         <file>qml/ScrollNumberPicker.qml</file>
+        <file>output.nmea</file>
+        <file>icons/storeMarkerIcon.svg</file>
     </qresource>
 </RCC>

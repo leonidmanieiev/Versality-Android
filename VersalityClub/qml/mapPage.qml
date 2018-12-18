@@ -38,6 +38,8 @@ Page
     readonly property int minZoomLevel: 8
     property real defaultLat: 59.933284
     property real defaultLon: 30.343614
+    property bool showStoreMarker: false
+    property bool allGood: false
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
     readonly property string mapCopyright: 'Tiles style by <a href="http://corp.sputnik.ru/maps"'
                                            +' style="color: '+Vars.mainPurple+'">Cпутник</a> © '
@@ -127,12 +129,28 @@ Page
         {
             id: userLocationMarker
             visible: false
-            anchorPoint.x: userMarkerImage.width*0.5
-            anchorPoint.y: userMarkerImage.height
+            anchorPoint.x: userMarkerIcon.width*0.5
+            anchorPoint.y: userMarkerIcon.height
             sourceItem: Image
             {
-                id: userMarkerImage
+                id: userMarkerIcon
                 source: "../icons/userLocationMarkerIcon.svg"
+                sourceSize.width: mapButtonSize
+                sourceSize.height: mapButtonSize
+            }
+        }
+
+        MapQuickItem
+        {
+            id: storeMarker
+            visible: showStoreMarker
+            anchorPoint.x: storeMarkerIcon.width*0.5
+            anchorPoint.y: storeMarkerIcon.height
+            coordinate: QtPositioning.coordinate(defaultLat, defaultLon)
+            sourceItem: Image
+            {
+                id: storeMarkerIcon
+                source: "../icons/storeMarkerIcon.svg"
                 sourceSize.width: mapButtonSize
                 sourceSize.height: mapButtonSize
             }
@@ -193,13 +211,15 @@ Page
             {
                 id: promMarkersDelegate
                 //wait until get coords
-                visible: lat ? true : false
-                anchorPoint.x: promMarkersImage.width*0.5
-                anchorPoint.y: promMarkersImage.height
+                visible: allGood && lat ? true : false
+                anchorPoint.x: promMarkersIcon.width*0.5
+                anchorPoint.y: promMarkersIcon.height
                 coordinate: QtPositioning.coordinate(lat, lon)
                 sourceItem: Image
                 {
-                    id: promMarkersImage
+                    id: promMarkersIcon
+                    visible: (lat !== defaultLat && lon !== defaultLon)
+                             || !showStoreMarker
                     source: "../icons/promotionMarkerIcon.svg"
                     sourceSize.width: mapButtonSize
                     sourceSize.height: mapButtonSize
@@ -247,6 +267,7 @@ Page
     {
         id: popupWindow
         visible: false
+        opacity: 0.9
         radius: Vars.defaultRadius
         width: parent.width;
         height: popupWindowHeight
@@ -275,10 +296,25 @@ Page
             popupAnim.start();
         }
 
+        Rectangle
+        {
+            id: dragerLine
+            width: parent.width*0.1
+            height: parent.height*0.05
+            anchors.top: parent.top
+            anchors.topMargin: Vars.defaultRadius*0.5
+            radius: Vars.defaultRadius
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: Vars.darkGreyColor
+        }
+
         MouseArea
         {
             id: drager
-            anchors.fill: parent
+            width: parent.width
+            height: Vars.defaultRadius
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
             drag.target: popupWindow
             drag.axis: Drag.YAxis
             drag.minimumY: popupShowTo
@@ -313,6 +349,7 @@ Page
             id: promsTilesListView
             clip: true
             anchors.fill: parent
+            anchors.topMargin: Vars.defaultRadius
             contentHeight: promsTilesItemHeight
             model: promsTilesModel
             delegate: promsTilesDelegate
@@ -362,11 +399,13 @@ Page
                     onClicked:
                     {
                         PageNameHolder.push("mapPage.qml");
+                        AppSettings.beginGroup("promo");
+                        AppSettings.setValue("id", id);
+                        AppSettings.endGroup();
                         mapPageLoader.setSource("xmlHttpRequest.qml",
                                                 { "api": Vars.promPreViewModel,
-                                                  "functionalFlag": 'user/preprom',
-                                                  "promo_id": id
-                                                });
+                                                  "functionalFlag": 'user/preprom'
+                                                  });
                     }
                 }
             }//parentCategoryIcon rectangle
@@ -425,29 +464,34 @@ Page
         //setting active focus for key capturing
         mapPage.forceActiveFocus();
         //start capturing user location and getting all promotions
-        mapPageLoader.setSource("userLocation.qml",
-                                {"callFromPageName": 'mapPage',
-                                 "api": Vars.allPromsTilesModel})
+        mapPageLoader.source = "userLocation.qml";
     }
 
     function runParsing()
     {
         if(Vars.allPromsData.substring(0, 6) !== 'PROM-1'
            && Vars.allPromsData.substring(0, 6) !== '[]')
-        {
-            notifier.visible = false;
-            var promsJSON = JSON.parse(Vars.allPromsData);
-            //applying promotions at ListModel
-            Helper.promsJsonToListModelForMarkers(promsJSON);
+        {      
+            try {
+                var promsJSON = JSON.parse(Vars.allPromsData);
+                allGood = true;
+                notifier.visible = false;
+                //applying promotions at markers model
+                Helper.promsJsonToListModelForMarkers(promsJSON);
+            } catch (e) {
+                allGood = false;
+                notifier.notifierText = Vars.smthWentWrong;
+                notifier.visible = true;
+            }
         }
-        else notifier.visible = true;
+        else
+        {
+            notifier.notifierText = Vars.noSuitablePromsNearby;
+            notifier.visible = true;
+        }
     }
 
-    StaticNotifier
-    {
-        id: notifier
-        notifierText: Vars.noSuitablePromsNearby
-    }
+    StaticNotifier { id: notifier }
 
     ToastMessage { id: toastMessage }
 

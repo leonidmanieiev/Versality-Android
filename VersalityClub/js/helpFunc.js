@@ -47,16 +47,16 @@ function httpErrorDecoder(statusCode)
     var decodedError;
     switch(statusCode)
     {
-        case 0: decodedError = "Server not responding."; break;
-        case 400: decodedError = "Bad request."; break;
-        case 403: decodedError = "Forbidden."; break;
-        case 404: decodedError = "Not found."; break;
-        case 408: decodedError = "Request timeout."; break;
-        case 500: decodedError = "Server error."; break;
-        default: decodedError = "Unknown error."; break;
+        case 0: decodedError = "Сервер не отвечает"; break;
+        case 400: decodedError = "Некорректный запрос"; break;
+        case 403: decodedError = "Доступ запрещен"; break;
+        case 404: decodedError = "Информация не найдена"; break;
+        case 408: decodedError = "Истекло время ожидания"; break;
+        case 500: decodedError = "Ошибка сервера"; break;
+        default: decodedError = "Неизвестная ошибка"; break;
     }
 
-    return decodedError + " Try again later.";
+    return decodedError + ". Попробуйте позже";
 }
 
 //get store hours depend on day
@@ -105,44 +105,15 @@ function promsJsonToListModel(promsJSON)
     {
         promsModel.append({
                              "id": promsJSON[i].id,
-                             //"lat": promsJSON[i].lat,
-                             //"lon": promsJSON[i].lon,
-                             "picture": promsJSON[i].picture.url,
-                             //"title": promsJSON[i].title,
-                             "description": promsJSON[i].description,
-                             //"is_marked": promsJSON[i].is_marked,
-                             //"promo_code": promsJSON[i].promo_code,
-                             //"store_hours": promsJSON[i].store_hours,
-                             //"company_id": promsJSON[i].company_id,
-                             //"company_name": promsJSON[i].company_name,
-                             //"company_logo": promsJSON[i].company_logo.url
+                             "title": promsJSON[i].title,
+                             "description": promsJSON[i].desc,
+                             "picture": promsJSON[i].picture,
+                             "company_logo": promsJSON[i].company_logo
                          });
     }
 }
 
-//puts promotions from JSON to model for mapMarkers
-function promsJsonToListModelForMap(promsJSON)
-{
-    for(var i in promsJSON)
-    {
-        promMarkersModel.append({
-                                    "id": promsJSON[i].id,
-                                    "lat": promsJSON[i].lat,
-                                    "lon": promsJSON[i].lon,
-                                    "picture": promsJSON[i].picture.url,
-                                    "title": promsJSON[i].title,
-                                    "description": promsJSON[i].desc,
-                                    "is_marked": promsJSON[i].is_marked,
-                                    "promo_code": promsJSON[i].promo_code,
-                                    "store_hours": promsJSON[i].store_hours,
-                                    "company_id": promsJSON[i].company_id,
-                                    "company_name": promsJSON[i].company_name,
-                                    "company_logo": promsJSON[i].company_logo.url
-                                });
-    }
-}
-
-//puts promotion info from JSON to model for markers
+//puts promotion info from JSON to model for markers on map
 function promsJsonToListModelForMarkers(promJSON)
 {
     for(var i in promJSON)

@@ -28,6 +28,8 @@ import QtQuick.Controls 2.4
 
 Page
 {
+    property bool allGood: false
+
     id: favouritePage
     enabled: Vars.isConnected
     height: Vars.pageHeight
@@ -53,24 +55,31 @@ Page
             notifier.visible = false;
             favouritePageLoader.setSource("xmlHttpRequest.qml",
                                           { "api": Vars.userMarkedProms,
-                                            "functionalFlag": 'user/marked'
-                                         });
+                                            "functionalFlag": 'user/marked',
+                                            "isTilesApi": false});
         }
         else if(Vars.markedPromsData !== '[]')
         {
-            notifier.visible = false;
-            var promsJSON = JSON.parse(Vars.markedPromsData);
-            //applying promotions at ListModel
-            Helper.promsJsonToListModel(promsJSON);
+            try {
+                var promsJSON = JSON.parse(Vars.markedPromsData);
+                allGood = true;
+                notifier.visible = false;
+                //applying promotions at list model
+                Helper.promsJsonToListModel(promsJSON);
+            } catch (e) {
+                allGood = false;
+                notifier.notifierText = Vars.smthWentWrong;
+                notifier.visible = true;
+            }
         }
-        else notifier.visible = true;
+        else
+        {
+            notifier.notifierText = Vars.noFavouriteProms;
+            notifier.visible = true;
+        }
     }
 
-    StaticNotifier
-    {
-        id: notifier
-        notifierText: Vars.noFavouriteProms
-    }
+    StaticNotifier { id: notifier }
 
     Keys.onReleased:
     {
@@ -94,6 +103,7 @@ Page
     ListView
     {
         id: promsListView
+        visible: allGood
         clip: true
         anchors.top: parent.top
         width: parent.width
@@ -142,7 +152,7 @@ Page
                     //rounding company logo item background image
                     ImageRounder
                     {
-                        imageSource: 'https://fonsports.ru/wp-content/uploads/2018/07/logo-rpl.jpg'//company_logo
+                        imageSource: company_logo
                         roundValue: parent.height*0.5
                     }
                 }

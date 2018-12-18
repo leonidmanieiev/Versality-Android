@@ -38,6 +38,7 @@ QtObject
     readonly property color errorRed: "RED"
     readonly property color activeCouponColor: "#f93738"
     readonly property color copyrightBackgroundColor: "#c4c5c6"
+    readonly property color darkGreyColor: "#9f9fa0"
 
     //OTHERS
     readonly property int defaultRadius: 20
@@ -53,6 +54,7 @@ QtObject
     //PROMOTION CONSTANTS
     property string markedPromsData: ''
     property string allPromsData: ''
+    property string allUniquePromsData: ''
     property string previewPromData: ''
     property string fullPromData: ''
 
@@ -90,10 +92,10 @@ QtObject
     readonly property string userActivateProm: "http://patrick.ga:8080/api/user/activate?"
     readonly property string userSelectCats: "http://patrick.ga:8080/api/user/categories?"
     readonly property string userSignup: "http://patrick.ga:8082/api/register?"
-    //readonly property string allProms: "http://patrick.ga:8080/api/promotions?"
     readonly property string allPromsTilesModel: "http://patrick.ga:8080/api/promos1?"
     readonly property string promPreViewModel: "http://patrick.ga:8080/api/promos2?"
     readonly property string promFullViewModel: "http://patrick.ga:8080/api/promos3?"
+    readonly property string allPromsListViewModel: "http://patrick.ga:8080/api/promos4?"
 
     //POPUP TEXT CONSTS
     readonly property string smthWentWrong: "Что-то пошло не так, попробуйте позже"

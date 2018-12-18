@@ -30,17 +30,17 @@ import QtQuick.Layouts 1.3
 Page
 {
     //preview promotion vars
-    property string p_id: ''
-    property string p_title: ''
-    property string p_desc: ''
-    property string p_pic: ''
-    property string c_icon: ''
-    property real s_lat: 0.0
-    property real s_lon: 0.0
-    property bool p_is_marked: false
+    property string p_id: AppSettings.value("promo/id")
+    property string p_title: AppSettings.value("promo/title")
+    property string p_desc: AppSettings.value("promo/desc")
+    property string p_pic: AppSettings.value("promo/pic")
+    property string c_icon: AppSettings.value("promo/icon")
+    property real s_lat: AppSettings.value("promo/lat")
+    property real s_lon: AppSettings.value("promo/lon")
+    property bool p_is_marked: AppSettings.value("promo/is_marked")
     //all good flag
-    property bool allGood: false
-    //promotion description text preview
+    property bool allGood: true
+    //max length of promotion description text preview
     readonly property int maxLineCnt: 3
 
     id: previewPromPage
@@ -58,10 +58,19 @@ Page
         color: Vars.listViewGrey
     }
 
+    Flickable
+    {
+        id: flickableArea
+        clip: true
+        width: Vars.screenWidth
+        height: Vars.screenHeight
+        contentHeight: middleFieldsColumns.height
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        boundsBehavior: Flickable.DragOverBounds
     ColumnLayout
     {
         id: middleFieldsColumns
-        visible: allGood
         width: parent.width
         spacing: Vars.screenHeight*0.05
 
@@ -138,7 +147,7 @@ Page
         {
             id: textArea
             width: promsImage.width
-            height: promotionDescription.height
+            height: childrenRect.height
             Layout.alignment: Qt.AlignHCenter
             color: Vars.listViewGrey
 
@@ -146,7 +155,7 @@ Page
             {
                 id: promotionDescription
                 width: parent.width
-                text: p_desc === '' ? '\n\n\n' : p_desc
+                text: p_desc
                 maximumLineCount: maxLineCnt
                 font.pixelSize: Helper.toDp(13, Vars.dpi)
                 color: Vars.backgroundBlack
@@ -169,19 +178,15 @@ Page
                 PageNameHolder.push("previewPromotionPage.qml");
                 previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
                                         { "api": Vars.promFullViewModel,
-                                          "functionalFlag": 'user/fullprom',
-                                          "promo_id": p_id,
-                                          "promo_desc": p_desc
-                                        });
+                                          "functionalFlag": 'user/fullprom'});
             }
         }//ControlButton
     }//ColumnLayout
-
+    }
     //back to promotions choose button
     TopControlButton
     {
         id: backButton
-        visible: allGood
         anchors.top: parent.top
         anchors.topMargin: Vars.screenWidth*0.25
         buttonWidth: Vars.screenWidth*0.55
@@ -193,31 +198,13 @@ Page
 
     Component.onCompleted:
     {
-        //if we got correct response
-        if(Vars.previewPromData.length > 50)
+        if(allGood)
         {
-            allGood = true;
             notifier.visible = false;
-            //formating data
-            var ppdInJSON = JSON.parse(Vars.previewPromData);
-            //initializing vars
-            p_id = ppdInJSON[0].id;
-            p_title = ppdInJSON[0].title;
-            p_desc = ppdInJSON[0].desc;
-            p_pic = ppdInJSON[0].pic;
-            c_icon = ppdInJSON[0].icon;
-            s_lat = ppdInJSON[0].lat;
-            s_lon = ppdInJSON[0].lon;
-            p_is_marked = ppdInJSON[0].is_marked;
-            //setting active focus for key capturing
-            previewPromPage.forceActiveFocus()
+            previewPromPage.forceActiveFocus();
         }
-        else
-        {
-            allGood = false;
-            notifier.visible = true;
-        }
-    }//Component.onCompleted:
+        else notifier.visible = true;
+    }
 
     StaticNotifier
     {

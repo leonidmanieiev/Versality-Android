@@ -29,6 +29,7 @@ import "../js/helpFunc.js" as Helper
 Popup
 {
     property color backgroundColor: Vars.toastGrey
+    property bool needRedirect: false
 
     function setTextNoAutoClose(messageText)
     {
@@ -49,10 +50,11 @@ Popup
         }
     }
 
-    function setTextAndRun(messageText)
+    function setTextAndRun(messageText, redirect)
     {
         if(popupContent.text === '')
         {
+            needRedirect = redirect;
             popupContent.text = messageText;
             open();
             toastMessageTimer.running = true;
@@ -95,7 +97,12 @@ Popup
         NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }
     }
 
-    onClosed: popupContent.text = ''
+    onClosed:
+    {
+        popupContent.text = ''
+        if(needRedirect)
+            appWindowLoader.source = "mapPage.qml";
+    }
 
     //defines period of time that popup is visiable
     Timer

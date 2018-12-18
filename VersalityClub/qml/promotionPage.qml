@@ -31,21 +31,21 @@ import QtPositioning 5.8
 Page
 {
     //promotion vars
-    property string p_id: ''
-    property string p_title: ''
-    property string p_desc: ''
-    property string p_pic: ''
-    property string p_promo_code: ''
-    property string c_icon: ''
-    property string comp_id: ''
-    property bool p_is_marked: false
+    property string p_id: AppSettings.value("promo/id")
+    property string p_title: AppSettings.value("promo/title")
+    property string p_desc: AppSettings.value("promo/desc")
+    property string p_pic: AppSettings.value("promo/pic")
+    property string p_promo_code: AppSettings.value("promo/code")
+    property string c_icon: AppSettings.value("promo/icon")
+    property string comp_id: AppSettings.value("promo/comp_id")
+    property bool p_is_marked: AppSettings.value("promo/is_marked")
     //all good flag
-    property bool allGood: false
+    property bool allGood: true
     //dist (in meters) to be able to active coupon
     readonly property int promCloseDist: 100
     //other
     property real minDistToStore: 500000
-    readonly property int storeInfoItemHeight: Vars.screenHeight*0.07
+    readonly property int storeInfoItemHeight: Vars.screenHeight*0.06
 
     id: promotionPage
     enabled: Vars.isConnected
@@ -69,7 +69,7 @@ Page
         clip: true
         width: Vars.screenWidth
         height: Vars.screenHeight
-        contentHeight: middleFieldsColumns.height*1.1
+        contentHeight: middleFieldsColumns.height
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         boundsBehavior: Flickable.DragOverBounds
@@ -119,7 +119,7 @@ Page
                 {
                     id: promotionDescription
                     width: parent.width
-                    text: p_desc
+                    text: p_desc === '' ? '\n\n\n\n\n' : p_desc
                     font.pixelSize: Helper.toDp(13, Vars.dpi)
                     color: Vars.backgroundBlack
                     wrapMode: Label.WordWrap
@@ -129,7 +129,6 @@ Page
             RowLayout
             {
                 id: rowLayout1
-                enabled: p_desc !== ''
                 width: parent.width
                 Layout.alignment: Qt.AlignHCenter
                 spacing: Vars.screenWidth*0.1
@@ -153,7 +152,7 @@ Page
                                                            "functionalFlag": "user/activate",
                                                            "promo_id": p_id});
                         }
-                        else toastMessage.setTextAndRun(Vars.getCloserToProm);
+                        else toastMessage.setTextAndRun(Vars.getCloserToProm, false);
                     }
                 }
 
@@ -195,12 +194,28 @@ Page
             ListView
             {
                 id: storeInfoListView
+                visible: false
                 clip: true
                 Layout.alignment: Qt.AlignHCenter
                 width: Vars.screenWidth*0.8
-                height: (storeInfoItemHeight+Vars.screenWidth*0.01)*2
                 contentHeight: storeInfoItemHeight
-                model: ListModel { id: storeInfoModel }
+                model:
+                    ListModel
+                    {
+                        id: storeInfoModel;
+                        Component.onCompleted:
+                        {
+                            storeInfoListView.height = adjustHeight();
+                            storeInfoListView.visible = true;
+
+                            function adjustHeight()
+                            {
+                                if(count > 3)
+                                    return storeInfoItemHeight*3;
+                                else return storeInfoItemHeight*count;
+                            }
+                        }
+                    }
                 delegate: storeInfoDelegate
             }
 
@@ -219,7 +234,8 @@ Page
                         promotionPageLoader.setSource("mapPage.qml",
                                                 { "defaultLat": s_lat,
                                                   "defaultLon": s_lon,
-                                                  "defaultZoomLevel": 16
+                                                  "defaultZoomLevel": 16,
+                                                  "showStoreMarker": true
                                                 });
                     }
 
@@ -227,7 +243,7 @@ Page
                     {
                         id: rowLayout2
                         width: Vars.screenWidth*0.8
-                        Layout.alignment: Qt.AlignHCenter
+                        Layout.alignment: Qt.AlignCenter
 
                         Rectangle
                         {
@@ -241,7 +257,8 @@ Page
                             {
                                 id: distToStore
                                 text: distBetweenCoords() + ' m'
-                                font.pixelSize: Helper.toDp(13, Vars.dpi)
+                                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                                            Vars.dpi)
                                 color: Vars.backgroundBlack
 
                                 function distBetweenCoords()
@@ -292,13 +309,14 @@ Page
             ControlButton
             {
                 id: companyCardButton
+                enabled: storeInfoModel.count !== 0
                 Layout.fillWidth: true
                 buttonText: Vars.openCompanyCard
                 labelContentColor: Vars.backgroundBlack
                 backgroundColor: Vars.backgroundWhite
                 setBorderColor: Vars.backgroundBlack
                 Layout.alignment: Qt.AlignHCenter
-                //Layout.topMargin: Vars.screenHeight*0.03
+                Layout.topMargin: -Vars.screenHeight*0.02
                 onClicked:
                 {
                     PageNameHolder.push("promotionPage.qml");
@@ -333,32 +351,17 @@ Page
 
     Component.onCompleted:
     {
-        //if we got correct response
-        if(Vars.fullPromData.length > 50)
+        if(allGood)
         {
-            allGood = true;
-            notifier.visible = false;
             //formating data
-            var ppdInJSON = JSON.parse(Vars.fullPromData);
-            Helper.promsJsonToListModelForPromPage(ppdInJSON);
-            //initializing vars
-            p_id = ppdInJSON.id;
-            p_title = ppdInJSON.title;
-            p_desc = ppdInJSON.desc;
-            p_pic = ppdInJSON.pic;
-            p_promo_code = ppdInJSON.promo_code;
-            c_icon = ppdInJSON.icon;
-            comp_id = ppdInJSON.company_id;
-            p_is_marked = ppdInJSON.is_marked;
-            //setting active focus for key capturing
-            promotionPage.forceActiveFocus()
+            var fpdInJSON = JSON.parse(Vars.fullPromData);
+            Helper.promsJsonToListModelForPromPage(fpdInJSON);
+
+            notifier.visible = false;
+            promotionPage.forceActiveFocus();
         }
-        else
-        {
-            allGood = false;
-            notifier.visible = true;
-        }
-    }//Component.onCompleted:
+        else notifier.visible = true;
+    }
 
     StaticNotifier
     {

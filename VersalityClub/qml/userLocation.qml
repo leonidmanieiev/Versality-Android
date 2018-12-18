@@ -32,10 +32,12 @@ import GeoLocation 1.0
 Item
 {
     property bool isGpsOff: false
-    property string callFromPageName: ''
-    property string api: ''
     readonly property int posTimeOut: 30*60000//minutes to milliseconds
     readonly property int posGetFar: 200//in meters
+    //default is proms for map api
+    property string callFromPageName: 'mapPage'
+    property string api: Vars.allPromsTilesModel
+    property bool isTilesApi: true
 
     id: userLocationItem
     enabled: true
@@ -185,14 +187,19 @@ Item
                 {
                     if(isNaN(AppSettings.value("user/lat")) || isNaN(AppSettings.value("user/lon")))
                     {
+                        notifier.visible = false;
                         disableUsability();
                         console.log(Vars.userLocationIsNAN);
                     }
                     else if(request.status === 200)
                     {
+                        notifier.visible = false;
                         //saving response for further using
-                        Vars.allPromsData = request.responseText;
+                        if(isTilesApi)
+                            Vars.allPromsData = request.responseText;
+                        else Vars.allUniquePromsData = request.responseText;
                     }
+                    else notifier.visible = true;
                 }
                 else console.log("Pending: " + request.readyState);
             }
@@ -261,6 +268,12 @@ Item
             else toastMessage.setText(Vars.estabLocationMethodErr)
         }
     }//PositionSource
+
+    StaticNotifier
+    {
+        id: notifier
+        notifierText: Vars.smthWentWrong
+    }
 
     ToastMessage { id: toastMessage }
 

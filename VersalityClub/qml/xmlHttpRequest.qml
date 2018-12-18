@@ -42,14 +42,15 @@ Item
     property string cats: AppSettings.getCatsAmount() === 0 ? '0' : AppSettings.getStrCats()
     //to authenticate client on server side
     property string secret: AppSettings.value("user/hash")
-    //flag to determine type of request
+    //flags
     property string functionalFlag: ''
+    property bool allGood: false
     //beg and end possition of code of error from server
     readonly property int errorFlagBeg: 0
     readonly property int errorFlagEnd: 5
     //promotions data
-    property string promo_id: ''
-    property string promo_desc: ''
+    property string promo_id: AppSettings.value("promo/id")
+    property string promo_desc: AppSettings.value("promo/desc")
 
     //creates params for request
     function makeParams()
@@ -110,12 +111,6 @@ Item
         }
     }
 
-    //converts JSON in text form to JSON as object
-    function strJSONtoJSON(responseText)
-    {
-        return JSON.parse(responseText);
-    }
-
     function xhr()
     {
         var request = new XMLHttpRequest();
@@ -169,17 +164,21 @@ Item
                                 }
                                 else xmlHttpRequestLoader.source = "mapPage.qml"; break;
                             case 'user':
-                                var uInfoRespJSON = strJSONtoJSON(request.responseText);
-                                //saving user info to fill fields
-                                AppSettings.beginGroup("user");
-                                AppSettings.setValue("email", uInfoRespJSON.email);
-                                AppSettings.setValue("sex", uInfoRespJSON.sex);
-                                AppSettings.setValue("birthday", uInfoRespJSON.birthday);
-                                AppSettings.setValue("name", uInfoRespJSON.name);
-                                AppSettings.endGroup();
-                                for(var i in uInfoRespJSON.categories)
-                                    AppSettings.insertCat(uInfoRespJSON.categories[i]);
-                                xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+                                try {
+                                    var uInfoRespJSON = JSON.parse(request.responseText);
+                                    //saving user info to fill fields
+                                    AppSettings.beginGroup("user");
+                                    AppSettings.setValue("email", uInfoRespJSON.email);
+                                    AppSettings.setValue("sex", uInfoRespJSON.sex);
+                                    AppSettings.setValue("birthday", uInfoRespJSON.birthday);
+                                    AppSettings.setValue("name", uInfoRespJSON.name);
+                                    AppSettings.endGroup();
+                                    for(var i in uInfoRespJSON.categories)
+                                        AppSettings.insertCat(uInfoRespJSON.categories[i]);
+                                    xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+                                } catch (e) {
+                                    toastMessage.setTextAndRun(Vars.smthWentWrong, true);
+                                }
                                 break;
                             case 'user/refresh-cats':
                                 xmlHttpRequestLoader.source = "profileSettingsPage.qml";
@@ -193,19 +192,71 @@ Item
                                 break;
                             case 'user/preprom':
                                 Vars.previewPromData = request.responseText;
-                                xmlHttpRequestLoader.source = "previewPromotionPage.qml";
+
+                                //if we got correct response
+                                if(Vars.previewPromData.length > 50)
+                                {
+                                    try {
+                                        //formating data
+                                        var ppdInJSON = JSON.parse(Vars.previewPromData);
+                                        allGood = true;
+                                        //initializing vars
+                                        AppSettings.beginGroup("promo");
+                                        AppSettings.setValue("id", ppdInJSON[0].id);
+                                        AppSettings.setValue("title", ppdInJSON[0].title);
+                                        AppSettings.setValue("desc", ppdInJSON[0].desc);
+                                        AppSettings.setValue("pic", ppdInJSON[0].pic);
+                                        AppSettings.setValue("icon", ppdInJSON[0].icon);
+                                        AppSettings.setValue("lat", ppdInJSON[0].lat);
+                                        AppSettings.setValue("lon", ppdInJSON[0].lon);
+                                        AppSettings.setValue("is_marked", ppdInJSON[0].is_marked);
+                                        AppSettings.endGroup();
+                                    } catch (e) {
+                                        allGood = false;
+                                    }
+                                }
+                                else allGood = false;
+
+                                xmlHttpRequestLoader.setSource("previewPromotionPage.qml",
+                                                               { "allGood": allGood });
                                 break;
                             case 'user/fullprom':
                                 Vars.fullPromData = request.responseText;
+
+                                //if we got correct response
+                                if(Vars.fullPromData.length > 50)
+                                {
+                                    try {
+                                        //formating data
+                                        var fpdInJSON = JSON.parse(Vars.fullPromData);
+                                        allGood = true;
+                                        //initializing vars
+                                        AppSettings.beginGroup("promo");
+                                        AppSettings.setValue("id", fpdInJSON.id);
+                                        AppSettings.setValue("title", fpdInJSON.title);
+                                        AppSettings.setValue("desc", fpdInJSON.desc);
+                                        AppSettings.setValue("pic", fpdInJSON.pic);
+                                        AppSettings.setValue("icon", fpdInJSON.icon);
+                                        AppSettings.setValue("comp_id", fpdInJSON.company_id);
+                                        AppSettings.setValue("code", fpdInJSON.promo_code);
+                                        AppSettings.setValue("is_marked", fpdInJSON.is_marked);
+                                        AppSettings.endGroup();
+                                    } catch (e) {
+                                        allGood = false;
+                                    }
+                                }
+                                else allGood = false;
+
                                 xmlHttpRequestLoader.setSource("promotionPage.qml",
-                                                               { "p_desc": promo_desc });
+                                                               { "allGood": allGood });
                                 break;
                             default: console.log("Unknown functionalFlag"); break;
                         }//switch(functionalFlag)
                     }//if(errorStatus === 'NO_ERROR')
-                    else toastMessage.setTextAndRun(errorStatus);
+                    else toastMessage.setTextAndRun(errorStatus, true);
                 }//if(request.status === 200)
-                else toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status));
+                else toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status),
+                                                true);
             }//if(request.readyState === XMLHttpRequest.DONE)
             else console.log("Pending: " + request.readyState);
         }//request.onreadystatechange = function()

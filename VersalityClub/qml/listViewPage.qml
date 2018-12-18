@@ -28,6 +28,8 @@ import QtQuick.Controls 2.4
 
 Page
 {
+    property bool allGood: false
+
     id: listViewPage
     enabled: Vars.isConnected
     height: Vars.pageHeight
@@ -48,34 +50,44 @@ Page
         //setting active focus for key capturing
         listViewPage.forceActiveFocus();
         //start capturing user location and getting promotions
-        listViewPageLoader.source = "userLocation.qml";
+        listViewPageLoader.setSource("userLocation.qml",
+                                     {"callFromPageName": 'listViewPage',
+                                      "api": Vars.allPromsListViewModel,
+                                      "isTilesApi": false});
     }
 
     function runParsing()
     {
-        if(Vars.allPromsData.substring(0, 6) !== 'PROM-1'
-           && Vars.allPromsData.substring(0, 6) !== '[]')
+        if(Vars.allUniquePromsData.substring(0, 6) !== 'PROM-1'
+           && Vars.allUniquePromsData.substring(0, 6) !== '[]')
         {
-            notifier.visible = false;
-            var promsJSON = JSON.parse(Vars.allPromsData);
-            //applying promotions at ListModel
-            Helper.promsJsonToListModel(promsJSON);
+            try {
+                var promsJSON = JSON.parse(Vars.allUniquePromsData);
+                allGood = true;
+                notifier.visible = false;
+                //applying promotions at list model
+                Helper.promsJsonToListModel(promsJSON);
+            } catch (e) {
+                allGood = false;
+                notifier.notifierText = Vars.smthWentWrong;
+                notifier.visible = true;
+            }
         }
-        else notifier.visible = true;
+        else
+        {
+            notifier.notifierText = Vars.noSuitablePromsNearby;
+            notifier.visible = true;
+        }
     }
 
-    StaticNotifier
-    {
-        id: notifier
-        notifierText: Vars.noSuitablePromsNearby
-    }
+    StaticNotifier { id: notifier }
 
     ToastMessage { id: toastMessage }
 
     Timer
     {
         id: waitForResponse
-        running: Vars.allPromsData === '' ? false : true
+        running: Vars.allUniquePromsData === '' ? false : true
         interval: 1
         onTriggered: runParsing()
     }
@@ -83,10 +95,11 @@ Page
     ListView
     {
         id: promsListView
+        visible: allGood
         clip: true
         width: Vars.screenWidth
         height: Vars.screenHeight
-        contentHeight: promsDelegate.height*1.1
+        contentHeight: promsDelegate.height
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         model: ListModel { id: promsModel }
@@ -142,24 +155,13 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
-                        //saving promotion info for further using
-                        AppSettings.beginGroup("promotion");
-                        AppSettings.setValue("id", id);
-                        AppSettings.setValue("lat", 0.0);//CHANGE AFTER
-                        AppSettings.setValue("lon", 0.0);//CHANGE AFTER
-                        AppSettings.setValue("picture", picture);
-                        AppSettings.setValue("title", title);
-                        AppSettings.setValue("description", description);
-                        AppSettings.setValue("is_marked", is_marked);
-                        AppSettings.setValue("promo_code", promo_code);
-                        AppSettings.setValue("store_hours", '');//CHANGE AFTER
-                        AppSettings.setValue("company_id", company_id);
-                        AppSettings.setValue("company_logo", company_logo);
-                        AppSettings.setValue("company_name", company_name);
-                        AppSettings.endGroup();
-
                         PageNameHolder.push("listViewPage.qml");
-                        listViewPageLoader.source = "promotionPage.qml";
+                        listViewPageLoader.setSource("xmlHttpRequest.qml",
+                                                { "api": Vars.promFullViewModel,
+                                                  "functionalFlag": 'user/fullprom',
+                                                  "promo_id": id,
+                                                  "promo_desc": description
+                                                });
                     }
                 }
             }//Rectangle
