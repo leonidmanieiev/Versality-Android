@@ -20,33 +20,49 @@
 **
 ****************************************************************************/
 
-//Static notifier
+//logo and page title footer
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
+import QtQuick.Controls 2.4
+import QtQuick.Layouts 1.3
 
-Rectangle
+RowLayout
 {
-    property string notifierText: ''
+    property string pageTitleText
+    property real pageTitleTopMargin: Vars.screenHeight*0.06
 
-    id: notifier
-    visible: false
-    width: textContent.width*1.2
-    height: textContent.height*2
-    anchors.top: parent.top
-    anchors.topMargin: parent.height*0.3
-    anchors.horizontalCenter: parent.horizontalCenter
-    color: Vars.fontsPurple
-    radius: height*0.5
-    opacity: 0.9
+    id: logoAndPageTitle
+    height: parent.height*0.15
+    Layout.alignment: Qt.AlignCenter
+    spacing: Vars.screenWidth*0.07
 
-    Text
+    Image
     {
-        id: textContent
-        text: notifierText
-        anchors.centerIn: parent
+        id: logo
+        clip: true
+        source: "../icons/logo_white_fill.png"
+        Layout.preferredWidth: parent.width
+        Layout.preferredHeight: Vars.screenHeight*0.1
+        Layout.leftMargin: Vars.screenWidth*0.09
+        fillMode: Image.PreserveAspectFit
+    }
+
+    FontLoader
+    {
+        id: boldText;
+        source: "../fonts/Qanelas_Bold.ttf"
+    }
+
+    Label
+    {
+        id: pageTitle
+        text: pageTitleText
         color: Vars.backgroundWhite
-        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                    Vars.dpi)
+        Layout.preferredWidth: parent.width*0.3
+        Layout.preferredHeight: Vars.screenHeight*0.1
+        Layout.topMargin: pageTitleTopMargin
+        font.family: boldText.name
+        font.pixelSize: Helper.toDp(14, Vars.dpi)
     }
 }

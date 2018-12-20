@@ -52,7 +52,7 @@ RoundButton
         id: buttonBackground
         anchors.fill: parent
         radius: height*0.5
-        color: Vars.mainPurple
+        color: Vars.fontsPurple
         border.color: "transparent"
     }
 

@@ -35,10 +35,12 @@ QtObject
     readonly property color toastGrey: "#76797c"
     readonly property color listViewGrey: "#e8e9ea"
     readonly property color mainPurple: "#631964"
+    readonly property color fontsPurple: "#471261"
     readonly property color errorRed: "RED"
     readonly property color activeCouponColor: "#f93738"
     readonly property color copyrightBackgroundColor: "#c4c5c6"
     readonly property color darkGreyColor: "#9f9fa0"
+    readonly property color subCatSelectedColor: "#f0e4ff"
 
     //OTHERS
     readonly property int defaultRadius: 20
@@ -115,6 +117,9 @@ QtObject
     readonly property string showOnMap: "Показать на карте"
     readonly property string showListView: "Показать в виде списка"
     readonly property string signup: "ЗАРЕГИСТРИРОВАТЬСЯ"
+    readonly property string signupNoun: "Регистрация"
+    readonly property string almostDone: "Все почти готово..."
+    readonly property string profileSettings: "Настройки\nпрофиля"
     readonly property string login: "ВОЙТИ"
     readonly property string email: "E-mail:"
     readonly property string emailPlaceHolder: "*****@****.**"

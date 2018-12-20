@@ -39,5 +39,21 @@
         <file>qml/ScrollNumberPicker.qml</file>
         <file>output.nmea</file>
         <file>icons/storeMarkerIcon.svg</file>
+        <file>qml/Font.qml</file>
+        <file>fonts/Qanelas_Bold.ttf</file>
+        <file>fonts/Qanelas_Medium.ttf</file>
+        <file>fonts/Qanelas_Regular.ttf</file>
+        <file>backgrounds/almost_done_bg.png</file>
+        <file>backgrounds/category_settings_hf.png</file>
+        <file>backgrounds/init_page_bg.png</file>
+        <file>backgrounds/profile_settings_hf.png</file>
+        <file>backgrounds/settings_bg.png</file>
+        <file>backgrounds/sign_up_bg.png</file>
+        <file>icons/logo.png</file>
+        <file>icons/logo_full.png</file>
+        <file>icons/logo_white_fill.png</file>
+        <file>qml/LogoAndPageTitle.qml</file>
+        <file>icons/down_arrow.png</file>
+        <file>icons/tick.png</file>
     </qresource>
 </RCC>

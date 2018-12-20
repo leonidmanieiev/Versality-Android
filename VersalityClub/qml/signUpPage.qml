@@ -21,6 +21,7 @@
 ****************************************************************************/
 
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
@@ -33,6 +34,17 @@ Page
     height: Vars.screenHeight
     width: Vars.screenWidth
 
+    Image
+    {
+        id: background
+        clip: true
+        width: parent.width
+        height: parent.height
+        source: "../backgrounds/sign_up_bg.png"
+    }
+
+    LogoAndPageTitle { pageTitleText: Vars.signupNoun }
+
     //checking internet connetion
     Network { toastMessage: toastMessage }
 
@@ -40,14 +52,22 @@ Page
     {
         id: middleFieldsColumns
         width: parent.width*0.8
-        anchors.centerIn: parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: parent.height*0.2
         spacing: parent.height*0.05
+
+        FontLoader
+        {
+            id: mediumText;
+            source: "../fonts/Qanelas_Medium.ttf"
+        }
 
         CustomLabel
         {
             id: sexLabel
             labelText: Vars.sex
-            labelColor: Vars.mainPurple
+            labelColor: Vars.fontsPurple
         }
 
         ControlButton
@@ -69,7 +89,7 @@ Page
         {
             id: dateofbirthLabel
             labelText: Vars.birthday
-            labelColor: Vars.mainPurple
+            labelColor: Vars.fontsPurple
         }
 
         CustomTextField
@@ -77,7 +97,7 @@ Page
             id: dateofbirthField
             setTextColor: Vars.backgroundBlack
             setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.mainPurple
+            setBorderColor: Vars.fontsPurple
             inputMask: Vars.birthdayMask
             inputMethodHints: Qt.ImhDigitsOnly
 
@@ -93,14 +113,14 @@ Page
         {
             id: emailLabel
             labelText: Vars.email
-            labelColor: Vars.mainPurple
+            labelColor: Vars.fontsPurple
         }
 
         CustomTextField
         {
             id: emailField
             setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.mainPurple
+            setBorderColor: Vars.fontsPurple
             setTextColor: Vars.backgroundBlack
             placeholderText: Vars.emailPlaceHolder
             inputMethodHints: Qt.ImhEmailCharactersOnly
@@ -108,14 +128,39 @@ Page
             { regExp: Vars.emailRegEx }
         }
 
-        ControlButton
+        Button
         {
             id: signUpButton
+            opacity: pressed ? Vars.defaultOpacity : 1
             Layout.fillWidth: true
-            padding: middleFieldsColumns.spacing * 2
-            buttonText: Vars.signup
-            labelContentColor: Vars.backgroundWhite
-            backgroundColor: Vars.mainPurple
+            padding: middleFieldsColumns.spacing * 1.5
+            background: Rectangle
+            {
+                clip: true
+                radius: height*0.5
+                anchors.centerIn: parent
+                /*swaped geometry and rotation is a trick for
+                left to right gradient*/
+                height: Vars.screenWidth*0.8
+                width: Vars.screenHeight*0.09
+                rotation: -90
+                gradient: Gradient
+                {
+                    GradientStop { position: 0.0; color: "#390d5e" }
+                    GradientStop { position: 1.0; color: "#952e74" }
+                }
+            }
+            contentItem: Text
+            {
+                id: labelContent
+                text: Vars.signup
+                font.family: mediumText.name
+                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                            Vars.dpi)
+                color: Vars.backgroundWhite
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
             onClicked:
             {
                 //check for valid inputs
@@ -142,7 +187,7 @@ Page
                                                  "functionalFlag": 'register' });
                 }
             }
-        }//ControlButton
+        }//signUpButton
     }//ColumnLayout
 
     ScrollDatePicker

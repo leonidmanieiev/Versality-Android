@@ -30,7 +30,7 @@ Rectangle
     property real w: Vars.screenWidth*0.8
     property int r: h*0.5
     property color fillColor: Vars.backgroundWhite
-    property color borderColor: Vars.mainPurple
+    property color borderColor: Vars.fontsPurple
     property int borderWidth: h*0.06
 
     id: controlBackground

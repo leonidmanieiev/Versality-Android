@@ -169,9 +169,9 @@ Page
             id: moreButton
             Layout.fillWidth: true
             buttonText: Vars.more
-            labelContentColor: Vars.mainPurple
+            labelContentColor: Vars.fontsPurple
             backgroundColor: Vars.backgroundWhite
-            setBorderColor: Vars.mainPurple
+            setBorderColor: Vars.fontsPurple
             Layout.alignment: Qt.AlignHCenter
             onClicked:
             {

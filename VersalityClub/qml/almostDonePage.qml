@@ -25,6 +25,7 @@ import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import QtQuick.Layouts 1.3
 
 Page
 {
@@ -36,11 +37,21 @@ Page
     //checking internet connetion
     Network { toastMessage: toastMessage }
 
-    background: Rectangle
+    Image
     {
         id: background
-        anchors.fill: parent
-        color: Vars.mainPurple
+        clip: true
+        width: parent.width
+        height: parent.height
+        source: "../backgrounds/almost_done_bg.png"
+    }
+
+    LogoAndPageTitle { pageTitleText: Vars.almostDone }
+
+    FontLoader
+    {
+        id: mediumText;
+        source: "../fonts/Qanelas_Medium.ttf"
     }
 
     ControlButton
@@ -51,7 +62,7 @@ Page
         anchors.bottomMargin: Helper.toDp(parent.height/14, Vars.dpi)
         buttonText: Vars.everythingIsClearStart
         labelContentColor: Vars.backgroundWhite
-        backgroundColor: Vars.mainPurple
+        backgroundColor: "transparent"
         setBorderColor: Vars.backgroundWhite
         onClicked:
         {

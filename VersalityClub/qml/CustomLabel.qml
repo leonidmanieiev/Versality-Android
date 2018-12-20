@@ -32,12 +32,19 @@ Label
     property string labelText: ''
     property color labelColor: Vars.backgroundWhite
 
+    FontLoader
+    {
+        id: mediumText;
+        source: "../fonts/Qanelas_Medium.ttf"
+    }
+
     id: customLable
     clip: true
     Layout.fillWidth: true
     verticalAlignment: Text.AlignVCenter
     horizontalAlignment: Text.AlignHCenter
     text: labelText
+    font.family: mediumText.name
     font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                 Vars.dpi)
     color: labelColor

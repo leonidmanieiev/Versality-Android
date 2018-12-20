@@ -45,6 +45,12 @@ Rectangle
         indexChanged(defValue);
     }
 
+    FontLoader
+    {
+        id: mediumText;
+        source: "../fonts/Qanelas_Medium.ttf"
+    }
+
     ListView
     {
         id: listView
@@ -80,6 +86,7 @@ Rectangle
             {
                 id: delegateItemText
                 text: model.text
+                font.family: mediumText.name
                 font.pixelSize: Helper.toDp(20, Vars.dpi)
                 anchors.centerIn: parent
             }

@@ -38,11 +38,19 @@ Page
     //checking internet connetion
     Network { toastMessage: toastMessage }
 
-    background: Rectangle
+    FontLoader
+    {
+        id: mediumText;
+        source: "../fonts/Qanelas_Medium.ttf"
+    }
+
+    Image
     {
         id: background
-        anchors.fill: parent
-        color: Vars.mainPurple
+        clip: true
+        width: parent.width
+        height: parent.height
+        source: "../backgrounds/settings_bg.png"
     }
 
     Flickable
@@ -50,8 +58,8 @@ Page
         id: flickableArea
         clip: true
         width: Vars.screenWidth
-        height: Vars.screenHeight*0.6
-        contentHeight: middleFieldsColumns.height*1.05
+        height: Vars.screenHeight*0.65
+        contentHeight: middleFieldsColumns.height*1.1
         anchors.centerIn: parent
         boundsBehavior: Flickable.DragOverBounds
 
@@ -73,7 +81,7 @@ Page
                 Layout.fillWidth: true
                 buttonText: AppSettings.value("user/sex");
                 labelContentColor: Vars.backgroundWhite
-                backgroundColor: Vars.mainPurple
+                backgroundColor: "transparent"
                 setBorderColor: Vars.backgroundWhite
                 onClicked:
                 {
@@ -96,6 +104,7 @@ Page
             CustomTextField
             {
                 id: dateofbirthField
+                setFillColor: "transparent"
                 text: AppSettings.value("user/birthday");
                 inputMask: Vars.birthdayMask
                 inputMethodHints: Qt.ImhDigitsOnly
@@ -128,6 +137,7 @@ Page
             CustomTextField
             {
                 id: emailField
+                setFillColor: "transparent"
                 text: AppSettings.value("user/email");
                 inputMethodHints: Qt.ImhEmailCharactersOnly
                 validator: RegExpValidator
@@ -143,6 +153,7 @@ Page
             CustomTextField
             {
                 id: changePasswordField
+                setFillColor: "transparent"
                 echoMode: TextInput.Password
                 inputMethodHints: Qt.ImhSensitiveData
                 selectByMouse: false
@@ -158,6 +169,7 @@ Page
             CustomTextField
             {
                 id: firstNameField
+                setFillColor: "transparent"
                 text: AppSettings.value("user/name");
                 placeholderText: Vars.enterName
                 onTextChanged:
@@ -180,7 +192,7 @@ Page
                 Layout.fillWidth: true
                 buttonText: Vars.choose
                 labelContentColor: Vars.backgroundWhite
-                backgroundColor: Vars.mainPurple
+                backgroundColor: "transparent"
                 setBorderColor: Vars.backgroundWhite
                 onClicked:
                 {
@@ -193,6 +205,21 @@ Page
             }//ControlButton
         }//ColumnLayout
     }//Flickable
+
+    Image
+    {
+        id: header_footer
+        clip: true
+        width: parent.width
+        height: parent.height
+        source: "../backgrounds/profile_settings_hf.png"
+    }
+
+    LogoAndPageTitle
+    {
+        pageTitleText: Vars.profileSettings
+        pageTitleTopMargin: Vars.screenHeight*0.03
+    }
 
     ScrollDatePicker
     {
@@ -216,59 +243,50 @@ Page
         }
     }
 
-    Rectangle
+    RoundButton
     {
-        //temporary background
-        id: backOfButton
-        width: parent.width
-        height: Vars.screenHeight*0.2
+        id: saveButton
+        height: Vars.screenHeight*0.09
+        width: Vars.screenWidth*0.8
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: Vars.screenHeight*0.06
         anchors.horizontalCenter: parent.horizontalCenter
-        color: Vars.backgroundWhite
-
-        RoundButton
+        opacity: pressed ? Vars.defaultOpacity : 1
+        onClicked:
         {
-            id: mainButton
-            height: Vars.screenHeight*0.09
-            width: Vars.screenWidth*0.8
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: Vars.screenHeight*0.08
-            anchors.horizontalCenter: parent.horizontalCenter
-            opacity: pressed ? Vars.defaultOpacity : 1
-            onClicked:
-            {
-                AppSettings.beginGroup("user");
-                AppSettings.setValue("sex", sexButton.buttonText);
-                AppSettings.setValue("name", firstNameField.text);
-                AppSettings.setValue("birthday", dateofbirthField.text);
-                AppSettings.endGroup();
+            AppSettings.beginGroup("user");
+            AppSettings.setValue("sex", sexButton.buttonText);
+            AppSettings.setValue("name", firstNameField.text);
+            AppSettings.setValue("birthday", dateofbirthField.text);
+            AppSettings.endGroup();
 
-                profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
-                                                    { "api": Vars.userInfo,
-                                                      "functionalFlag": 'user/refresh-snb'
-                                                    });
-            }
+            profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
+                                                { "api": Vars.userInfo,
+                                                  "functionalFlag": 'user/refresh-snb'
+                                                });
+        }
 
-            contentItem: Text
-            {
-                text: Vars.save
-                color: Vars.mainPurple
-                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                            Vars.dpi)
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
+        contentItem: Text
+        {
+            text: Vars.save
+            color: Vars.fontsPurple
+            font.family: mediumText.name
+            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                        Vars.dpi)
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
 
-            background: Rectangle
-            {
-                implicitWidth: parent.width
-                implicitHeight: parent.height
-                border.color: Vars.mainPurple
-                border.width: height*0.06
-                radius: Vars.listItemRadius
-            }
-        }//RoundButton
-    }//Rectangle
+        background: Rectangle
+        {
+            implicitWidth: parent.width
+            implicitHeight: parent.height
+            border.color: Vars.fontsPurple
+            border.width: height*0.06
+            radius: Vars.listItemRadius
+            color: "transparent"
+        }
+    }//RoundButton
 
     ToastMessage { id: toastMessage }
 

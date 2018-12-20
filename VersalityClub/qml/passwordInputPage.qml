@@ -56,7 +56,7 @@ Page
             text: Vars.pass
             font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                         Vars.dpi)
-            color: Vars.mainPurple
+            color: Vars.fontsPurple
         }
 
         TextField
@@ -81,7 +81,7 @@ Page
             Layout.fillWidth: true
             buttonText: Vars.login
             labelContentColor: Vars.backgroundWhite
-            backgroundColor: Vars.mainPurple
+            backgroundColor: Vars.fontsPurple
             onClicked:
             {
                 var encryptedPass = Helper.encryptPassword(passField.text,

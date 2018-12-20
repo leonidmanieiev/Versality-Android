@@ -46,7 +46,7 @@ Page
         {
             id: emailLabel
             labelText: Vars.email
-            labelColor: Vars.mainPurple
+            labelColor: Vars.fontsPurple
         }
 
         CustomTextField
@@ -54,7 +54,7 @@ Page
             id: emailField
             placeholderText: Vars.emailPlaceHolder
             setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.mainPurple
+            setBorderColor: Vars.fontsPurple
             setTextColor: Vars.backgroundBlack
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
@@ -67,7 +67,7 @@ Page
             Layout.fillWidth: true
             padding: middleLayout.spacing*2
             labelContentColor: Vars.backgroundWhite
-            backgroundColor: Vars.mainPurple
+            backgroundColor: Vars.fontsPurple
             buttonText: Vars.login
             onClicked:
             {

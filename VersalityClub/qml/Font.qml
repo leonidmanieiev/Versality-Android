@@ -20,33 +20,30 @@
 **
 ****************************************************************************/
 
-//Static notifier
-import "../"
-import "../js/helpFunc.js" as Helper
+//custom fonts
 import QtQuick 2.11
 
-Rectangle
+Item
 {
-    property string notifierText: ''
+    readonly property alias regular_text_alias: regular_text
+    readonly property alias medium_text_alias: medium_text
+    readonly property alias bold_text_alias: bold_text
 
-    id: notifier
-    visible: false
-    width: textContent.width*1.2
-    height: textContent.height*2
-    anchors.top: parent.top
-    anchors.topMargin: parent.height*0.3
-    anchors.horizontalCenter: parent.horizontalCenter
-    color: Vars.fontsPurple
-    radius: height*0.5
-    opacity: 0.9
-
-    Text
+    FontLoader
     {
-        id: textContent
-        text: notifierText
-        anchors.centerIn: parent
-        color: Vars.backgroundWhite
-        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                    Vars.dpi)
+        id: regular_text
+        source: "../fonts/Qanelas_Regular.ttf"
+    }
+
+    FontLoader
+    {
+        id: medium_text
+        source: "../fonts/Qanelas_Medium.ttf"
+    }
+
+    FontLoader
+    {
+        id: bold_text
+        source: "../fonts/Qanelas_Bold.ttf"
     }
 }

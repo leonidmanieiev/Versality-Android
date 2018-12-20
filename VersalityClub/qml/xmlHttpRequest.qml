@@ -49,8 +49,10 @@ Item
     readonly property int errorFlagBeg: 0
     readonly property int errorFlagEnd: 5
     //promotions data
-    property string promo_id: AppSettings.value("promo/id")
-    property string promo_desc: AppSettings.value("promo/desc")
+    property string promo_id: AppSettings.value("promo/id") ===
+                                  undefined ? '' : AppSettings.value("promo/id")
+    property string promo_desc: AppSettings.value("promo/desc") ===
+                                    undefined ? '' : AppSettings.value("promo/desc")
 
     //creates params for request
     function makeParams()

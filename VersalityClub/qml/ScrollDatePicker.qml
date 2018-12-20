@@ -81,15 +81,22 @@ Rectangle
         width: parent.width * 0.25
         height: buttonText.height*2
         radius: Vars.defaultRadius
-        color: Vars.mainPurple
+        color: Vars.fontsPurple
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height*0.05
         anchors.horizontalCenter: parent.horizontalCenter
+
+        FontLoader
+        {
+            id: mediumText;
+            source: "../fonts/Qanelas_Medium.ttf"
+        }
 
         Text
         {
             id: buttonText
             text: Vars.proceed
+            font.family: mediumText.name
             font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                         Vars.dpi)
             color: Vars.backgroundBlack

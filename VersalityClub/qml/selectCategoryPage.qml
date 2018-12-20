@@ -38,11 +38,19 @@ Page
     //checking internet connetion
     Network { toastMessage: toastMessage }
 
-    Rectangle
+    Image
     {
         id: background
-        anchors.fill: parent
-        color: Vars.mainPurple
+        clip: true
+        width: parent.width
+        height: parent.height
+        source: "../backgrounds/settings_bg.png"
+    }
+
+    FontLoader
+    {
+        id: mediumText;
+        source: "../fonts/Qanelas_Medium.ttf"
     }
 
     ListView
@@ -50,8 +58,9 @@ Page
         id: catsListView
         clip: true
         width: parent.width
-        height: parent.height*0.6
-        anchors.centerIn: parent
+        height: parent.height*0.615
+        anchors.top: parent.top
+        anchors.topMargin: parent.height*0.175
         model: catsModel
         delegate: catsDelegate
     }
@@ -63,6 +72,7 @@ Page
         id: catsDelegate
         Column
         {
+            id: middleFieldsColumn
             width: Vars.screenWidth*0.8
             anchors.horizontalCenter: parent.horizontalCenter
             bottomPadding: Vars.screenHeight*0.03
@@ -82,28 +92,35 @@ Page
                     x: parent.radius
                     anchors.verticalCenter: parent.verticalCenter
                     color: Vars.backgroundWhite
+                    font.family: mediumText.name
                     font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                                 Vars.dpi)
                     text: title
                 }
 
-                Rectangle
+                Image
                 {
-                    id: catsItemArrow
-                    color: "red"
+                    id: downArrow
                     width: parent.radius
                     height: parent.radius
-                    radius: height*0.5
                     anchors.right: parent.right
                     anchors.rightMargin: parent.radius
                     anchors.verticalCenter: parent.verticalCenter
+                    fillMode: Image.PreserveAspectFit
+                    source: "../icons/down_arrow.png"
                 }
 
                 MouseArea
                 {
                     id: catsClickableArea
                     anchors.fill: parent
-                    onClicked: catsModel.setProperty(index, "collapsed", !collapsed)
+                    onClicked:
+                    {
+                        downArrow.rotation = collapsed ? 180 : 0;
+                        catsItem.border.color = collapsed ? "transparent" : Vars.backgroundWhite
+                        catsItem.color = collapsed ? Vars.fontsPurple : "transparent"
+                        catsModel.setProperty(index, "collapsed", !collapsed);
+                    }
                 }
             }//Rectangle
 
@@ -123,22 +140,25 @@ Page
         id: subCatsDelegate
         Column
         {
+            id: middleFieldsSubColumn
             property alias model: subCatsRepeater.model
             width: Vars.screenWidth*0.8
             anchors.horizontalCenter: parent.horizontalCenter
-            bottomPadding: Vars.screenHeight*0.01
+            topPadding: Vars.screenHeight*0.02
+            //instead of bottomPadding
+            spacing: Vars.screenHeight*0.01
+
             Repeater
             {
                 id: subCatsRepeater
                 delegate: Rectangle
                 {
                     id: subCatsItem
-                    color: AppSettings.contains(subid) ? Vars.toastGrey : "transparent"
-                    height: Vars.screenHeight*0.09
-                    width: Vars.screenWidth*0.8
+                    color: AppSettings.contains(subid) ? Vars.subCatSelectedColor :
+                                                         "transparent"
                     radius: height*0.5
-                    border.color: Vars.mainPurple
-                    border.width: height*0.06
+                    height: Vars.screenHeight*0.07
+                    width: Vars.screenWidth*0.8
 
                     Text
                     {
@@ -146,24 +166,26 @@ Page
                         x: parent.radius*2
                         width: parent.width*0.7
                         anchors.verticalCenter: parent.verticalCenter
+                        font.family: mediumText.name
                         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                                     Vars.dpi)
-                        color: AppSettings.contains(subid) ? Vars.backgroundBlack : Vars.backgroundWhite
+                        color: AppSettings.contains(subid) ? "transprent" :
+                                                             Vars.backgroundWhite
                         wrapMode: Text.WordWrap
                         text: subtitle
                     }
 
-                    Rectangle
+                    Image
                     {
-                        id: catsSelectedIcon
-                        visible: AppSettings.contains(subid)
-                        color: "green"
-                        width: parent.radius
-                        height: parent.radius
-                        radius: height*0.5
+                        id: tickIcon
+                        width: parent.radius*1.2
+                        height: parent.radius*1.2
                         anchors.left: parent.left
-                        anchors.leftMargin: parent.radius*0.8
+                        anchors.leftMargin: parent.radius*0.45
                         anchors.verticalCenter: parent.verticalCenter
+                        visible: AppSettings.contains(subid)
+                        fillMode: Image.PreserveAspectFit
+                        source: "../icons/tick.png"
                     }
 
                     MouseArea
@@ -172,18 +194,18 @@ Page
                         anchors.fill: parent
                         onClicked:
                         {
-                            if(subCatsItem.color == Vars.toastGrey)
+                            if(AppSettings.contains(subid))
                             {
                                 subCatsItem.color = "transparent";
                                 subCatsText.color = Vars.backgroundWhite
-                                catsSelectedIcon.visible = false;
+                                tickIcon.visible = false;
                                 AppSettings.removeCat(subid);
                             }
                             else
                             {
-                                subCatsItem.color = Vars.toastGrey;
-                                subCatsText.color = Vars.backgroundBlack;
-                                catsSelectedIcon.visible = true;
+                                subCatsItem.color = Vars.subCatSelectedColor;
+                                subCatsText.color = "transprent";
+                                tickIcon.visible = true;
                                 AppSettings.insertCat(subid);
                             }
                         }
@@ -193,13 +215,28 @@ Page
         }//Column
     }//Component
 
+    Image
+    {
+        id: header_footer
+        clip: true
+        width: parent.width
+        height: parent.height
+        source: "../backgrounds/category_settings_hf.png"
+    }
+
+    LogoAndPageTitle
+    {
+        pageTitleText: Vars.profileSettings
+        pageTitleTopMargin: Vars.screenHeight*0.03
+    }
+
     ControlButton
     {
         id: saveSelectedButton
         setWidth: Vars.screenWidth*0.8
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: parent.height*0.1
+        anchors.bottomMargin: parent.height*0.05
         buttonText: Vars.saveAndBackToSetting
         onClicked:
         {
@@ -210,6 +247,7 @@ Page
                                               });
         }
     }
+
 
     ToastMessage { id: toastMessage }
 

@@ -29,9 +29,15 @@ import QtQuick.Layouts 1.3
 
 TextField
 {
-    property color setFillColor: Vars.mainPurple
+    property color setFillColor: Vars.fontsPurple
     property color setBorderColor: Vars.backgroundWhite
     property color setTextColor: Vars.backgroundWhite
+
+    FontLoader
+    {
+        id: mediumText;
+        source: "../fonts/Qanelas_Medium.ttf"
+    }
 
     id: customTextFiled
     Layout.fillWidth: true
@@ -41,6 +47,7 @@ TextField
         fillColor: setFillColor
         borderColor: setBorderColor
     }
+    font.family: mediumText.name
     font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                 Vars.dpi)
     color: setTextColor

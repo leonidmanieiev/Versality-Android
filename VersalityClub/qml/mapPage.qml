@@ -42,11 +42,11 @@ Page
     property bool allGood: false
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
     readonly property string mapCopyright: 'Tiles style by <a href="http://corp.sputnik.ru/maps"'
-                                           +' style="color: '+Vars.mainPurple+'">Cпутник</a> © '
+                                           +' style="color: '+Vars.fontsPurple+'">Cпутник</a> © '
                                            +'<a href="https://www.rt.ru/" style="color: '+
-                                           Vars.mainPurple+'">Ростелеком</a>'
+                                           Vars.fontsPurple+'">Ростелеком</a>'
     readonly property string mapDataCopyright: ' Data © <a href="https://www.openstreetmap.org/'
-                                               +'copyright" style="color: '+Vars.mainPurple+'">'
+                                               +'copyright" style="color: '+Vars.fontsPurple+'">'
                                                +'OpenStreetMap</a>'
     readonly property int mapButtonSize: Vars.screenWidth*0.09
     readonly property int fromButtonZoomLevel: 16

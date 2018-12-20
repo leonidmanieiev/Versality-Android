@@ -43,6 +43,8 @@ public:
     {
         //DELETE AFTER LAUNCH
         //clearAllAppSettings();
+        //clears promotions cache on each app launch
+        this->remove("promo");
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
         { QSettings::setValue(key, value); }

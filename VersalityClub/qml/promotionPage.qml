@@ -329,7 +329,7 @@ Page
     ToastMessage
     {
         id: promoCodePopup
-        backgroundColor: Vars.mainPurple
+        backgroundColor: Vars.fontsPurple
         y: Vars.screenHeight*0.5
     }
 
