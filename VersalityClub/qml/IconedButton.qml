@@ -20,40 +20,35 @@
 **
 ****************************************************************************/
 
-//Wrapper, so I can use functionality of QStack in QML
-//For back button navigation
-#ifndef PAGENAMEHOLDER_H
-#define PAGENAMEHOLDER_H
+//button with icon
+import "../"
+import QtQuick 2.11
 
-#include <QObject>
-#include <QStack>
-#include <QString>
-#include <QDebug>
-
-class PageNameHolder : public QObject
+Rectangle
 {
-    Q_OBJECT
-public:
-    explicit PageNameHolder(QObject *parent = nullptr) :
-        QObject(parent) { }
-    Q_INVOKABLE QString pop()
+    property string buttonIconSource
+    property alias clickArea: clickableArea
+
+    id: buttonBackground
+    color: "transparent"
+    width: Vars.footerButtonsHeight
+    height: Vars.footerButtonsHeight
+    opacity: clickableArea.pressed ?
+                 Vars.defaultOpacity : 1
+
+    Image
     {
-        if(!this->empty())
-        {
-            QString poped = pageNames.pop();
-            return poped;
-        }
-
-        return "";
+        id: buttonIcon
+        clip: true
+        source: buttonIconSource
+        width: parent.width
+        height: parent.height
+        fillMode: Image.PreserveAspectFit
     }
-    Q_INVOKABLE void push(const QString& pageName)
-    { pageNames.push(pageName); }
-    Q_INVOKABLE void clear()
-    { pageNames.clear(); }
-    Q_INVOKABLE bool empty() const
-    { return pageNames.empty(); }
-private:
-    QStack<QString> pageNames;
-};
 
-#endif // PAGENAMEHOLDER_H
+    MouseArea
+    {
+        id: clickableArea
+        anchors.fill: parent
+    }
+}

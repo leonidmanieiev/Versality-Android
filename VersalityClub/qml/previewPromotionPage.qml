@@ -48,14 +48,28 @@ Page
     height: Vars.pageHeight
     width: Vars.screenWidth
 
+    FontLoader
+    {
+        id: regularText;
+        source: "../fonts/Qanelas_Regular.ttf"
+    }
+
+    FontLoader
+    {
+        id: boldText;
+        source: "../fonts/Qanelas_Bold.ttf"
+    }
+
     //checking internet connetion
     Network { toastMessage: toastMessage }
 
-    background: Rectangle
+    Image
     {
-        id: pageBackground
-        anchors.fill: parent
-        color: Vars.listViewGrey
+        id: background
+        clip: true
+        width: parent.width
+        height: parent.height
+        source: "../backgrounds/preview_bg.png"
     }
 
     Flickable
@@ -68,129 +82,147 @@ Page
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         boundsBehavior: Flickable.DragOverBounds
-    ColumnLayout
-    {
-        id: middleFieldsColumns
-        width: parent.width
-        spacing: Vars.screenHeight*0.05
 
-        Button
+        ColumnLayout
         {
-            id: favouriteIndicator
-            Layout.topMargin: parent.spacing*0.5
-            Layout.alignment: Qt.AlignHCenter
-            width: Vars.screenWidth*0.16
-            height: width
-            text: qsTr("AtF")
-            background: Rectangle
+            id: middleFieldsColumns
+            width: parent.width
+            spacing: Vars.screenHeight*0.05
+
+            IconedButton
             {
-                id: buttonBackground
-                implicitWidth: parent.width
-                implicitHeight: parent.height
+                id: addToFavourite
+                width: Vars.footerButtonsHeight*1.3
+                height: Vars.footerButtonsHeight*1.3
+                Layout.topMargin: parent.spacing*0.5
+                Layout.alignment: Qt.AlignHCenter
+                buttonIconSource: p_is_marked ?
+                                  "../icons/add_to_favourites_2_on.png" :
+                                  "../icons/add_to_favourites_2_off.png"
+                clickArea.onClicked:
+                {
+                    if(!p_is_marked)
+                    {
+                        p_is_marked = true;
+                        buttonIconSource = "../icons/add_to_favourites_2_on.png";
+                        previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                             {"api": Vars.userMarkProm,
+                                                              "functionalFlag": "user/mark",
+                                                              "promo_id": p_id});
+                    }
+                    else
+                    {
+                        p_is_marked = false;
+                        buttonIconSource = "../icons/add_to_favourites_2_off.png";
+                        previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                             {"api": Vars.userUnmarkProm,
+                                                              "functionalFlag": "user/unmark",
+                                                              "promo_id": p_id});
+                    }
+                }
+            }//addToFavourite
+
+            Rectangle
+            {
+                id: promsImage
+                Layout.topMargin: parent.spacing*3
+                Layout.alignment: Qt.AlignHCenter
+                height: Vars.screenHeight*0.25
+                width: Vars.screenWidth*0.8
                 radius: Vars.listItemRadius
-                color: p_is_marked ? Vars.errorRed : Vars.backgroundWhite
-            }
-            checkable: true
-            checked: p_is_marked
-            onClicked:
-            {
-                if(checked)
+                color: "transparent"
+
+                //rounding promotion image
+                ImageRounder
                 {
-                    p_is_marked = true;
-                    buttonBackground.color = Vars.activeCouponColor;
-                    previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                        {"api": Vars.userMarkProm,
-                                                         "functionalFlag": "user/mark",
-                                                         "promo_id": p_id});
-                }
-                else
-                {
-                    p_is_marked = false;
-                    buttonBackground.color = Vars.listViewGrey;
-                    previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                        {"api": Vars.userUnmarkProm,
-                                                         "functionalFlag": "user/unmark",
-                                                         "promo_id": p_id});
+                    imageSource: p_pic
+                    roundValue: Vars.listItemRadius
                 }
             }
-        }//favouriteIndicator
-
-        Rectangle
-        {
-            id: promsImage
-            Layout.topMargin: parent.spacing*3
-            Layout.alignment: Qt.AlignHCenter
-            height: Vars.screenHeight*0.25
-            width: Vars.screenWidth*0.8
-            radius: Vars.listItemRadius
-            color: "transparent"
-
-            //rounding promotion image
-            ImageRounder
-            {
-                imageSource: p_pic
-                roundValue: Vars.listItemRadius
-            }
-        }
-
-        Label
-        {
-            id: promotionTitle
-            text: p_title
-            font.pixelSize: Helper.toDp(16, Vars.dpi)
-            font.bold: true
-            color: Vars.backgroundBlack
-            Layout.alignment: Qt.AlignHCenter
-        }
-
-        Rectangle
-        {
-            id: textArea
-            width: promsImage.width
-            height: childrenRect.height
-            Layout.alignment: Qt.AlignHCenter
-            color: Vars.listViewGrey
 
             Label
             {
-                id: promotionDescription
-                width: parent.width
-                text: p_desc
-                maximumLineCount: maxLineCnt
-                font.pixelSize: Helper.toDp(13, Vars.dpi)
-                color: Vars.backgroundBlack
-                elide: Text.ElideRight
-                wrapMode: Label.WordWrap
+                id: promotionTitle
+                text: p_title
+                font.pixelSize: Helper.toDp(16, Vars.dpi)
+                font.family: boldText.name
+                font.bold: true
+                color: "#5c1b5c"
+                Layout.alignment: Qt.AlignHCenter
             }
-        }
 
-        ControlButton
-        {
-            id: moreButton
-            Layout.fillWidth: true
-            buttonText: Vars.more
-            labelContentColor: Vars.fontsPurple
-            backgroundColor: Vars.backgroundWhite
-            setBorderColor: Vars.fontsPurple
-            Layout.alignment: Qt.AlignHCenter
-            onClicked:
+            Rectangle
             {
-                PageNameHolder.push("previewPromotionPage.qml");
-                previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
-                                        { "api": Vars.promFullViewModel,
-                                          "functionalFlag": 'user/fullprom'});
-            }
-        }//ControlButton
-    }//ColumnLayout
+                id: textArea
+                width: promsImage.width
+                height: childrenRect.height
+                Layout.alignment: Qt.AlignHCenter
+                color: "transparent"
+
+                Label
+                {
+                    id: promotionDescription
+                    width: parent.width
+                    text: p_desc
+                    maximumLineCount: maxLineCnt
+                    font.family: regularText.name
+                    font.pixelSize: Helper.toDp(13, Vars.dpi)
+                    color: Vars.backgroundBlack
+                    elide: Text.ElideRight
+                    wrapMode: Label.WordWrap
+                }
+
+                Image
+                {
+                    id: descriptionFadeOut
+                    visible: promotionDescription.lineCount < maxLineCnt ? false : true
+                    clip: true
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    height: parent.height
+                    source: "../backgrounds/description_fade_out.png"
+                }
+            }//textArea
+
+            ControlButton
+            {
+                id: moreButton
+                Layout.fillWidth: true
+                buttonText: Vars.more
+                labelContentColor: Vars.fontsPurple
+                backgroundColor: Vars.backgroundWhite
+                setBorderColor: Vars.fontsPurple
+                Layout.alignment: Qt.AlignHCenter
+                onClicked:
+                {
+                    PageNameHolder.push("previewPromotionPage.qml");
+                    previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
+                                            { "api": Vars.promFullViewModel,
+                                              "functionalFlag": 'user/fullprom'});
+                }
+            }//ControlButton
+        }//ColumnLayout
+    }//Flickable
+
+    Image
+    {
+        id: background2
+        clip: true
+        width: parent.width
+        height: parent.height
+        source: "../backgrounds/main_f.png"
     }
+
     //back to promotions choose button
     TopControlButton
     {
         id: backButton
-        anchors.top: parent.top
         anchors.topMargin: Vars.screenWidth*0.25
-        buttonWidth: Vars.screenWidth*0.55
+        buttonWidth: Vars.screenWidth*0.54
         buttonText: Vars.backToPromsPicking
+        buttonIconSource: "../icons/left_arrow.png"
+        iconAlias.width: height*0.5
+        iconAlias.height: height*0.4
         onClicked: previewPromotionPageLoader.source = "mapPage.qml"
     }
 

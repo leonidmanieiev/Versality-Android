@@ -30,18 +30,29 @@ RoundButton
 {
     property string buttonText: ''
     property real buttonWidth: 0.0
+    property string buttonIconSource
+    property alias iconAlias: topControlButtonIcon
+
+    FontLoader
+    {
+        id: regularText;
+        source: "../fonts/Qanelas_Regular.ttf"
+    }
 
     id: topControlButton
-    opacity: pressed ? Vars.defaultOpacity : 1
-    height: Vars.screenHeight*0.05
-    width: buttonWidth
     radius: height*0.5
+    width: buttonWidth
+    height: Vars.screenHeight*0.05
+    opacity: pressed ? Vars.defaultOpacity : 1
+    anchors.top: parent.top
+    anchors.topMargin: Helper.toDp(parent.height*0.05, Vars.dpi)
     anchors.horizontalCenter: parent.horizontalCenter
     contentItem: Text
     {
         id: buttonTextContent
         text: buttonText
         font.pixelSize: Helper.toDp(13, Vars.dpi)
+        font.family: regularText.name
         color: Vars.backgroundWhite
         leftPadding: parent.radius*0.8
         horizontalAlignment: Text.AlignLeft
@@ -50,19 +61,27 @@ RoundButton
     background: Rectangle
     {
         id: buttonBackground
-        anchors.fill: parent
+        clip: true
         radius: height*0.5
-        color: Vars.fontsPurple
-        border.color: "transparent"
+        anchors.centerIn: parent
+        /*swaped geometry and rotation is a
+        trick for left to right gradient*/
+        height: parent.width
+        width: parent.height
+        rotation: -90
+        gradient: Gradient
+        {
+            GradientStop { position: 0.0; color: "#852970" }
+            GradientStop { position: 1.0; color: "#5b1a5c" }
+        }
     }
 
-    Rectangle
+    Image
     {
         id: topControlButtonIcon
-        color: "red"
+        source: buttonIconSource
         width: parent.radius
-        height: width
-        radius: height*0.5
+        height: parent.radius
         anchors.right: parent.right
         anchors.rightMargin: parent.radius
         anchors.verticalCenter: parent.verticalCenter

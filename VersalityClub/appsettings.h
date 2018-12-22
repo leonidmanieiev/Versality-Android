@@ -47,37 +47,37 @@ public:
         this->remove("promo");
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
-        { QSettings::setValue(key, value); }
+    { QSettings::setValue(key, value); }
     Q_INVOKABLE QVariant value(const QString& key, const QVariant &defaultValue = QVariant()) const
-        { return QSettings::value(key, defaultValue); }
+    { return QSettings::value(key, defaultValue); }
     Q_INVOKABLE void remove(const QString& key)
-        { QSettings::remove(key); }
+    { QSettings::remove(key); }
     Q_INVOKABLE void beginGroup(const QString &prefix)
-        { QSettings::beginGroup(prefix); }
+    { QSettings::beginGroup(prefix); }
     Q_INVOKABLE void endGroup()
-        { QSettings::endGroup(); }
+    { QSettings::endGroup(); }
     Q_INVOKABLE QSet<quint32> getSelectedCats() const
-        { return this->selectedCats; }
+    { return this->selectedCats; }
     Q_INVOKABLE quint32 insertCat(quint32 catId)
-        { return *this->selectedCats.insert(catId); }
+    { return *this->selectedCats.insert(catId); }
     Q_INVOKABLE bool contains(quint32 catId) const
-        { return this->selectedCats.find(catId) != this->selectedCats.constEnd(); }
+    { return this->selectedCats.find(catId) != this->selectedCats.constEnd(); }
     Q_INVOKABLE bool removeCat(quint32 catId)
-        { return this->selectedCats.remove(catId); }
+    { return this->selectedCats.remove(catId); }
     Q_INVOKABLE void clearAllAppSettings()
-        { this->clear(); }
+    { this->clear(); }
     //serialize categories for request param
     Q_INVOKABLE QString getStrCats() const
-        {
-          QString strCats;
-          for(auto cat : this->selectedCats)
-              strCats.append(QString::number(cat)).append(',');
-          strCats.chop(1);
+    {
+        QString strCats;
+        for(auto cat : this->selectedCats)
+            strCats.append(QString::number(cat)).append(',');
+        strCats.chop(1);
 
-          return strCats;
-        }
+        return strCats;
+    }
     Q_INVOKABLE int getCatsAmount() const
-        { return selectedCats.size(); }
+    { return selectedCats.size(); }
 private:
     QSet<quint32> selectedCats;
 };

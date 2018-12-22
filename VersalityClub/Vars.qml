@@ -37,7 +37,7 @@ QtObject
     readonly property color mainPurple: "#631964"
     readonly property color fontsPurple: "#471261"
     readonly property color errorRed: "RED"
-    readonly property color activeCouponColor: "#f93738"
+    readonly property color activeCouponColor: "#ff3c3c"
     readonly property color copyrightBackgroundColor: "#c4c5c6"
     readonly property color darkGreyColor: "#9f9fa0"
     readonly property color subCatSelectedColor: "#f0e4ff"
@@ -62,8 +62,8 @@ QtObject
 
     //FOOTERBUTTONS CONSTANTS
     readonly property int footerButtonsFieldHeight: screenHeight*0.125
-    readonly property int footerButtonsHeight: screenWidth*0.1
-    readonly property int footerButtonsSpacing: screenWidth*0.05
+    readonly property int footerButtonsHeight: screenWidth*0.12
+    readonly property int footerButtonsSpacing: screenWidth*0.1
 
     //SCREEN CONSTANTS
     readonly property int dpi: Screen.pixelDensity * 25.4
@@ -135,7 +135,7 @@ QtObject
     readonly property string nameNotNecessary: "Имя (не обязательно):"
     readonly property string enterName: "ВВЕДИТЕ ИМЯ"
     readonly property string chooseCats: "Выберите категории:"
-    readonly property string choose: "ВВЫБОР"
+    readonly property string choose: "ВЫБОР"
     readonly property string save: "СОХРАНИТЬ"
     readonly property string activateCoupon: "АКТИВИРОВАТЬ КУПОН"
     readonly property string closestAddress: "БЛИЖАЙШИЙ КО МНЕ АДРЕС"

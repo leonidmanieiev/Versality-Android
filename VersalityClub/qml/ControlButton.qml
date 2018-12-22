@@ -50,15 +50,8 @@ Button
         id: background
         color: backgroundColor
         borderColor: setBorderColor
-        /*swaped geometry and rotation is a trick for
-        left to right gradient*/
         h: setHeight
         w: setWidth
-        /*gradient: Gradient
-        {
-            GradientStop { position: 0.0; color: "#390d5e" }
-            GradientStop { position: 1.0; color: "#952e74" }
-        }*/
     }
     contentItem: Text
     {

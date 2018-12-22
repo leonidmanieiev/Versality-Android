@@ -29,6 +29,7 @@ import QtQuick.Controls 2.4
 Page
 {
     property bool allGood: false
+    readonly property int promItemHeight: Vars.screenHeight*0.25
 
     id: listViewPage
     enabled: Vars.isConnected
@@ -40,9 +41,9 @@ Page
 
     background: Rectangle
     {
-        id: pageBackground
+        id: backgroundColor
         anchors.fill: parent
-        color: Vars.listViewGrey
+        color: Vars.backgroundWhite
     }
 
     Component.onCompleted:
@@ -97,13 +98,28 @@ Page
         id: promsListView
         visible: allGood
         clip: true
-        width: Vars.screenWidth
-        height: Vars.screenHeight
-        contentHeight: promsDelegate.height
         anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width
+        height: parent.height*0.9
+        contentHeight: promItemHeight*3
         model: ListModel { id: promsModel }
         delegate: promsDelegate
+    }
+
+    Image
+    {
+        id: background
+        clip: true
+        anchors.fill: parent
+        source: "../backgrounds/main_f.png"
+    }
+
+    Image
+    {
+        id: background2
+        clip: true
+        anchors.fill: parent
+        source: "../backgrounds/listview_hf.png"
     }
 
     Component
@@ -117,7 +133,7 @@ Page
             Rectangle
             {
                 id: promsItem
-                height: Vars.screenHeight*0.25
+                height: promItemHeight
                 width: Vars.screenWidth*0.8
                 radius: Vars.listItemRadius
                 color: "transparent"
@@ -172,10 +188,11 @@ Page
     TopControlButton
     {
         id: showOnMapButton
-        anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/20, Vars.dpi)
-        buttonWidth: Vars.screenWidth*0.5
+        buttonWidth: Vars.screenWidth*0.47
         buttonText: Vars.showOnMap
+        buttonIconSource: "../icons/on_map.png"
+        iconAlias.width: height*0.56
+        iconAlias.height: height*0.7
         onClicked: listViewPageLoader.source = "mapPage.qml"
     }
 

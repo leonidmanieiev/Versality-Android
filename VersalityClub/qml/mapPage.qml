@@ -56,9 +56,9 @@ Page
     readonly property int popupWindowHeight: height*0.3
     readonly property int popupWindowDurat: 400
     readonly property real popupWindowOpacity: 0.8
-    readonly property int popupShowTo: height-Vars.footerButtonsFieldHeight-popupWindowHeight
-    readonly property int yToHide: height-Vars.footerButtonsFieldHeight-popupWindowHeight/2
-    readonly property int yToInvisible: height-Vars.footerButtonsFieldHeight
+    readonly property int popupShowTo: Vars.screenHeight*0.87-popupWindowHeight
+    readonly property int yToHide: Vars.screenHeight*0.87-popupWindowHeight/2
+    readonly property int yToInvisible: Vars.screenHeight*0.87
 
     function setUserLocationMarker(lat, lon, _zoomLevel, follow)
     {
@@ -86,6 +86,14 @@ Page
 
     //model for tiles in popup window
     ListModel { id: promsTilesModel }
+
+    Image
+    {
+        id: background
+        clip: true
+        anchors.fill: parent
+        source: "../backgrounds/main_f.png"
+    }
 
     Map
     {
@@ -220,9 +228,10 @@ Page
                     id: promMarkersIcon
                     visible: (lat !== defaultLat && lon !== defaultLon)
                              || !showStoreMarker
-                    source: "../icons/promotionMarkerIcon.svg"
-                    sourceSize.width: mapButtonSize
-                    sourceSize.height: mapButtonSize
+                    clip: true
+                    width: mapButtonSize*0.8
+                    height: mapButtonSize
+                    source: "../icons/promotion_marker.png"
                 }
 
                 //show promotion preview after click on mark
@@ -246,19 +255,27 @@ Page
     {
         id: copyrightTextBackground
         radius: Vars.defaultRadius
-        width: childrenRect.width
+        width: childrenRect.width*1.05
         height: childrenRect.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: footerButton.top
         color: Vars.copyrightBackgroundColor
 
+        FontLoader
+        {
+            id: regulatText;
+            source: "../fonts/Qanelas_Regular.ttf"
+        }
+
         Text
         {
             id: copyrightText
-            color: Vars.backgroundWhite
+            anchors.centerIn: parent
+            color: Vars.backgroundBlack
             textFormat: Text.RichText;
             text: mapCopyright+mapDataCopyright
             font.pixelSize: Helper.toDp(10, Vars.dpi)
+            font.family: regulatText.name
             onLinkActivated: Qt.openUrlExternally(link)
         }
     }//copyrightTextBackground
@@ -284,14 +301,14 @@ Page
 
         function show()
         {
-            popupAnim.from = Vars.screenHeight
-            popupAnim.to = popupShowTo
+            popupAnim.from = Vars.screenHeight;
+            popupAnim.to = popupShowTo;
             popupAnim.start();
         }
 
         function hide()
         {
-            popupAnim.from = popupWindow.y
+            popupAnim.from = popupWindow.y;
             popupAnim.to = Vars.screenHeight;
             popupAnim.start();
         }
@@ -412,27 +429,15 @@ Page
         }//Column
     }//Component
 
-    RoundButton
+    IconedButton
     {
-        id: userLocationButton
+        id: geoLocationButton
         enabled: Vars.isLocated
-        opacity: pressed ? Vars.defaultOpacity : 1
-        icon.height: mapButtonSize
-        icon.width: mapButtonSize
-        icon.color: "transparent"
-        icon.source: "../icons/geoLocationIcon.svg"
-        anchors.verticalCenter: parent.verticalCenter
+        buttonIconSource: "../icons/geo_location.png"
         anchors.right: parent.right
         anchors.rightMargin: parent.width*0.02
-        background: Rectangle
-        {
-            id: buttonBackground
-            anchors.fill: parent
-            radius: parent.radius
-            color: "transparent"
-            border.color: "transparent"
-        }
-        onClicked:
+        anchors.verticalCenter: parent.verticalCenter
+        clickArea.onClicked:
         {
             locButtClicked = true;
             setUserLocationMarker(AppSettings.value("user/lat"),
@@ -445,10 +450,9 @@ Page
     TopControlButton
     {
         id: showInListViewButton
-        anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/20, Vars.dpi)
-        buttonWidth: Vars.screenWidth*0.6
+        buttonWidth: Vars.screenWidth*0.57
         buttonText: Vars.showListView
+        buttonIconSource: "../icons/show_listview.png"
         onClicked:
         {
             PageNameHolder.push("mapPage.qml");

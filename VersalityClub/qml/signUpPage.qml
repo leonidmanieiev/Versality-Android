@@ -139,8 +139,8 @@ Page
                 clip: true
                 radius: height*0.5
                 anchors.centerIn: parent
-                /*swaped geometry and rotation is a trick for
-                left to right gradient*/
+                /*swaped geometry and rotation is a
+                trick for left to right gradient*/
                 height: Vars.screenWidth*0.8
                 width: Vars.screenHeight*0.09
                 rotation: -90

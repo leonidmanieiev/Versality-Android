@@ -52,6 +52,18 @@ Page
     height: Vars.pageHeight
     width: Vars.screenWidth
 
+    FontLoader
+    {
+        id: regularText;
+        source: "../fonts/Qanelas_Regular.ttf"
+    }
+
+    FontLoader
+    {
+        id: boldText;
+        source: "../fonts/Qanelas_Bold.ttf"
+    }
+
     //checking internet connetion
     Network { toastMessage: toastMessage }
 
@@ -67,11 +79,10 @@ Page
         id: flickableArea
         visible: allGood
         clip: true
-        width: Vars.screenWidth
-        height: Vars.screenHeight
-        contentHeight: middleFieldsColumns.height
         anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width
+        height: parent.height*0.87
+        contentHeight: middleFieldsColumns.height*1.05
         boundsBehavior: Flickable.DragOverBounds
 
         ColumnLayout
@@ -102,6 +113,7 @@ Page
                 id: promotionTitle
                 text: p_title
                 font.pixelSize: Helper.toDp(16, Vars.dpi)
+                font.family: boldText.name
                 font.bold: true
                 color: Vars.backgroundBlack
                 Layout.alignment: Qt.AlignHCenter
@@ -121,6 +133,7 @@ Page
                     width: parent.width
                     text: p_desc === '' ? '\n\n\n\n\n' : p_desc
                     font.pixelSize: Helper.toDp(13, Vars.dpi)
+                    font.family: regularText.name
                     color: Vars.backgroundBlack
                     wrapMode: Label.WordWrap
                 }
@@ -156,23 +169,21 @@ Page
                     }
                 }
 
-                ControlButton
+                IconedButton
                 {
                     id: addToFavourite
-                    setWidth: setHeight
-                    buttonText: qsTr("AtF")
-                    labelContentColor: Vars.backgroundWhite
-                    backgroundColor: p_is_marked ? Vars.activeCouponColor :
-                                                   Vars.listViewGrey
-                    setBorderColor: "transparent"
-                    checkable: true
-                    checked: p_is_marked
-                    onClicked:
+                    width: Vars.screenHeight*0.1
+                    height: Vars.screenHeight*0.1
+                    Layout.alignment: Qt.AlignRight
+                    buttonIconSource: p_is_marked ?
+                                      "../icons/add_to_favourites_on.png" :
+                                      "../icons/add_to_favourites_off.png"
+                    clickArea.onClicked:
                     {
-                        if(checked)
+                        if(!p_is_marked)
                         {
                             p_is_marked = true;
-                            backgroundColor = Vars.activeCouponColor;
+                            buttonIconSource = "../icons/add_to_favourites_on.png";
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
                                                           {"api": Vars.userMarkProm,
                                                            "functionalFlag": "user/mark",
@@ -181,7 +192,7 @@ Page
                         else
                         {
                             p_is_marked = false;
-                            backgroundColor = Vars.listViewGrey;
+                            buttonIconSource = "../icons/add_to_favourites_off.png";
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
                                                           {"api": Vars.userUnmarkProm,
                                                            "functionalFlag": "user/unmark",
@@ -256,7 +267,8 @@ Page
                             Label
                             {
                                 id: distToStore
-                                text: distBetweenCoords() + ' m'
+                                text: distBetweenCoords() + ' м'
+                                font.family: regularText.name
                                 font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                                             Vars.dpi)
                                 color: Vars.backgroundBlack
@@ -287,6 +299,7 @@ Page
                                 id: workingHours
                                 text: Helper.currStoreHours(store_hours)
                                 font.pixelSize: Helper.toDp(13, Vars.dpi)
+                                font.family: regularText.name
                                 color: Vars.backgroundBlack
                             }
                         }
@@ -326,6 +339,22 @@ Page
         }//middleFieldsColumns
     }//Flickable
 
+    Image
+    {
+        id: background
+        clip: true
+        anchors.fill: parent
+        source: "../backgrounds/main_f.png"
+    }
+
+    Image
+    {
+        id: background2
+        clip: true
+        anchors.fill: parent
+        source: "../backgrounds/fade_out_h.png"
+    }
+
     ToastMessage
     {
         id: promoCodePopup
@@ -340,10 +369,11 @@ Page
     {
         id: backButton
         visible: allGood
-        anchors.top: parent.top
-        anchors.topMargin: Helper.toDp(parent.height/20, Vars.dpi)
-        buttonWidth: Vars.screenWidth*0.55
+        buttonWidth: Vars.screenWidth*0.54
         buttonText: Vars.backToPromsPicking
+        buttonIconSource: "../icons/left_arrow.png"
+        iconAlias.width: height*0.5
+        iconAlias.height: height*0.4
         onClicked: promotionPageLoader.source = "mapPage.qml"
     }
 

@@ -23,81 +23,64 @@
 //footer buttons
 import "../"
 import QtQuick 2.11
-import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 
-//footer color fill
-Rectangle
+RowLayout
 {
     property string pressedFromPageName: ''
 
-    id: rowLayoutBackground
-    height: Vars.footerButtonsFieldHeight
+    id: footerButtonsLayout
     width: parent.width
+    height: Vars.footerButtonsFieldHeight
     anchors.bottom: parent.bottom
-    color: Vars.backgroundWhite
 
-    //footer buttons
-    RowLayout
+    spacing: Vars.footerButtonsSpacing
+
+    IconedButton
     {
-        id: footerButtonsLayout
-        anchors.fill: parent
-        spacing: Vars.footerButtonsSpacing
-
-        RoundButton
+        id: settingsButton
+        Layout.alignment: Qt.AlignHCenter
+        buttonIconSource: "../icons/settings.png"
+        clickArea.onClicked:
         {
-            id: userSettingsButton
-            height: Vars.footerButtonsHeight
-            width: height
-            Layout.alignment: Qt.AlignHCenter
-            radius: height/2
-            opacity: pressed ? Vars.defaultOpacity : 1
-            text: "S"
-            onClicked:
-            {
+            PageNameHolder.push(pressedFromPageName);
+            appWindowLoader.setSource("xmlHttpRequest.qml",
+                                      { "api": Vars.userInfo,
+                                        "functionalFlag": 'user'
+                                      });
+        }
+    }
+
+    IconedButton
+    {
+        id: homeButton
+        /*workaround, for some reason size of this
+        particular button is smaller than default*/
+        width: Vars.footerButtonsHeight*1.3
+        height: Vars.footerButtonsHeight*1.3
+        Layout.alignment: Qt.AlignHCenter
+        buttonIconSource: "../icons/home.png"
+        clickArea.onClicked: appWindowLoader.setSource("mapPage.qml");
+        //need to clear data for getting fresh one
+        Component.onCompleted: Vars.allPromsData = '';
+    }
+
+    IconedButton
+    {
+        id: favouriteButton
+        Layout.alignment: Qt.AlignHCenter
+        buttonIconSource: "../icons/favourites.png"
+        clickArea.onClicked:
+        {
+            if(pressedFromPageName !== "favouritePage.qml")
                 PageNameHolder.push(pressedFromPageName);
-                appWindowLoader.setSource("xmlHttpRequest.qml",
-                                          { "api": Vars.userInfo,
-                                            "functionalFlag": 'user'
-                                          });
-            }
-        }
 
-        RoundButton
-        {
-            id: mainButton
-            height: Vars.footerButtonsHeight
-            width: height
-            Layout.alignment: Qt.AlignHCenter
-            radius: height/2
-            opacity: pressed ? Vars.defaultOpacity : 1
-            text: "M"
-            onClicked: appWindowLoader.setSource("mapPage.qml");
-            //need to clear data for getting fresh one
-            Component.onCompleted: Vars.allPromsData = '';
+            appWindowLoader.setSource("xmlHttpRequest.qml",
+                                       { "api": Vars.userMarkedProms,
+                                         "functionalFlag": 'user/marked'
+                                     });
         }
-
-        RoundButton
-        {
-            id: favouritesButton
-            height: Vars.footerButtonsHeight
-            width: height
-            Layout.alignment: Qt.AlignHCenter
-            radius: height/2
-            opacity: pressed ? Vars.defaultOpacity : 1
-            text: "F"
-            onClicked:
-            {
-                if(pressedFromPageName !== "favouritePage.qml")
-                    PageNameHolder.push(pressedFromPageName);
-
-                appWindowLoader.setSource("xmlHttpRequest.qml",
-                                          { "api": Vars.userMarkedProms,
-                                            "functionalFlag": 'user/marked'
-                                          });
-            }
-        }
-    }//RowLayout
+    }
 
     Loader
     {
@@ -105,7 +88,6 @@ Rectangle
         asynchronous: true
         height: Vars.screenHeight
         width: Vars.screenWidth
-        anchors.bottom: parent.bottom
         visible: status == Loader.Ready
     }
-}
+}//RowLayout
