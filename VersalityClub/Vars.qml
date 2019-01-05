@@ -62,8 +62,7 @@ QtObject
 
     //FOOTERBUTTONS CONSTANTS
     readonly property int footerButtonsFieldHeight: screenHeight*0.125
-    readonly property int footerButtonsHeight: screenWidth*0.12
-    readonly property int footerButtonsSpacing: screenWidth*0.1
+    readonly property int footerButtonsHeight: screenHeight*0.08
 
     //SCREEN CONSTANTS
     readonly property int dpi: Screen.pixelDensity * 25.4

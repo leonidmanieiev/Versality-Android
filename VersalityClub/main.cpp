@@ -28,6 +28,7 @@
 #include "networkinfo.h"
 #include "geolocationinfo.h"
 #include "pagenameholder.h"
+#include "promotionClusters.h"
 
 int main(int argc, char *argv[])
 {
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<NetworkInfo>("Network", 1, 0, "NetworkInfo");
     qmlRegisterType<GeoLocationInfo>("GeoLocation", 1, 0, "GeoLocationInfo");
     qmlRegisterType<PageNameHolder>("org.leonman.versalityclub", 1, 0, "PageNameHolder");
+    qmlRegisterType<PromotionClusters>("org.leonman.versalityclub", 1, 0, "PromotionClusters");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

@@ -20,40 +20,39 @@
 **
 ****************************************************************************/
 
-/*Wrapper, so I can use functionality of QStack in QML
-  For back button navigation*/
-#ifndef PAGENAMEHOLDER_H
-#define PAGENAMEHOLDER_H
+/*object represent cluster of promotions*/
 
-#include <QObject>
-#include <QStack>
-#include <QString>
+#ifndef PROMOTIONCLUSTERS_H
+#define PROMOTIONCLUSTERS_H
+
+#include "promotion.h"
+
 #include <QDebug>
+#include <QString>
+#include <QObject>
+#include <QVector>
+#include <array>
+#include <exception>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonParseError>
 
-class PageNameHolder : public QObject
+class PromotionClusters : public QObject
 {
     Q_OBJECT
 public:
-    explicit PageNameHolder(QObject *parent = nullptr) :
-        QObject(parent) { }
-    Q_INVOKABLE QString pop()
-    {
-        if(!this->empty())
-        {
-            QString poped = pageNames.pop();
-            return poped;
-        }
-
-        return "";
-    }
-    Q_INVOKABLE void push(const QString& pageName)
-    { pageNames.push(pageName); }
-    Q_INVOKABLE void clear()
-    { pageNames.clear(); }
-    Q_INVOKABLE bool empty() const
-    { return pageNames.empty(); }
+    explicit PromotionClusters(QObject *parent = nullptr);
+    /*constructs and stores all promotions in vector
+      may throws std::invalid_argument*/
+    QVector<Promotion> getPromotions(const QString& jsonText) const;
+    void addToCluster(const Promotion& currProm, unsigned short minDist);
+    //get jsonText of clusters for MapItemView model
+    Q_INVOKABLE QString clustering(const QString& jsonText, quint8 zoomLevel);
+    //converts clusters as object to json in text form
+    QString clustersToJsonText() const;
 private:
-    QStack<QString> pageNames;
+    //cluster
+    QVector<QVector<Promotion>> clusters;
 };
 
-#endif // PAGENAMEHOLDER_H
+#endif // PROMOTIONCLUSTERS_H

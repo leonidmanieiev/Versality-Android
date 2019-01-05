@@ -20,33 +20,20 @@
 **
 ****************************************************************************/
 
-//button with icon
+//Marker for promotion point on map
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
+import QtQuick.Controls 2.4
 
-Rectangle
+Image
 {
-    property string buttonIconSource
-    property alias clickArea: clickableArea
+    property int size
+    property int iconId
 
-    id: buttonBackground
-    color: "transparent"
-    opacity: clickableArea.pressed ?
-                 Vars.defaultOpacity : 1
-
-    Image
-    {
-        id: buttonIcon
-        clip: true
-        source: buttonIconSource
-        width: parent.width
-        height: parent.height
-        fillMode: Image.PreserveAspectFit
-    }
-
-    MouseArea
-    {
-        id: clickableArea
-        anchors.fill: parent
-    }
+    id: promMarkerIcon
+    clip: true
+    width: size
+    height: width
+    source: "../icons/cat_"+iconId+".png"
 }

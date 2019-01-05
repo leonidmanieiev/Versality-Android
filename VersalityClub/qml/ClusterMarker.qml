@@ -20,33 +20,37 @@
 **
 ****************************************************************************/
 
-//button with icon
+//Marker for cluster point on map
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
+import QtQuick.Controls 2.4
 
 Rectangle
 {
-    property string buttonIconSource
-    property alias clickArea: clickableArea
+    property int size
+    property int amountOfChilds
 
-    id: buttonBackground
-    color: "transparent"
-    opacity: clickableArea.pressed ?
-                 Vars.defaultOpacity : 1
+    id: promClusterIcon
+    width: size
+    height: width
+    radius: height*0.5
+    color: Vars.fontsPurple
 
-    Image
+    FontLoader
     {
-        id: buttonIcon
-        clip: true
-        source: buttonIconSource
-        width: parent.width
-        height: parent.height
-        fillMode: Image.PreserveAspectFit
+        id: regulatText
+        source: "../fonts/Qanelas_Regular.ttf"
     }
 
-    MouseArea
+    Label
     {
-        id: clickableArea
-        anchors.fill: parent
+        id: cntOfChildProms
+        anchors.centerIn: parent
+        text: amountOfChilds
+        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                    Vars.dpi)
+        font.family: regulatText.name
+        color: Vars.backgroundWhite
     }
 }

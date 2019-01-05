@@ -34,11 +34,11 @@ RowLayout
     height: Vars.footerButtonsFieldHeight
     anchors.bottom: parent.bottom
 
-    spacing: Vars.footerButtonsSpacing
-
     IconedButton
     {
         id: settingsButton
+        width: Vars.footerButtonsHeight
+        height: Vars.footerButtonsHeight
         Layout.alignment: Qt.AlignHCenter
         buttonIconSource: "../icons/settings.png"
         clickArea.onClicked:
@@ -68,6 +68,8 @@ RowLayout
     IconedButton
     {
         id: favouriteButton
+        width: Vars.footerButtonsHeight
+        height: Vars.footerButtonsHeight
         Layout.alignment: Qt.AlignHCenter
         buttonIconSource: "../icons/favourites.png"
         clickArea.onClicked:

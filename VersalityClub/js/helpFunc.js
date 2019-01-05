@@ -28,19 +28,6 @@ function toDp(px, dpi)
     else return Math.round(px*(dpi/160.0));
 }
 
-//encrypts user password using xor and Base64
-function encryptPassword(pass, strForXor)
-{
-    var result = "";
-
-    //xor each letter of pass with letter of strForXor
-    for(var i = 0; i < pass.length; i++)
-        result += String.fromCharCode(strForXor.charCodeAt(i % strForXor.length)
-                                                           ^ pass.charCodeAt(i));
-    //encrypt xored pass using Base64
-    return Qt.btoa(result);
-}
-
 //HTTP status code decoder
 function httpErrorDecoder(statusCode)
 {
@@ -116,6 +103,8 @@ function promsJsonToListModel(promsJSON)
 //puts promotion info from JSON to model for markers on map
 function promsJsonToListModelForMarkers(promJSON)
 {
+    promsMarkersModel.clear();
+
     for(var i in promJSON)
     {
         promsMarkersModel.append({
@@ -123,8 +112,19 @@ function promsJsonToListModelForMarkers(promJSON)
                                     "title": promJSON[i].title,
                                     "icon": promJSON[i].icon,
                                     "lat": promJSON[i].lat,
-                                    "lon": promJSON[i].lon
+                                    "lon": promJSON[i].lon,
+                                    "childs": [],
+                                    "cntOfChilds": promJSON[i].childs.length
                                 });
+
+        for(var j in promJSON[i].childs)
+            promsMarkersModel.get(i).childs.append({
+                                                "cid": promJSON[i].childs[j].id,
+                                                "ctitle": promJSON[i].childs[j].title,
+                                                "cicon": promJSON[i].childs[j].icon,
+                                                "clat": promJSON[i].childs[j].lat,
+                                                "clon": promJSON[i].childs[j].lon
+                                           });
     }
 }
 

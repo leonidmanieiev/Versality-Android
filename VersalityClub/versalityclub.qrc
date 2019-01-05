@@ -30,14 +30,11 @@
         <file>qml/TopControlButton.qml</file>
         <file>qml/companyPage.qml</file>
         <file>qml/previewPromotionPage.qml</file>
-        <file>icons/geoLocationIcon.svg</file>
-        <file>icons/promotionMarkerIcon.svg</file>
         <file>icons/userLocationMarkerIcon.svg</file>
         <file>qml/Network.qml</file>
         <file>qml/StaticNotifier.qml</file>
         <file>qml/ScrollDatePicker.qml</file>
         <file>qml/ScrollNumberPicker.qml</file>
-        <file>icons/storeMarkerIcon.svg</file>
         <file>qml/Font.qml</file>
         <file>fonts/Qanelas_Bold.ttf</file>
         <file>fonts/Qanelas_Medium.ttf</file>
@@ -72,5 +69,20 @@
         <file>icons/add_to_favourites_off.png</file>
         <file>icons/add_to_favourites_on.png</file>
         <file>icons/left_arrow.png</file>
+        <file>backgrounds/map_f.png</file>
+        <file>PromotionClusters.qml</file>
+        <file>qml/ClusterMarker.qml</file>
+        <file>qml/PromotionMarker.qml</file>
+        <file>icons/cat_1.png</file>
+        <file>icons/cat_2.png</file>
+        <file>icons/cat_3.png</file>
+        <file>icons/cat_4.png</file>
+        <file>icons/cat_5.png</file>
+        <file>icons/cat_6.png</file>
+        <file>icons/cat_7.png</file>
+        <file>icons/cat_8.png</file>
+        <file>icons/cat_9.png</file>
+        <file>icons/cat_10.png</file>
+        <file>icons/cat_11.png</file>
     </qresource>
 </RCC>

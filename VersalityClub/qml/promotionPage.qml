@@ -245,8 +245,7 @@ Page
                         promotionPageLoader.setSource("mapPage.qml",
                                                 { "defaultLat": s_lat,
                                                   "defaultLon": s_lon,
-                                                  "defaultZoomLevel": 16,
-                                                  "showStoreMarker": true
+                                                  "defaultZoomLevel": 16
                                                 });
                     }
 

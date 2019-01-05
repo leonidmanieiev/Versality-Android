@@ -38,6 +38,7 @@ Item
     property string birthday: AppSettings.value("user/birthday")
     property string email: AppSettings.value("user/email")
     property string password: AppSettings.value("user/password")
+    property bool hasPassChanged
     property string name: AppSettings.value("user/name")
     property string cats: AppSettings.getCatsAmount() === 0 ? '0' : AppSettings.getStrCats()
     //to authenticate client on server side
@@ -72,7 +73,9 @@ Item
             //request for saving selected/deselected categories
             case 'user/refresh-cats': return 'secret='+secret+'&cats='+cats;
             //request for refreshing sex, name and birthday
-            case 'user/refresh-snb': return 'secret='+secret+'&sex='+sex+'&name='+name+'&birthday='+birthday;
+            case 'user/refresh-snbp':
+                var params = 'secret='+secret+'&sex='+sex+'&name='+name+'&birthday='+birthday;
+                return hasPassChanged ? params+'&pass='+password : params;
             //request for adding promotion to favourite
             case 'user/mark': return 'secret='+secret+'&promo='+promo_id;
             //request for erasing promotion from favourite
@@ -185,8 +188,17 @@ Item
                             case 'user/refresh-cats':
                                 xmlHttpRequestLoader.source = "profileSettingsPage.qml";
                                 break;
-                            case 'user/refresh-snb':
-                                xmlHttpRequestLoader.source = "mapPage.qml";
+                            case 'user/refresh-snbp':
+                                try {
+                                    var uInfoJSON = JSON.parse(request.responseText);
+                                    //saving new hash
+                                    AppSettings.beginGroup("user");
+                                    AppSettings.setValue("hash", uInfoJSON.secret);
+                                    AppSettings.endGroup();
+                                    xmlHttpRequestLoader.source = "mapPage.qml";
+                                } catch (e) {
+                                    toastMessage.setTextAndRun(Vars.smthWentWrong, true);
+                                }
                                 break;
                             case 'user/marked':
                                 Vars.markedPromsData = request.responseText;
@@ -255,10 +267,9 @@ Item
                             default: console.log("Unknown functionalFlag"); break;
                         }//switch(functionalFlag)
                     }//if(errorStatus === 'NO_ERROR')
-                    else toastMessage.setTextAndRun(errorStatus, true);
+                    else toastMessage.setTextAndRun(errorStatus, false);
                 }//if(request.status === 200)
-                else toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status),
-                                                true);
+                else toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status), false);
             }//if(request.readyState === XMLHttpRequest.DONE)
             else console.log("Pending: " + request.readyState);
         }//request.onreadystatechange = function()

@@ -30,6 +30,8 @@ import QtQuick.Controls.Styles 1.4
 
 Page
 {
+    property bool hasPassChanged: false
+
     id: profileSettingsPage
     enabled: Vars.isConnected
     height: Vars.screenHeight
@@ -137,11 +139,9 @@ Page
             CustomTextField
             {
                 id: emailField
+                readOnly: true
                 setFillColor: "transparent"
                 text: AppSettings.value("user/email");
-                inputMethodHints: Qt.ImhEmailCharactersOnly
-                validator: RegExpValidator
-                { regExp: Vars.emailRegEx }
             }
 
             CustomLabel
@@ -256,13 +256,20 @@ Page
         {
             AppSettings.beginGroup("user");
             AppSettings.setValue("sex", sexButton.buttonText);
-            AppSettings.setValue("name", firstNameField.text);
+            if(firstNameField.text.length > 0)
+                AppSettings.setValue("name", firstNameField.text);
             AppSettings.setValue("birthday", dateofbirthField.text);
+            if(changePasswordField.text.length > 0)
+            {
+                AppSettings.setValue("password", changePasswordField.text);
+                hasPassChanged = true;
+            }
             AppSettings.endGroup();
 
             profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
                                                 { "api": Vars.userInfo,
-                                                  "functionalFlag": 'user/refresh-snb'
+                                                  "functionalFlag": 'user/refresh-snbp',
+                                                  "hasPassChanged": hasPassChanged
                                                 });
         }
 

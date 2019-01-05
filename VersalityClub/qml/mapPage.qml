@@ -36,9 +36,9 @@ Page
     property bool locButtClicked: false
     property int defaultZoomLevel: 11
     readonly property int minZoomLevel: 8
+    readonly property int maxZoomLevel: 19
     property real defaultLat: 59.933284
     property real defaultLon: 30.343614
-    property bool showStoreMarker: false
     property bool allGood: false
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
     readonly property string mapCopyright: 'Tiles style by <a href="http://corp.sputnik.ru/maps"'
@@ -48,7 +48,7 @@ Page
     readonly property string mapDataCopyright: ' Data © <a href="https://www.openstreetmap.org/'
                                                +'copyright" style="color: '+Vars.fontsPurple+'">'
                                                +'OpenStreetMap</a>'
-    readonly property int mapButtonSize: Vars.screenWidth*0.09
+    readonly property int markerSize: Vars.screenWidth*0.1
     readonly property int fromButtonZoomLevel: 16
     readonly property int promsTilesItemHeight: popupWindow.height/3
     //enter window vars
@@ -56,9 +56,9 @@ Page
     readonly property int popupWindowHeight: height*0.3
     readonly property int popupWindowDurat: 400
     readonly property real popupWindowOpacity: 0.8
-    readonly property int popupShowTo: Vars.screenHeight*0.87-popupWindowHeight
-    readonly property int yToHide: Vars.screenHeight*0.87-popupWindowHeight/2
-    readonly property int yToInvisible: Vars.screenHeight*0.87
+    readonly property int popupShowTo: height-Vars.footerButtonsFieldHeight-popupWindowHeight
+    readonly property int yToHide: height-Vars.footerButtonsFieldHeight-popupWindowHeight/2
+    readonly property int yToInvisible: height-Vars.footerButtonsFieldHeight
 
     function setUserLocationMarker(lat, lon, _zoomLevel, follow)
     {
@@ -76,6 +76,37 @@ Page
         }
     }
 
+    //clusterization and model appling
+    function clusterizeAndApply()
+    {
+        //clusterization accounding to current zoom level
+        var clustersTextJson =
+                PromotionClusters.clustering(Vars.allPromsData, mainMap.zoomLevel);
+
+        /*/clusterization was unsuccessful
+          check console log*/
+        if(clustersTextJson.substring(0, 5) === "Error")
+        {
+            allGood = false;
+            notifier.notifierText = Vars.smthWentWrong;
+            notifier.visible = true;
+            console.log("Parsing response " + clustersTextJson);
+        }
+
+        try {
+            var promsJSON = JSON.parse(clustersTextJson);
+            allGood = true;
+            notifier.visible = false;
+            //applying promotions at markers model
+            Helper.promsJsonToListModelForMarkers(promsJSON);
+        } catch (e) {
+            allGood = false;
+            notifier.notifierText = Vars.smthWentWrong;
+            notifier.visible = true;
+            console.log("Parsing response error");
+        }
+    }
+
     id: mapPage
     enabled: Vars.isConnected
     height: Vars.pageHeight
@@ -84,21 +115,17 @@ Page
     //checking internet connetion
     Network { toastMessage: toastMessage }
 
-    //model for tiles in popup window
-    ListModel { id: promsTilesModel }
-
-    Image
+    FontLoader
     {
-        id: background
-        clip: true
-        anchors.fill: parent
-        source: "../backgrounds/main_f.png"
+        id: regulatText
+        source: "../fonts/Qanelas_Regular.ttf"
     }
 
     Map
     {
         id: mainMap
         minimumZoomLevel: minZoomLevel
+        maximumZoomLevel: maxZoomLevel
         anchors.fill: parent
         width: Vars.screenWidth
         anchors.bottomMargin: Vars.footerButtonsFieldHeight
@@ -143,72 +170,10 @@ Page
             {
                 id: userMarkerIcon
                 source: "../icons/userLocationMarkerIcon.svg"
-                sourceSize.width: mapButtonSize
-                sourceSize.height: mapButtonSize
+                sourceSize.width: markerSize
+                sourceSize.height: markerSize
             }
         }
-
-        MapQuickItem
-        {
-            id: storeMarker
-            visible: showStoreMarker
-            anchorPoint.x: storeMarkerIcon.width*0.5
-            anchorPoint.y: storeMarkerIcon.height
-            coordinate: QtPositioning.coordinate(defaultLat, defaultLon)
-            sourceItem: Image
-            {
-                id: storeMarkerIcon
-                source: "../icons/storeMarkerIcon.svg"
-                sourceSize.width: mapButtonSize
-                sourceSize.height: mapButtonSize
-            }
-        }
-
-        //for clusterization testing
-        /*onZoomLevelChanged: console.log('zoomLevel: ' + zoomLevel)
-
-        MapQuickItem
-        {
-            id: initMarker
-            visible: true
-            anchorPoint.x: userMarkerImage.width*0.5
-            anchorPoint.y: userMarkerImage.height
-            coordinate: QtPositioning.coordinate(59.932708, 30.347914)
-            sourceItem: Image
-            {
-                id: initMarkerImage
-                source: "../icons/userLocationMarkerIcon.svg"
-                sourceSize.width: mapButtonSize
-                sourceSize.height: mapButtonSize
-            }
-        }
-
-        MapQuickItem
-        {
-            id: mouseMarker
-            visible: false
-            anchorPoint.x: userMarkerImage.width*0.5
-            anchorPoint.y: userMarkerImage.height
-            sourceItem: Image
-            {
-                id: mouseMarkerImage
-                source: "../icons/promotionMarkerIcon.svg"
-                sourceSize.width: mapButtonSize
-                sourceSize.height: mapButtonSize
-            }
-        }
-
-        MouseArea
-        {
-            id: mouseArea
-            anchors.fill: parent
-            onPressed:
-            {
-                mouseMarker.coordinate = mainMap.toCoordinate(Qt.point(mouseArea.mouseX, mouseArea.mouseY));
-                mouseMarker.visible = true;
-                console.log("dist: " + mouseMarker.coordinate.distanceTo(initMarker.coordinate))
-            }
-        }*/
 
         //displays multiple promotion markers
         MapItemView
@@ -220,18 +185,31 @@ Page
                 id: promMarkersDelegate
                 //wait until get coords
                 visible: allGood && lat ? true : false
-                anchorPoint.x: promMarkersIcon.width*0.5
-                anchorPoint.y: promMarkersIcon.height
+                anchorPoint.x: markerSize*0.5
+                anchorPoint.y: markerSize
                 coordinate: QtPositioning.coordinate(lat, lon)
-                sourceItem: Image
+                sourceItem: Loader {
+                    sourceComponent: cntOfChilds > 1 ? clusterMarker : promotionMarker
+                }
+
+                Component
                 {
-                    id: promMarkersIcon
-                    visible: (lat !== defaultLat && lon !== defaultLon)
-                             || !showStoreMarker
-                    clip: true
-                    width: mapButtonSize*0.8
-                    height: mapButtonSize
-                    source: "../icons/promotion_marker.png"
+                    id: clusterMarker
+                    ClusterMarker
+                    {
+                        size: markerSize
+                        amountOfChilds: cntOfChilds
+                    }
+                }
+
+                Component
+                {
+                    id: promotionMarker
+                    PromotionMarker
+                    {
+                        size: markerSize
+                        iconId: icon
+                    }
                 }
 
                 //show promotion preview after click on mark
@@ -241,14 +219,33 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
-                        promsTilesModel.clear();
-                        promsTilesModel.append({ id: id, lat: lat, lon: lon,
-                                                 title: title, icon: icon });
-                        popupWindow.show();
+                        if(cntOfChilds > 1)
+                        {
+                            promsTilesListView.model = childs;
+                            popupWindow.show();
+                        }
+                        else
+                        {
+                            PageNameHolder.push("mapPage.qml");
+                            AppSettings.beginGroup("promo");
+                            AppSettings.setValue("id", id);
+                            AppSettings.endGroup();
+                            mapPageLoader.setSource("xmlHttpRequest.qml",
+                                                    { "api": Vars.promPreViewModel,
+                                                      "functionalFlag": 'user/preprom'
+                                                    });
+                        }
                     }
                 }
             }//delegate: MapQuickItem
         }//MapItemView
+
+        onZoomLevelChanged:
+        {
+            //check if server responded
+            if(Vars.allPromsData.length > 0)
+                clusterizeAndApply()
+        }
     }//Map
 
     Rectangle
@@ -260,12 +257,6 @@ Page
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: footerButton.top
         color: Vars.copyrightBackgroundColor
-
-        FontLoader
-        {
-            id: regulatText;
-            source: "../fonts/Qanelas_Regular.ttf"
-        }
 
         Text
         {
@@ -367,8 +358,8 @@ Page
             clip: true
             anchors.fill: parent
             anchors.topMargin: Vars.defaultRadius
+            anchors.bottomMargin: Vars.defaultRadius
             contentHeight: promsTilesItemHeight
-            model: promsTilesModel
             delegate: promsTilesDelegate
         }
     }//popupWindow
@@ -380,30 +371,31 @@ Page
         {
             width: popupWindow.width
             anchors.horizontalCenter: parent.horizontalCenter
-
+            leftPadding: width*0.1
+            bottomPadding: markerSize*0.25
             Rectangle
             {
                 id: parentCategoryIcon
-                height: promsTilesItemHeight
+                height: markerSize
                 width: parent.width
                 radius: height*0.5
                 color: "transparent"
 
-                //rounding company logo item background image
-                ImageRounder
+                Image
                 {
-                    id: imageRouder
-                    width: parent.height
-                    imageSource: icon
-                    roundValue: parent.height*0.5
+                    id: icon
+                    source: "../icons/cat_"+cicon+".png"
+                    width: markerSize
+                    height: markerSize
                 }
 
                 Label
                 {
                     id: promotionTitle
-                    topPadding: parent.height/3
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: title
+                    anchors.left: icon.right
+                    anchors.leftMargin: parent.width*0.1
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: ctitle
                     font.pixelSize: Helper.toDp(16, Vars.dpi)
                     font.bold: true
                     color: Vars.backgroundBlack
@@ -417,7 +409,7 @@ Page
                     {
                         PageNameHolder.push("mapPage.qml");
                         AppSettings.beginGroup("promo");
-                        AppSettings.setValue("id", id);
+                        AppSettings.setValue("id", cid);
                         AppSettings.endGroup();
                         mapPageLoader.setSource("xmlHttpRequest.qml",
                                                 { "api": Vars.promPreViewModel,
@@ -425,14 +417,16 @@ Page
                                                   });
                     }
                 }
-            }//parentCategoryIcon rectangle
+            }//parentCategoryIcon
         }//Column
-    }//Component
+    }//promsTilesDelegate
 
     IconedButton
     {
         id: geoLocationButton
         enabled: Vars.isLocated
+        width: Vars.footerButtonsHeight*0.9
+        height: Vars.footerButtonsHeight*0.9
         buttonIconSource: "../icons/geo_location.png"
         anchors.right: parent.right
         anchors.rightMargin: parent.width*0.02
@@ -460,6 +454,16 @@ Page
         }
     }
 
+    Image
+    {
+        id: background
+        clip: true
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: footerButton.bottom
+        source: "../backgrounds/map_f.png"
+    }
+
     FooterButtons { id: footerButton; pressedFromPageName: "mapPage.qml" }
 
     Component.onCompleted:
@@ -476,17 +480,7 @@ Page
         if(Vars.allPromsData.substring(0, 6) !== 'PROM-1'
            && Vars.allPromsData.substring(0, 6) !== '[]')
         {      
-            try {
-                var promsJSON = JSON.parse(Vars.allPromsData);
-                allGood = true;
-                notifier.visible = false;
-                //applying promotions at markers model
-                Helper.promsJsonToListModelForMarkers(promsJSON);
-            } catch (e) {
-                allGood = false;
-                notifier.notifierText = Vars.smthWentWrong;
-                notifier.visible = true;
-            }
+            clusterizeAndApply();
         }
         else
         {

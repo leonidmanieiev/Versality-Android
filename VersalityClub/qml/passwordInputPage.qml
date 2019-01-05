@@ -28,9 +28,6 @@ import QtQuick.Layouts 1.3
 
 Page
 {
-    //for pass encryption
-    readonly property string xorStr: "8fdda158eeb8c0ed9d151991aff3c84c"
-
     id: passInputPage
     enabled: Vars.isConnected
     height: Vars.screenHeight
@@ -84,10 +81,8 @@ Page
             backgroundColor: Vars.fontsPurple
             onClicked:
             {
-                var encryptedPass = Helper.encryptPassword(passField.text,
-                                                           xorStr);
                 AppSettings.beginGroup("user");
-                AppSettings.setValue("password", encryptedPass);
+                AppSettings.setValue("password", passField.text);
                 AppSettings.endGroup();
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
                                                   { "api": Vars.userLogin,

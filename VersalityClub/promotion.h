@@ -20,33 +20,32 @@
 **
 ****************************************************************************/
 
-//button with icon
-import "../"
-import QtQuick 2.11
+/*using this object to implement clustering of promotions*/
 
-Rectangle
+#ifndef PROMOTION_H
+#define PROMOTION_H
+
+#include <QDebug>
+#include <QString>
+#include <QJsonValue>
+#include <QJsonObject>
+#include <QGeoCoordinate>
+
+class Promotion
 {
-    property string buttonIconSource
-    property alias clickArea: clickableArea
+public:
+    Promotion();
+    Promotion(const QJsonValue& jsonValue);
+    void print() const;
+    QJsonObject toJsonObject() const;
+    //distance between two promotions in meters
+    double distTo(const Promotion& prom) const;
+private:
+    QString id;
+    QString title;
+    int icon;
+    double lat;
+    double lon;
+};
 
-    id: buttonBackground
-    color: "transparent"
-    opacity: clickableArea.pressed ?
-                 Vars.defaultOpacity : 1
-
-    Image
-    {
-        id: buttonIcon
-        clip: true
-        source: buttonIconSource
-        width: parent.width
-        height: parent.height
-        fillMode: Image.PreserveAspectFit
-    }
-
-    MouseArea
-    {
-        id: clickableArea
-        anchors.fill: parent
-    }
-}
+#endif // PROMOTION_H

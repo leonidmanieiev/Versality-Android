@@ -33,7 +33,7 @@ Item
 {
     property bool isGpsOff: false
     readonly property int posTimeOut: 30*60000//minutes to milliseconds
-    readonly property int posGetFar: 200//in meters
+    readonly property int posGetFar: 1000//200//in meters
     //default is proms for map api
     property string callFromPageName: 'mapPage'
     property string api: Vars.allPromsTilesModel
@@ -163,20 +163,22 @@ Item
         //so onPositionChanged won't emit
         function initialPromRequest()
         {
-            //initial setting of user marker
-            updateUserMarker();
             //saving initial position and timeCheckPoint of user
             saveUserPositionInfo();
             //making request for promotions which depend on position
             requestForPromotions();
+            //initial setting of user marker
+            updateUserMarker();
         }
 
         //request promotion info
         function requestForPromotions()
         {
             var request = new XMLHttpRequest();
-            var params = 'secret='+secret+'&lat='+AppSettings.value("user/lat")+
-                         '&lon='+AppSettings.value("user/lon");
+            //show all promos for now, not within radius
+            /*var params = 'secret='+secret+'&lat='+AppSettings.value("user/lat")+
+                         '&lon='+AppSettings.value("user/lon");*/
+            var params = 'secret='+secret;
 
             console.log("request url: " + api + params);
 
@@ -187,7 +189,6 @@ Item
                 {
                     if(isNaN(AppSettings.value("user/lat")) || isNaN(AppSettings.value("user/lon")))
                     {
-                        notifier.visible = false;
                         disableUsability();
                         console.log(Vars.userLocationIsNAN);
                     }
@@ -240,7 +241,7 @@ Item
                     if((isGetFar(position.coordinate) || isTimePassed()))
                     {
                         console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
-                                    " | isTimePassed: " + isTimePassed()) + ")";
+                                    " | isTimePassed: " + isTimePassed() + ")");
                         //out of date, saving timeCheckPoint and making request for promotions
                         saveUserPositionInfo();
                         requestForPromotions();
@@ -254,13 +255,8 @@ Item
             if(isPositioningMethodSet(supportedPositioningMethods))
             {
                 if(Qt.platform.os !== "windows")
-                {
-                    //if loader is promotionPageLoader wee just need
-                    //to save coords. Otherwise full circle
-                    if(callFromPageName === Vars.promotionPageId)
-                        saveUserPositionInfo();
-                    else initialPromRequest();
-                }
+                    initialPromRequest();
+
                 posMethodSet = true;
                 //activating user location button
                 Vars.isLocated = true;

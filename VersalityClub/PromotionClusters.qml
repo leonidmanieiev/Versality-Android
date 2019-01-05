@@ -20,33 +20,9 @@
 **
 ****************************************************************************/
 
-//button with icon
-import "../"
+//Cluster itseft
+pragma Singleton
 import QtQuick 2.11
+import org.leonman.versalityclub 1.0
 
-Rectangle
-{
-    property string buttonIconSource
-    property alias clickArea: clickableArea
-
-    id: buttonBackground
-    color: "transparent"
-    opacity: clickableArea.pressed ?
-                 Vars.defaultOpacity : 1
-
-    Image
-    {
-        id: buttonIcon
-        clip: true
-        source: buttonIconSource
-        width: parent.width
-        height: parent.height
-        fillMode: Image.PreserveAspectFit
-    }
-
-    MouseArea
-    {
-        id: clickableArea
-        anchors.fill: parent
-    }
-}
+PromotionClusters { }
