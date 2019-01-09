@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<manifest package="org.leonman.versalityclub" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0" android:versionCode="1" android:installLocation="auto">
+<manifest package="org.versalityclub" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0" android:versionCode="1" android:installLocation="auto">
     <application android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="Versality Club">
-        <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:label="-- %%INSERT_APP_NAME%% --" android:screenOrientation="portrait" android:launchMode="singleTop">
+        <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="org.versalityclub.CustomAppActivity" android:label="Versality Club" android:screenOrientation="portrait" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -9,6 +9,8 @@
 
             <!-- Application arguments -->
             <!-- meta-data android:name="android.app.arguments" android:value="arg1 arg2 arg3"/ -->
+            <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+            <meta-data android:name="onesignal_app_id" android:value="YOUR KEY GOES HERE"/>
             <!-- Application arguments -->
 
             <meta-data android:name="android.app.lib_name" android:value="-- %%INSERT_APP_LIB_NAME%% --"/>
@@ -63,9 +65,36 @@
 
     <!-- For adding service(s) please check: https://wiki.qt.io/AndroidServices -->
 
+        <receiver android:name="com.onesignal.GcmBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <category android:name="org.versalityclub"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.onesignal.NotificationOpenedReceiver"/>
+            <service android:name="com.onesignal.GcmIntentService"/>
+            <service android:name="com.onesignal.SyncService" android:stopWithTask="true"/>
+            <activity android:name="com.onesignal.PermissionsActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" android:label="Versality Club">
+                <meta-data android:name="android.app.lib_name" android:value="-- %%INSERT_APP_LIB_NAME%% --"/>
+            </activity>
+
+            <service android:name="com.onesignal.NotificationRestoreService"/>
+            <receiver android:name="com.onesignal.BootUpReceiver">
+                <intent-filter>
+                    <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                    <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                </intent-filter>
+            </receiver>
+            <receiver android:name="com.onesignal.UpgradeReceiver">
+                <intent-filter>
+                    <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                </intent-filter>
+        </receiver>
+
     </application>
 
-    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19"/>
+    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="26"/>
     <supports-screens android:largeScreens="true" android:normalScreens="true" android:anyDensity="true" android:smallScreens="true"/>
 
     <!-- The following comment will be replaced upon deployment with default permissions based on the dependencies of the application.
@@ -75,6 +104,12 @@
     <!-- The following comment will be replaced upon deployment with default features based on the dependencies of the application.
          Remove the comment if you do not require these default features. -->
     <!-- %%INSERT_FEATURES -->
-
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <permission android:name="org.versalityclub.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+    <uses-permission android:name="org.versalityclub.permission.C2D_MESSAGE"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 </manifest>

@@ -20,7 +20,6 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QSslSocket>
 #include <QtWebView/QtWebView>
@@ -28,20 +27,32 @@
 #include "networkinfo.h"
 #include "geolocationinfo.h"
 #include "pagenameholder.h"
-#include "promotionClusters.h"
+#include "promotionclusters.h"
+#ifdef __ANDROID__
+#include <QGuiApplication>
+#include "qonesignal.h"
+#else
+#include "QApplication"
+#endif
 
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+#ifdef __ANDROID__
     QGuiApplication app(argc, argv);
+    QOneSignal::registerQMLTypes();
+#else
+    QApplication app(argc, argv);
+#endif
 
     QtWebView::initialize();
 
-    qmlRegisterType<AppSettings>("org.leonman.versalityclub", 1, 0, "AppSettings");
+    qmlRegisterType<AppSettings>("org.versalityclub", 1, 0, "AppSettings");
     qmlRegisterType<NetworkInfo>("Network", 1, 0, "NetworkInfo");
     qmlRegisterType<GeoLocationInfo>("GeoLocation", 1, 0, "GeoLocationInfo");
-    qmlRegisterType<PageNameHolder>("org.leonman.versalityclub", 1, 0, "PageNameHolder");
-    qmlRegisterType<PromotionClusters>("org.leonman.versalityclub", 1, 0, "PromotionClusters");
+    qmlRegisterType<PageNameHolder>("org.versalityclub", 1, 0, "PageNameHolder");
+    qmlRegisterType<PromotionClusters>("org.versalityclub", 1, 0, "PromotionClusters");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

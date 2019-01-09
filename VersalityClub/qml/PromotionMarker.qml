@@ -28,12 +28,20 @@ import QtQuick.Controls 2.4
 
 Image
 {
-    property int size
     property int iconId
 
-    id: promMarkerIcon
+    id: promMarker
     clip: true
-    width: size
-    height: width
-    source: "../icons/cat_"+iconId+".png"
+    source: "../icons/promotion_marker.png"
+
+    Image
+    {
+        id: promMarkerIcon
+        height: parent.width*0.7
+        width: height
+        anchors.top: parent.top
+        anchors.topMargin: parent.width*0.1
+        anchors.horizontalCenter: parent.horizontalCenter
+        source: "../icons/cat_"+iconId+".png"
+    }
 }

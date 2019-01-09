@@ -54,7 +54,6 @@
         <file>icons/favourites.png</file>
         <file>icons/geo_location.png</file>
         <file>icons/home.png</file>
-        <file>icons/promotion_marker.png</file>
         <file>icons/show_listview.png</file>
         <file>backgrounds/main_f.png</file>
         <file>qml/IconedButton.qml</file>
@@ -67,13 +66,11 @@
         <file>icons/add_to_favourites_2_off.png</file>
         <file>icons/add_to_favourites_2_on.png</file>
         <file>icons/add_to_favourites_off.png</file>
-        <file>icons/add_to_favourites_on.png</file>
         <file>icons/left_arrow.png</file>
         <file>backgrounds/map_f.png</file>
         <file>PromotionClusters.qml</file>
         <file>qml/ClusterMarker.qml</file>
         <file>qml/PromotionMarker.qml</file>
-        <file>icons/cat_1.png</file>
         <file>icons/cat_2.png</file>
         <file>icons/cat_3.png</file>
         <file>icons/cat_4.png</file>
@@ -84,5 +81,9 @@
         <file>icons/cat_9.png</file>
         <file>icons/cat_10.png</file>
         <file>icons/cat_11.png</file>
+        <file>icons/promotion_marker.png</file>
+        <file>icons/logo_gradient.png</file>
+        <file>icons/cat_1.png</file>
+        <file>icons/add_to_favourites_on.png</file>
     </qresource>
 </RCC>

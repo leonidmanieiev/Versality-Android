@@ -30,6 +30,7 @@ import QtQuick.Controls 2.4
 import QtLocation 5.9
 import QtPositioning 5.8
 import QtQuick.Layouts 1.3
+import QOneSignal 1.0
 
 Page
 {
@@ -197,7 +198,8 @@ Page
                     id: clusterMarker
                     ClusterMarker
                     {
-                        size: markerSize
+                        height: markerSize
+                        width: markerSize
                         amountOfChilds: cntOfChilds
                     }
                 }
@@ -207,8 +209,9 @@ Page
                     id: promotionMarker
                     PromotionMarker
                     {
-                        size: markerSize
                         iconId: icon
+                        height: markerSize
+                        width: markerSize*0.8
                     }
                 }
 
@@ -473,6 +476,17 @@ Page
         mapPage.forceActiveFocus();
         //start capturing user location and getting all promotions
         mapPageLoader.source = "userLocation.qml";
+    }
+
+    Connections
+    {
+        target: QOneSignal
+        onNotificationReceiveChanged: {
+            console.log("notificationReceive: ", QOneSignal.notificationReceive);
+        }
+        onNotificationOpenChanged: {
+            console.log("notificationOpen: ", QOneSignal.notificationOpen);
+        }
     }
 
     function runParsing()

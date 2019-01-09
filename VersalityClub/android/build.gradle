@@ -11,6 +11,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://maven.google.com" }
     }
 }
 
@@ -18,6 +19,7 @@ apply plugin: 'com.android.application'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.onesignal:OneSignal:[3.9.1, 3.99.99]'
 }
 
 android {
@@ -37,7 +39,7 @@ android {
     compileSdkVersion androidCompileSdkVersion.toInteger()
 
     buildToolsVersion androidBuildToolsVersion
-
+	
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -53,5 +55,13 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+	
+    defaultConfig {
+        applicationId "org.versalityclub"
+        manifestPlaceholders = [
+          onesignal_app_id: "YOUR KEY GOES HERE",
+          onesignal_google_project_number: "REMOTE"
+        ]
     }
 }

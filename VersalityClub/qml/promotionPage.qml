@@ -39,6 +39,8 @@ Page
     property string c_icon: AppSettings.value("promo/icon")
     property string comp_id: AppSettings.value("promo/comp_id")
     property bool p_is_marked: AppSettings.value("promo/is_marked")
+    property real min_d_s_lat
+    property real min_d_s_lon
     //all good flag
     property bool allGood: true
     //dist (in meters) to be able to active coupon
@@ -278,7 +280,13 @@ Page
                                     var userPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
                                                                            AppSettings.value("user/lon"));
                                     var currDistToStore = Math.round(storePos.distanceTo(userPos));
-                                    minDistToStore = minDistToStore > currDistToStore ? currDistToStore : minDistToStore
+
+                                    if(minDistToStore > currDistToStore)
+                                    {
+                                        minDistToStore = currDistToStore;
+                                        min_d_s_lat = s_lat;
+                                        min_d_s_lon = s_lon;
+                                    }
 
                                     return currDistToStore;
                                 }
@@ -304,19 +312,27 @@ Page
                         }
                     }//rowLayout2
                 }//storeInfoClickableArea
-            }//Component
+            }//storeInfoDelegate
 
-            /*ControlButton
+            ControlButton
             {
                 id: nearestStoreButton
                 Layout.fillWidth: true
                 buttonText: Vars.closestAddress
                 labelContentColor: Vars.mainPurple
-                backgroundColor: Vars.backgroundWhite
+                backgroundColor: Vars.listViewGrey
                 setBorderColor: Vars.mainPurple
                 Layout.alignment: Qt.AlignHCenter
-                //onClicked:
-            }*/
+                onClicked:
+                {
+                    PageNameHolder.push("promotionPage.qml");
+                    promotionPageLoader.setSource("mapPage.qml",
+                                        { "defaultLat": min_d_s_lat,
+                                          "defaultLon": min_d_s_lon,
+                                          "defaultZoomLevel": 16
+                                        });
+                }
+            }
 
             ControlButton
             {
@@ -325,7 +341,7 @@ Page
                 Layout.fillWidth: true
                 buttonText: Vars.openCompanyCard
                 labelContentColor: Vars.backgroundBlack
-                backgroundColor: Vars.backgroundWhite
+                backgroundColor: Vars.listViewGrey
                 setBorderColor: Vars.backgroundBlack
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: -Vars.screenHeight*0.02
@@ -342,8 +358,10 @@ Page
     {
         id: background
         clip: true
-        anchors.fill: parent
-        source: "../backgrounds/main_f.png"
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        source: "../backgrounds/map_f.png"
     }
 
     Image

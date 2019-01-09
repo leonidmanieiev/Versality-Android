@@ -53,6 +53,8 @@ Page
         source: "../fonts/Qanelas_Medium.ttf"
     }
 
+    ListModel { id: catsModel }
+
     ListView
     {
         id: catsListView
@@ -62,78 +64,86 @@ Page
         anchors.top: parent.top
         anchors.topMargin: parent.height*0.175
         model: catsModel
-        delegate: catsDelegate
-    }
-
-    ListModel { id: catsModel }
-
-    Component
-    {
-        id: catsDelegate
-        Column
+        delegate: Component
         {
-            id: middleFieldsColumn
-            width: Vars.screenWidth*0.8
-            anchors.horizontalCenter: parent.horizontalCenter
-            bottomPadding: Vars.screenHeight*0.03
-            Rectangle
+            id: catsDelegate
+            Column
             {
-                id: catsItem
-                height: Vars.screenHeight*0.09
+                id: middleFieldsColumn
                 width: Vars.screenWidth*0.8
-                radius: height*0.5
-                color: "transparent"
-                border.color: Vars.backgroundWhite
-                border.width: height*0.06
-
-                Text
+                anchors.horizontalCenter: parent.horizontalCenter
+                bottomPadding: Vars.screenHeight*0.03
+                Rectangle
                 {
-                    id: catsItemText
-                    x: parent.radius
-                    anchors.verticalCenter: parent.verticalCenter
-                    color: Vars.backgroundWhite
-                    font.family: mediumText.name
-                    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                                Vars.dpi)
-                    text: title
-                }
+                    id: catsItem
+                    height: Vars.screenHeight*0.09
+                    width: Vars.screenWidth*0.8
+                    radius: height*0.5
+                    color: "transparent"
+                    border.color: Vars.backgroundWhite
+                    border.width: height*0.06
 
-                Image
-                {
-                    id: downArrow
-                    width: parent.radius
-                    height: parent.radius
-                    anchors.right: parent.right
-                    anchors.rightMargin: parent.radius
-                    anchors.verticalCenter: parent.verticalCenter
-                    fillMode: Image.PreserveAspectFit
-                    source: "../icons/down_arrow.png"
-                }
-
-                MouseArea
-                {
-                    id: catsClickableArea
-                    anchors.fill: parent
-                    onClicked:
+                    Image
                     {
-                        downArrow.rotation = collapsed ? 180 : 0;
-                        catsItem.border.color = collapsed ? "transparent" : Vars.backgroundWhite
-                        catsItem.color = collapsed ? Vars.fontsPurple : "transparent"
-                        catsModel.setProperty(index, "collapsed", !collapsed);
+                        id: catIcon
+                        width: parent.radius
+                        height: parent.radius
+                        anchors.left: parent.left
+                        anchors.leftMargin: parent.radius*0.6
+                        anchors.verticalCenter: parent.verticalCenter
+                        fillMode: Image.PreserveAspectFit
+                        source: "../icons/cat_"+id+".png"
                     }
-                }
-            }//Rectangle
 
-            Loader
-            {
-                id: catsItemLoader
-                visible: !collapsed
-                property variant subCatsModel : subcats
-                sourceComponent: collapsed ? null : subCatsDelegate
-                onStatusChanged: if (status == Loader.Ready) item.model = subCatsModel
-            }
-        }//Column
-    }//Component
+                    Text
+                    {
+                        id: catsItemText
+                        x: parent.radius*2
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: Vars.backgroundWhite
+                        font.family: mediumText.name
+                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                                    Vars.dpi)
+                        text: title
+                    }
+
+                    Image
+                    {
+                        id: downArrow
+                        width: parent.radius
+                        height: parent.radius
+                        anchors.right: parent.right
+                        anchors.rightMargin: parent.radius
+                        anchors.verticalCenter: parent.verticalCenter
+                        fillMode: Image.PreserveAspectFit
+                        source: "../icons/down_arrow.png"
+                    }
+
+                    MouseArea
+                    {
+                        id: catsClickableArea
+                        anchors.fill: parent
+                        onClicked:
+                        {
+                            downArrow.rotation = collapsed ? 180 : 0;
+                            catsItem.border.color = collapsed ? "transparent" : Vars.backgroundWhite
+                            catsItem.color = collapsed ? Vars.fontsPurple : "transparent"
+                            catsModel.setProperty(index, "collapsed", !collapsed);
+                        }
+                    }
+                }//Rectangle
+
+                Loader
+                {
+                    id: catsItemLoader
+                    visible: !collapsed
+                    property variant subCatsModel : subcats
+                    sourceComponent: collapsed ? null : subCatsDelegate
+                    onStatusChanged: if (status == Loader.Ready) item.model = subCatsModel
+                }
+            }//middleFieldsColumn
+        }//catsDelegate
+    }//catsListView
 
     Component
     {

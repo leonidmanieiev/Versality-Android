@@ -28,12 +28,9 @@ import QtQuick.Controls 2.4
 
 Rectangle
 {
-    property int size
     property int amountOfChilds
 
     id: promClusterIcon
-    width: size
-    height: width
     radius: height*0.5
     color: Vars.fontsPurple
 

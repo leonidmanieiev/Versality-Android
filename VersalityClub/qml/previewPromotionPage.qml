@@ -209,8 +209,9 @@ Page
         id: background2
         clip: true
         width: parent.width
-        height: parent.height
-        source: "../backgrounds/main_f.png"
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        source: "../backgrounds/map_f.png"
     }
 
     //back to promotions choose button

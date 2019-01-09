@@ -15,7 +15,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     promotion.cpp \
-    promotionClusters.cpp
+    promotionclusters.cpp
 
 RESOURCES += \
     versalityclub.qrc
@@ -39,16 +39,29 @@ DISTFILES += \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat \
-    android/assets/customYandexMap.html
+    android/res/drawable-hdpi/ic_stat_onesignal_default.png \
+    android/res/drawable-mdpi/ic_stat_onesignal_default.png \
+    android/res/drawable-xhdpi/ic_stat_onesignal_default.png \
+    android/res/drawable-xxhdpi/ic_stat_onesignal_default.png \
+    android/res/drawable-xxxhdpi/ic_stat_onesignal_default.png
 
-ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+android {
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+    ANDROID_JAVA_SOURCES.path = /src/org/versalityclub
+    ANDROID_JAVA_SOURCES.files = $$files($$PWD/java/*.java)
+    INSTALLS += ANDROID_JAVA_SOURCES
+    include(../thirdparty/onesignal/qtonesignal.pri)
+}
+else {
+    QT += widgets
+}
 
 HEADERS += \
     networkinfo.h \
-    pagenameholder.h \
     appsettings.h \
     geolocationinfo.h \
     promotion.h \
-    promotionClusters.h
+    pagenameholder.h \
+    promotionclusters.h
 
 include(android-openssl.pri)

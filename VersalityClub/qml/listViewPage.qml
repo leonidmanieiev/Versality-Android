@@ -110,8 +110,10 @@ Page
     {
         id: background
         clip: true
-        anchors.fill: parent
-        source: "../backgrounds/main_f.png"
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        source: "../backgrounds/map_f.png"
     }
 
     Image
