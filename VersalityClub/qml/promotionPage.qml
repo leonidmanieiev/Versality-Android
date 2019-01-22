@@ -39,15 +39,35 @@ Page
     property string c_icon: AppSettings.value("promo/icon")
     property string comp_id: AppSettings.value("promo/comp_id")
     property bool p_is_marked: AppSettings.value("promo/is_marked")
-    property real min_d_s_lat
-    property real min_d_s_lon
     //all good flag
     property bool allGood: true
     //dist (in meters) to be able to active coupon
     readonly property int promCloseDist: 100
     //other
-    property real minDistToStore: 500000
-    readonly property int storeInfoItemHeight: Vars.screenHeight*0.06
+    property real nearestStoreLat
+    property real nearestStoreLon
+    property real minDistToStore: 5000000
+    //readonly property int storeInfoItemHeight: Vars.screenHeight*0.06
+
+    //setting lat and lon of the nearest to user store
+    function setNearestStoreCoords(promJSON)
+    {
+        var userPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
+                                               AppSettings.value("user/lon"));
+        for(var i in promJSON.stores)
+        {
+            var storePos = QtPositioning.coordinate(promJSON.stores[i].lat,
+                                                    promJSON.stores[i].lon);
+            var distToStore = Math.round(storePos.distanceTo(userPos));
+
+            if(minDistToStore > distToStore)
+            {
+                minDistToStore = distToStore;
+                nearestStoreLat = promJSON.stores[i].lat;
+                nearestStoreLon = promJSON.stores[i].lon;
+            }
+        }
+    }
 
     id: promotionPage
     enabled: Vars.isConnected
@@ -81,24 +101,24 @@ Page
         id: flickableArea
         visible: allGood
         clip: true
-        anchors.top: parent.top
         width: parent.width
-        height: parent.height*0.87
-        contentHeight: middleFieldsColumns.height*1.05
+        height: Vars.screenHeight//parent.height
+        contentHeight: middleFieldsColumns.height*1.1
         boundsBehavior: Flickable.DragOverBounds
 
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: parent.width
+            width: parent.width*0.8
             spacing: Vars.screenHeight*0.05
+            anchors.horizontalCenter: parent.horizontalCenter
 
             Rectangle
             {
                 id: promsImage
                 Layout.alignment: Qt.AlignHCenter
                 height: Vars.screenHeight*0.25
-                width: Vars.screenWidth*0.8
+                width: parent.width
                 radius: Vars.listItemRadius
                 color: "transparent"
 
@@ -133,7 +153,7 @@ Page
                 {
                     id: promotionDescription
                     width: parent.width
-                    text: p_desc === '' ? '\n\n\n\n\n' : p_desc
+                    text: p_desc
                     font.pixelSize: Helper.toDp(13, Vars.dpi)
                     font.family: regularText.name
                     color: Vars.backgroundBlack
@@ -151,12 +171,12 @@ Page
                 ControlButton
                 {
                     id: activeCoupon
-                    setWidth: Vars.screenWidth*0.6
-                    buttonText: Vars.activateCoupon
-                    labelContentColor: Vars.backgroundWhite
+                    buttonWidth: Vars.screenWidth*0.6
+                    labelText: Vars.activateCoupon
+                    labelColor: Vars.backgroundWhite
                     backgroundColor: Vars.activeCouponColor
-                    setBorderColor: "transparent"
-                    onClicked:
+                    borderColor: "transparent"
+                    buttonClickableArea.onClicked:
                     {
                         if(minDistToStore < promCloseDist)
                         {
@@ -204,7 +224,8 @@ Page
                 }//addToFavourite
             }//RowLayout1
 
-            ListView
+            //no need of this for now
+            /*ListView
             {
                 id: storeInfoListView
                 visible: false
@@ -290,8 +311,8 @@ Page
 
                                     return currDistToStore;
                                 }
-                            }
-                        }
+                            }//distToStore
+                        }//textBox1
 
                         Rectangle
                         {
@@ -312,23 +333,21 @@ Page
                         }
                     }//rowLayout2
                 }//storeInfoClickableArea
-            }//storeInfoDelegate
+            }//storeInfoDelegate*/
 
             ControlButton
             {
                 id: nearestStoreButton
                 Layout.fillWidth: true
-                buttonText: Vars.closestAddress
-                labelContentColor: Vars.mainPurple
-                backgroundColor: Vars.listViewGrey
-                setBorderColor: Vars.mainPurple
+                labelText: Vars.closestAddress
+                backgroundColor: "transparent"
                 Layout.alignment: Qt.AlignHCenter
-                onClicked:
+                buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("promotionPage.qml");
                     promotionPageLoader.setSource("mapPage.qml",
-                                        { "defaultLat": min_d_s_lat,
-                                          "defaultLon": min_d_s_lon,
+                                        { "defaultLat": nearestStoreLat,
+                                          "defaultLon": nearestStoreLon,
                                           "defaultZoomLevel": 16
                                         });
                 }
@@ -337,15 +356,12 @@ Page
             ControlButton
             {
                 id: companyCardButton
-                enabled: storeInfoModel.count !== 0
                 Layout.fillWidth: true
-                buttonText: Vars.openCompanyCard
-                labelContentColor: Vars.backgroundBlack
-                backgroundColor: Vars.listViewGrey
-                setBorderColor: Vars.backgroundBlack
-                Layout.alignment: Qt.AlignHCenter
-                Layout.topMargin: -Vars.screenHeight*0.02
-                onClicked:
+                labelText: Vars.openCompanyCard
+                labelColor: Vars.backgroundBlack
+                backgroundColor: "transparent"
+                borderColor: Vars.backgroundBlack
+                buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("promotionPage.qml");
                     promotionPageLoader.source = "companyPage.qml";
@@ -400,10 +416,9 @@ Page
     {
         if(allGood)
         {
-            //formating data
             var fpdInJSON = JSON.parse(Vars.fullPromData);
-            Helper.promsJsonToListModelForPromPage(fpdInJSON);
 
+            setNearestStoreCoords(fpdInJSON);
             notifier.visible = false;
             promotionPage.forceActiveFocus();
         }

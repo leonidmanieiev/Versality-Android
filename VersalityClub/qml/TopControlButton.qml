@@ -50,6 +50,7 @@ RoundButton
     contentItem: Text
     {
         id: buttonTextContent
+        clip: true
         text: buttonText
         font.pixelSize: Helper.toDp(13, Vars.dpi)
         font.family: regularText.name

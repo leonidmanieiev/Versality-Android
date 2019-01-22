@@ -33,31 +33,24 @@ TextField
     property color setBorderColor: Vars.backgroundWhite
     property color setTextColor: Vars.backgroundWhite
 
+
+    id: customTextFiled
+    cursorVisible: false
+    horizontalAlignment: Text.AlignHCenter
+    background: ControlBackground
+    {
+        anchors.centerIn: parent
+        rectWidth: parent.width
+        rectFillColor: setFillColor
+        rectBorderColor: setBorderColor
+    }
+    color: setTextColor
+    font.family: mediumText.name
+    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+
     FontLoader
     {
         id: mediumText;
         source: "../fonts/Qanelas_Medium.ttf"
-    }
-
-    id: customTextFiled
-    Layout.fillWidth: true
-    horizontalAlignment: Text.AlignHCenter
-    background: ControlBackground
-    {
-        fillColor: setFillColor
-        borderColor: setBorderColor
-    }
-    font.family: mediumText.name
-    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                Vars.dpi)
-    color: setTextColor
-    onFocusChanged:
-    {
-        //workaround to get default text color after incorrect input
-        if(color === Vars.errorRed)
-        {
-            color = Vars.backgroundBlack;
-            text = ''
-        }
     }
 }

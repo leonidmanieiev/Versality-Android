@@ -52,6 +52,7 @@ Page
         CustomTextField
         {
             id: emailField
+            Layout.fillWidth: true
             placeholderText: Vars.emailPlaceHolder
             setFillColor: Vars.backgroundWhite
             setBorderColor: Vars.fontsPurple
@@ -59,17 +60,25 @@ Page
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
             { regExp: Vars.emailRegEx }
+
+            onPressed:
+            {
+                if(color === Vars.errorRed)
+                {
+                    text = '';
+                    color = Vars.backgroundBlack;
+                }
+            }
         }
 
         ControlButton
         {
             id: enterButton
             Layout.fillWidth: true
-            padding: middleLayout.spacing*2
-            labelContentColor: Vars.backgroundWhite
+            labelColor: Vars.backgroundWhite
             backgroundColor: Vars.fontsPurple
-            buttonText: Vars.login
-            onClicked:
+            labelText: Vars.login
+            buttonClickableArea.onClicked:
             {
                 //check for input corresponds to regex
                 if(emailField.acceptableInput === false)

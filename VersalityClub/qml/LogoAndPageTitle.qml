@@ -30,7 +30,7 @@ import QtQuick.Layouts 1.3
 RowLayout
 {
     property string pageTitleText
-    property real pageTitleTopMargin: Vars.screenHeight*0.06
+    property real pageTitleLeftMargin: Vars.screenWidth*0.07
 
     id: logoAndPageTitle
     height: parent.height*0.15
@@ -59,9 +59,9 @@ RowLayout
         id: pageTitle
         text: pageTitleText
         color: Vars.backgroundWhite
-        Layout.preferredWidth: parent.width*0.3
-        Layout.preferredHeight: Vars.screenHeight*0.1
-        Layout.topMargin: pageTitleTopMargin
+        width: parent.width*0.3
+        height: Vars.screenHeight*0.1
+        Layout.leftMargin: -pageTitleLeftMargin
         font.family: boldText.name
         font.pixelSize: Helper.toDp(14, Vars.dpi)
     }

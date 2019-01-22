@@ -57,14 +57,14 @@ Page
     ControlButton
     {
         id: startUsingAppButton
-        anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: Helper.toDp(parent.height/14, Vars.dpi)
-        buttonText: Vars.everythingIsClearStart
-        labelContentColor: Vars.backgroundWhite
+        anchors.horizontalCenter: parent.horizontalCenter
+        labelText: Vars.everythingIsClearStart
+        labelColor: Vars.backgroundWhite
         backgroundColor: "transparent"
-        setBorderColor: Vars.backgroundWhite
-        onClicked:
+        borderColor: Vars.backgroundWhite
+        buttonClickableArea.onClicked:
         {
             almostDonePageLoader.setSource("xmlHttpRequest.qml",
                                      { "api": Vars.userInfo,

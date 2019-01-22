@@ -72,7 +72,7 @@ Page
     ColumnLayout
     {
         id: middleButtonsColumn
-        spacing: Vars.screenHeight*0.07
+        spacing: Vars.screenHeight*0.03
         width: parent.width*0.8
         anchors.centerIn: parent
 
@@ -80,8 +80,8 @@ Page
         {
             id: signUpButton
             Layout.fillWidth: true
-            buttonText: Vars.signup
-            onClicked:
+            labelText: Vars.signup
+            buttonClickableArea.onClicked:
             {
                 PageNameHolder.push("initialPage.qml");
                 initialPageLoader.source = "signUpPage.qml";
@@ -92,8 +92,8 @@ Page
         {
             id: logInButton
             Layout.fillWidth: true
-            buttonText: Vars.login
-            onClicked:
+            labelText: Vars.login
+            buttonClickableArea.onClicked:
             {
                 PageNameHolder.push("initialPage.qml");
                 initialPageLoader.source = "logInPage.qml";

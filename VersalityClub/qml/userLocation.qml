@@ -87,7 +87,7 @@ Item
         active: true
         updateInterval: 1000
         //using .nmea if OS is win, because win does not have GPS module
-        nmeaSource: Qt.platform.os === "windows" ? "../output_new.nmea" : undefined
+        //nmeaSource: Qt.platform.os === "windows" ? "../output_new.nmea" : ""
 
         //handling errors
         function sourceErrorMessage(sourceError)
@@ -180,7 +180,7 @@ Item
                          '&lon='+AppSettings.value("user/lon");*/
             var params = 'secret='+secret;
 
-            console.log("request url: " + api + params);
+            console.log(api + params);
 
             request.open('POST', api);
             request.onreadystatechange = function()
@@ -202,7 +202,7 @@ Item
                     }
                     else notifier.visible = true;
                 }
-                else console.log("Pending: " + request.readyState);
+                else console.log("readyState: " + request.readyState);
             }
 
             request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

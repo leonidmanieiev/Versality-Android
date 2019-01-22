@@ -25,17 +25,37 @@ import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import QtQuick.Layouts 1.3
 
-Button
+ControlBackground
 {
-    property string buttonText: ''
-    property color labelContentColor: Vars.fontsPurple
+    property string labelText: ''
+    property color labelColor: Vars.fontsPurple
     property color backgroundColor: Vars.backgroundWhite
-    property color setBorderColor: Vars.fontsPurple
-    property real setHeight: Vars.screenHeight*0.09
-    property real setWidth: Vars.screenWidth*0.8
+    property color borderColor: Vars.fontsPurple
+    property real buttonHeight: Vars.screenHeight*0.09
+    property real buttonWidth: Vars.screenWidth*0.8
     property int fontPixelSize: Vars.defaultFontPixelSize
+    property alias buttonClickableArea: clickableArea
+    property alias labelAlias: label
+
+
+    id: controlButton
+    opacity: clickableArea.pressed ? Vars.defaultOpacity : 1
+    rectFillColor: backgroundColor
+    rectBorderColor: borderColor
+    rectHeight: buttonHeight
+    rectWidth: buttonWidth
+
+    Text
+    {
+        id: label
+        text: labelText
+        font.family: mediumText.name
+        font.pixelSize: Helper.toDp(fontPixelSize, Vars.dpi)
+        color: labelColor
+        anchors.centerIn: parent
+    }
 
     FontLoader
     {
@@ -43,24 +63,15 @@ Button
         source: "../fonts/Qanelas_Medium.ttf"
     }
 
-    id: controlButton
-    opacity: pressed ? Vars.defaultOpacity : 1
-    background: ControlBackground
+    MouseArea
     {
-        id: background
-        color: backgroundColor
-        borderColor: setBorderColor
-        h: setHeight
-        w: setWidth
-    }
-    contentItem: Text
-    {
-        id: labelContent
-        text: buttonText
-        font.family: mediumText.name
-        font.pixelSize: Helper.toDp(fontPixelSize, Vars.dpi)
-        color: labelContentColor
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+        id: clickableArea
+        width: parent.width
+        height: parent.height
+        onPressed:
+        {
+            if(label.color === Vars.errorRed)
+                label.color = Vars.backgroundBlack;
+        }
     }
 }

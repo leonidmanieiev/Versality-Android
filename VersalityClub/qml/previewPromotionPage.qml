@@ -188,12 +188,9 @@ Page
             {
                 id: moreButton
                 Layout.fillWidth: true
-                buttonText: Vars.more
-                labelContentColor: Vars.fontsPurple
-                backgroundColor: Vars.backgroundWhite
-                setBorderColor: Vars.fontsPurple
+                labelText: Vars.more
                 Layout.alignment: Qt.AlignHCenter
-                onClicked:
+                buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("previewPromotionPage.qml");
                     previewPromotionPageLoader.setSource("xmlHttpRequest.qml",

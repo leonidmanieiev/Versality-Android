@@ -26,20 +26,19 @@ import QtQuick 2.11
 
 Rectangle
 {
-    property real h: Vars.screenHeight*0.09
-    property real w: Vars.screenWidth*0.8
-    property int r: h*0.5
-    property color fillColor: Vars.backgroundWhite
-    property color borderColor: Vars.fontsPurple
-    property int borderWidth: h*0.06
+    property real rectHeight: Vars.screenHeight*0.09
+    property real rectWidth: Vars.screenWidth*0.8
+    property int rectRadius: rectHeight*0.5
+    property color rectFillColor: Vars.backgroundWhite
+    property color rectBorderColor: Vars.fontsPurple
+    property int rectBorderWidth: rectHeight*0.06
 
     id: controlBackground
-    height: h
-    width: w
-    radius: r
     clip: true
-    color: fillColor
-    border.color: borderColor
-    border.width: borderWidth
-    anchors.centerIn: parent
+    height: rectHeight
+    width: rectWidth
+    radius: rectRadius
+    color: rectFillColor
+    border.color: rectBorderColor
+    border.width: rectBorderWidth
 }

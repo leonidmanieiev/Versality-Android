@@ -70,14 +70,14 @@ Page
             Column
             {
                 id: middleFieldsColumn
-                width: Vars.screenWidth*0.8
+                width: parent.width*0.8
                 anchors.horizontalCenter: parent.horizontalCenter
                 bottomPadding: Vars.screenHeight*0.03
                 Rectangle
                 {
                     id: catsItem
                     height: Vars.screenHeight*0.09
-                    width: Vars.screenWidth*0.8
+                    width: parent.width
                     radius: height*0.5
                     color: "transparent"
                     border.color: Vars.backgroundWhite
@@ -152,7 +152,7 @@ Page
         {
             id: middleFieldsSubColumn
             property alias model: subCatsRepeater.model
-            width: Vars.screenWidth*0.8
+            width: catsListView.width*0.8
             anchors.horizontalCenter: parent.horizontalCenter
             topPadding: Vars.screenHeight*0.02
             //instead of bottomPadding
@@ -168,7 +168,7 @@ Page
                                                          "transparent"
                     radius: height*0.5
                     height: Vars.screenHeight*0.07
-                    width: Vars.screenWidth*0.8
+                    width: parent.width
 
                     Text
                     {
@@ -237,18 +237,19 @@ Page
     LogoAndPageTitle
     {
         pageTitleText: Vars.profileSettings
-        pageTitleTopMargin: Vars.screenHeight*0.03
+        pageTitleLeftMargin: Vars.screenHeight*0.03
     }
 
     ControlButton
     {
         id: saveSelectedButton
-        setWidth: Vars.screenWidth*0.8
+        buttonWidth: parent.width*0.8
         anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottomMargin: parent.height*0.05
-        buttonText: Vars.saveAndBackToSetting
-        onClicked:
+        anchors.horizontalCenter: parent.horizontalCenter
+        labelText: Vars.saveAndBackToSetting
+        labelAlias.horizontalAlignment: Text.AlignHCenter
+        buttonClickableArea.onClicked:
         {
             PageNameHolder.pop();
             chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",

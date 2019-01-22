@@ -21,18 +21,13 @@
 #include <QQmlEngine>
 #include <QDebug>
 
-QOneSignal::QOneSignal(QObject *parent )
-	: QObject(parent) {
-    qDebug() << "Creating QOneSignal singleton Instance";
-}
+QOneSignal::QOneSignal(QObject *parent ) : QObject(parent) { }
 
-QOneSignal::~QOneSignal() {
-	// nothing to do
-}
+QOneSignal::~QOneSignal() { }
 
 void QOneSignal::registerQMLTypes()
 {
-    qmlRegisterSingletonType<QOneSignal>("QOneSignal", 1, 0, "QOneSignal", qOneSignalProvider);
+    qmlRegisterSingletonType<QOneSignal>("OneSignal", 1, 0, "QOneSignal", qOneSignalProvider);
 }
 
 QObject* QOneSignal::qOneSignalProvider(QQmlEngine *engine, QJSEngine *scriptEngine) {

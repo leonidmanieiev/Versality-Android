@@ -20,7 +20,6 @@
 **
 ****************************************************************************/
 
-
 //Wrapper, so I can use functionality of QSettings in QML
 //Stores user sensetive data and app states for recreation
 #ifndef APPSETTINGS_H
@@ -48,7 +47,7 @@ public:
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
     { QSettings::setValue(key, value); }
-    Q_INVOKABLE QVariant value(const QString& key, const QVariant &defaultValue = QVariant()) const
+    Q_INVOKABLE QVariant value(const QString& key, const QVariant &defaultValue = QVariant())
     { return QSettings::value(key, defaultValue); }
     Q_INVOKABLE void remove(const QString& key)
     { QSettings::remove(key); }

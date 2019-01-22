@@ -43,7 +43,9 @@ DISTFILES += \
     android/res/drawable-mdpi/ic_stat_onesignal_default.png \
     android/res/drawable-xhdpi/ic_stat_onesignal_default.png \
     android/res/drawable-xxhdpi/ic_stat_onesignal_default.png \
-    android/res/drawable-xxxhdpi/ic_stat_onesignal_default.png
+    android/res/drawable-xxxhdpi/ic_stat_onesignal_default.png \
+    java/LocationService.java \
+    java/HttpURLCon.java
 
 android {
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

@@ -127,16 +127,3 @@ function promsJsonToListModelForMarkers(promJSON)
                                            });
     }
 }
-
-//put store info from JSON to model for promotion page
-function promsJsonToListModelForPromPage(promJSON)
-{
-    for(var i in promJSON.stores)
-    {
-        storeInfoModel.append({
-                                  "store_hours": promJSON.stores[i].store_hours,
-                                  "s_lat": promJSON.stores[i].lat,
-                                  "s_lon": promJSON.stores[i].lon
-                              });
-    }
-}

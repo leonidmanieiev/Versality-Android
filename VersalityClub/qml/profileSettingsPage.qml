@@ -59,7 +59,7 @@ Page
     {
         id: flickableArea
         clip: true
-        width: Vars.screenWidth
+        width: parent.width
         height: Vars.screenHeight*0.65
         contentHeight: middleFieldsColumns.height*1.1
         anchors.centerIn: parent
@@ -68,7 +68,8 @@ Page
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: Vars.screenWidth
+            width: parent.width*0.8//Vars.screenWidth
+            anchors.horizontalCenter: parent.horizontalCenter
             spacing: Vars.screenHeight*0.05
 
             CustomLabel
@@ -81,18 +82,18 @@ Page
             {
                 id: sexButton
                 Layout.fillWidth: true
-                buttonText: AppSettings.value("user/sex");
-                labelContentColor: Vars.backgroundWhite
+                labelText: AppSettings.value("user/sex");
+                labelColor: Vars.backgroundWhite
                 backgroundColor: "transparent"
-                setBorderColor: Vars.backgroundWhite
-                onClicked:
+                borderColor: Vars.backgroundWhite
+                buttonClickableArea.onClicked:
                 {
-                    if(buttonText === "M")
-                        buttonText = "Ж";
-                    else buttonText = "M";
+                    if(labelText === "M")
+                        labelText = "Ж";
+                    else labelText = "M";
 
                     AppSettings.beginGroup("user");
-                    AppSettings.setValue("sex", buttonText);
+                    AppSettings.setValue("sex", labelText);
                     AppSettings.endGroup();
                 }
             }
@@ -106,6 +107,7 @@ Page
             CustomTextField
             {
                 id: dateofbirthField
+                Layout.fillWidth: true
                 setFillColor: "transparent"
                 text: AppSettings.value("user/birthday");
                 inputMask: Vars.birthdayMask
@@ -140,6 +142,7 @@ Page
             {
                 id: emailField
                 readOnly: true
+                Layout.fillWidth: true
                 setFillColor: "transparent"
                 text: AppSettings.value("user/email");
             }
@@ -153,6 +156,7 @@ Page
             CustomTextField
             {
                 id: changePasswordField
+                Layout.fillWidth: true
                 setFillColor: "transparent"
                 echoMode: TextInput.Password
                 inputMethodHints: Qt.ImhSensitiveData
@@ -169,6 +173,7 @@ Page
             CustomTextField
             {
                 id: firstNameField
+                Layout.fillWidth: true
                 setFillColor: "transparent"
                 text: AppSettings.value("user/name");
                 placeholderText: Vars.enterName
@@ -190,11 +195,11 @@ Page
             {
                 id: selectCategoryButton
                 Layout.fillWidth: true
-                buttonText: Vars.choose
-                labelContentColor: Vars.backgroundWhite
+                labelText: Vars.choose
+                labelColor: Vars.backgroundWhite
                 backgroundColor: "transparent"
-                setBorderColor: Vars.backgroundWhite
-                onClicked:
+                borderColor: Vars.backgroundWhite
+                buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("profileSettingsPage.qml");
                     profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
@@ -218,7 +223,7 @@ Page
     LogoAndPageTitle
     {
         pageTitleText: Vars.profileSettings
-        pageTitleTopMargin: Vars.screenHeight*0.03
+        pageTitleLeftMargin: Vars.screenHeight*0.03
     }
 
     ScrollDatePicker
@@ -247,7 +252,7 @@ Page
     {
         id: saveButton
         height: Vars.screenHeight*0.09
-        width: Vars.screenWidth*0.8
+        width: parent.width*0.8
         anchors.bottom: parent.bottom
         anchors.bottomMargin: Vars.screenHeight*0.06
         anchors.horizontalCenter: parent.horizontalCenter
@@ -255,7 +260,7 @@ Page
         onClicked:
         {
             AppSettings.beginGroup("user");
-            AppSettings.setValue("sex", sexButton.buttonText);
+            AppSettings.setValue("sex", sexButton.labelText);
             if(firstNameField.text.length > 0)
                 AppSettings.setValue("name", firstNameField.text);
             AppSettings.setValue("birthday", dateofbirthField.text);

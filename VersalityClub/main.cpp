@@ -21,8 +21,12 @@
 ****************************************************************************/
 
 #include <QQmlApplicationEngine>
-#include <QSslSocket>
 #include <QtWebView/QtWebView>
+#include <QTextStream>
+#include <QSslSocket>
+#include <QDebug>
+#include <QFile>
+
 #include "appsettings.h"
 #include "networkinfo.h"
 #include "geolocationinfo.h"
@@ -30,6 +34,8 @@
 #include "promotionclusters.h"
 #ifdef __ANDROID__
 #include <QGuiApplication>
+#include <QtAndroid>
+#include "jni.h"
 #include "qonesignal.h"
 #else
 #include "QApplication"
@@ -41,16 +47,16 @@ int main(int argc, char *argv[])
 
 #ifdef __ANDROID__
     QGuiApplication app(argc, argv);
-    QOneSignal::registerQMLTypes();
 #else
     QApplication app(argc, argv);
 #endif
 
     QtWebView::initialize();
 
-    qmlRegisterType<AppSettings>("org.versalityclub", 1, 0, "AppSettings");
+    QOneSignal::registerQMLTypes();
     qmlRegisterType<NetworkInfo>("Network", 1, 0, "NetworkInfo");
     qmlRegisterType<GeoLocationInfo>("GeoLocation", 1, 0, "GeoLocationInfo");
+    qmlRegisterType<AppSettings>("org.versalityclub", 1, 0, "AppSettings");
     qmlRegisterType<PageNameHolder>("org.versalityclub", 1, 0, "PageNameHolder");
     qmlRegisterType<PromotionClusters>("org.versalityclub", 1, 0, "PromotionClusters");
 
@@ -58,6 +64,29 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
+
+    //if user has an account so do hash
+    if(!AppSettings().value("user/hash").toString().isEmpty())
+    {
+        QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/hash.txt");
+        if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            qDebug() << "Failed to open 'AppDataLocation/hash.txt'";
+            return -1;
+        }
+
+        //saving user hash to file
+        QTextStream out(&file);
+        out << AppSettings().value("user/hash").toString();
+        out.flush();
+        file.close();
+
+        //starting location service
+        QAndroidJniObject::callStaticMethod<void>(
+        "org.versalityclub.LocationService", "startLocationService",
+        "(Landroid/content/Context;)V", QtAndroid::androidActivity().object());
+    }
+    else qDebug() << "No user hash yet";
 
     return app.exec();
 }

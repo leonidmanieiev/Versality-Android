@@ -30,7 +30,7 @@ import QtQuick.Controls 2.4
 import QtLocation 5.9
 import QtPositioning 5.8
 import QtQuick.Layouts 1.3
-import QOneSignal 1.0
+import OneSignal 1.0
 
 Page
 {
@@ -255,8 +255,8 @@ Page
     {
         id: copyrightTextBackground
         radius: Vars.defaultRadius
-        width: childrenRect.width*1.05
-        height: childrenRect.height
+        width: copyrightText.width*1.05
+        height: copyrightText.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: footerButton.top
         color: Vars.copyrightBackgroundColor
@@ -471,22 +471,14 @@ Page
 
     Component.onCompleted:
     {
+        if(AppSettings.value("user/hash") !== undefined)
+            QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+
         PageNameHolder.clear();
         //setting active focus for key capturing
         mapPage.forceActiveFocus();
         //start capturing user location and getting all promotions
         mapPageLoader.source = "userLocation.qml";
-    }
-
-    Connections
-    {
-        target: QOneSignal
-        onNotificationReceiveChanged: {
-            console.log("notificationReceive: ", QOneSignal.notificationReceive);
-        }
-        onNotificationOpenChanged: {
-            console.log("notificationOpen: ", QOneSignal.notificationOpen);
-        }
     }
 
     function runParsing()

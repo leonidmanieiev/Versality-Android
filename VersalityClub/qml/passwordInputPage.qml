@@ -56,30 +56,36 @@ Page
             color: Vars.fontsPurple
         }
 
-        TextField
+        CustomTextField
         {
             id: passField
-            implicitWidth: parent.width*0.9
-            horizontalAlignment: Text.AlignHCenter
-            Layout.alignment: Qt.AlignHCenter
-            background: ControlBackground { }
-            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                        Vars.dpi)
-            color: Vars.backgroundBlack
+            Layout.fillWidth: true
+            setFillColor: Vars.backgroundWhite
+            setBorderColor: Vars.fontsPurple
+            setTextColor: Vars.backgroundBlack
             echoMode: TextInput.Password
             inputMethodHints: Qt.ImhSensitiveData
             selectByMouse: false
+
+            onPressed:
+            {
+                if(color === Vars.errorRed)
+                {
+                    text = '';
+                    color = Vars.backgroundBlack;
+                }
+            }
         }
 
         ControlButton
         {
             id: enterButton
-            padding: middleLayout.spacing*2
+            //padding: middleLayout.spacing*2
             Layout.fillWidth: true
-            buttonText: Vars.login
-            labelContentColor: Vars.backgroundWhite
+            labelText: Vars.login
+            labelColor: Vars.backgroundWhite
             backgroundColor: Vars.fontsPurple
-            onClicked:
+            buttonClickableArea.onClicked:
             {
                 AppSettings.beginGroup("user");
                 AppSettings.setValue("password", passField.text);

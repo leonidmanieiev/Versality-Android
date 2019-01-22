@@ -74,15 +74,10 @@ Page
         {
             id: sexButton
             Layout.fillWidth: true
-            buttonText: Vars.m_f
-            labelContentColor: Vars.backgroundBlack
-            onClicked: buttonText === "М" ? buttonText = "Ж" : buttonText = "М"
-            onFocusChanged:
-            {
-                //workaround to get default text color after incorrect input
-                if(labelContentColor === Vars.errorRed)
-                    labelContentColor = Vars.backgroundBlack;
-            }
+            labelText: Vars.m_f
+            labelColor: Vars.backgroundBlack
+            buttonClickableArea.onClicked:
+                labelText === "М" ? labelText = "Ж" : labelText = "М"
         }
 
         CustomLabel
@@ -95,17 +90,19 @@ Page
         CustomTextField
         {
             id: dateofbirthField
+            Layout.fillWidth: true
             setTextColor: Vars.backgroundBlack
             setFillColor: Vars.backgroundWhite
             setBorderColor: Vars.fontsPurple
             inputMask: Vars.birthdayMask
             inputMethodHints: Qt.ImhDigitsOnly
 
+            /*workaround. if use onPressed it will invoke
+              keyboard that won't close by Qt.inputMethod.hide()*/
             MouseArea
             {
-                id: clickableArea
                 anchors.fill: parent
-                onClicked: birthdayPicker.visible = true;
+                onClicked: birthdayPicker.visible = true
             }
         }
 
@@ -119,6 +116,7 @@ Page
         CustomTextField
         {
             id: emailField
+            Layout.fillWidth: true
             setFillColor: Vars.backgroundWhite
             setBorderColor: Vars.fontsPurple
             setTextColor: Vars.backgroundBlack
@@ -126,6 +124,15 @@ Page
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
             { regExp: Vars.emailRegEx }
+
+            onPressed:
+            {
+                if(color === Vars.errorRed)
+                {
+                    text = '';
+                    color = Vars.backgroundBlack;
+                }
+            }
         }
 
         Button
@@ -141,7 +148,7 @@ Page
                 anchors.centerIn: parent
                 /*swaped geometry and rotation is a
                 trick for left to right gradient*/
-                height: Vars.screenWidth*0.8
+                height: Vars.screenWidth*0.9
                 width: Vars.screenHeight*0.09
                 rotation: -90
                 gradient: Gradient
@@ -164,8 +171,8 @@ Page
             onClicked:
             {
                 //check for valid inputs
-                if(sexButton.buttonText === Vars.m_f)
-                    sexButton.labelContentColor = Vars.errorRed;
+                if(sexButton.labelText === Vars.m_f)
+                    sexButton.labelColor = Vars.errorRed;
                 else if(dateofbirthField.text === '..')
                     dateofbirthField.color = Vars.errorRed;
                 else if(emailField.acceptableInput === false)
@@ -178,7 +185,7 @@ Page
                     //saving user info for further using
                     AppSettings.beginGroup("user");
                     AppSettings.setValue("email", emailField.text.toLowerCase());
-                    AppSettings.setValue("sex", sexButton.buttonText);
+                    AppSettings.setValue("sex", sexButton.labelText);
                     AppSettings.setValue("birthday", dateofbirthField.text);
                     AppSettings.endGroup();
 
@@ -200,6 +207,7 @@ Page
         {
             //show date
             dateofbirthField.text = selectedDay+selectedMonth+selectedYear;
+            dateofbirthField.color = Vars.backgroundBlack
 
             //save date fo futher usage
             AppSettings.beginGroup("user");

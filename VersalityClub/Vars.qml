@@ -51,7 +51,7 @@ QtObject
     readonly property int defaultYear: new Date().getYear()-30
 
     //REGEX
-    readonly property var emailRegEx: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    readonly property var emailRegEx: /^[A-Za-z0-9]+([.|-]*[A-Za-z0-9])*@{1}([A-Za-z0-9]+[A-Za-z0-9-]*[A-Za-z0-9]+[.])*([A-Za-z0-9]+[A-Za-z0-9-]*[A-Za-z0-9]+)+$/
 
     //PROMOTION CONSTANTS
     property string markedPromsData: ''
@@ -84,19 +84,7 @@ QtObject
     property bool isLocated: Qt.platform.os === "windows" ? true : false
 
     //API REQUESTS
-    readonly property string userInfo: "http://patrick.ga:8080/api/user?"
-    readonly property string userMarkedProms: "http://patrick.ga:8080/api/user/marked?"
-    readonly property string userLogin: "http://patrick.ga:8082/api/login?"
-    readonly property string userMarkProm: "http://patrick.ga:8080/api/user/mark?"
-    readonly property string userUnmarkProm: "http://patrick.ga:8080/api/user/unmark?"
-    readonly property string allCats: "http://patrick.ga:8080/api/categories"
-    readonly property string userActivateProm: "http://patrick.ga:8080/api/user/activate?"
-    readonly property string userSelectCats: "http://patrick.ga:8080/api/user/categories?"
-    readonly property string userSignup: "http://patrick.ga:8082/api/register?"
-    readonly property string allPromsTilesModel: "http://patrick.ga:8080/api/promos1?"
-    readonly property string promPreViewModel: "http://patrick.ga:8080/api/promos2?"
-    readonly property string promFullViewModel: "http://patrick.ga:8080/api/promos3?"
-    readonly property string allPromsListViewModel: "http://patrick.ga:8080/api/promos4?"
+
 
     //POPUP TEXT CONSTS
     readonly property string smthWentWrong: "Что-то пошло не так, попробуйте позже"

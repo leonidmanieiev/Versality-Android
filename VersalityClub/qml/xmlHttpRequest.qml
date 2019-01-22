@@ -34,15 +34,15 @@ Item
     //depend on request (functionalFlag)
     property string api: ''
     //user data
-    property string sex: AppSettings.value("user/sex")
-    property string birthday: AppSettings.value("user/birthday")
-    property string email: AppSettings.value("user/email")
-    property string password: AppSettings.value("user/password")
-    property bool hasPassChanged
-    property string name: AppSettings.value("user/name")
+    property string sex: AppSettings.value("user/sex") === undefined ? "" : AppSettings.value("user/sex")
+    property string birthday: AppSettings.value("user/birthday") === undefined ? "" : AppSettings.value("user/birthday")
+    property string email: AppSettings.value("user/email") === undefined ? "" : AppSettings.value("user/email")
+    property string name: AppSettings.value("user/name") === undefined ? "" : AppSettings.value("user/name")
     property string cats: AppSettings.getCatsAmount() === 0 ? '0' : AppSettings.getStrCats()
+    property string password: AppSettings.value("user/password") === undefined ? "" : AppSettings.value("user/password")
+    property bool hasPassChanged
     //to authenticate client on server side
-    property string secret: AppSettings.value("user/hash")
+    property string secret: AppSettings.value("user/hash") === undefined ? "" : AppSettings.value("user/hash")
     //flags
     property string functionalFlag: ''
     property bool allGood: false
@@ -50,10 +50,8 @@ Item
     readonly property int errorFlagBeg: 0
     readonly property int errorFlagEnd: 5
     //promotions data
-    property string promo_id: AppSettings.value("promo/id") ===
-                                  undefined ? '' : AppSettings.value("promo/id")
-    property string promo_desc: AppSettings.value("promo/desc") ===
-                                    undefined ? '' : AppSettings.value("promo/desc")
+    property string promo_id: AppSettings.value("promo/id") === undefined ? '' : AppSettings.value("promo/id")
+    property string promo_desc: AppSettings.value("promo/desc") === undefined ? '' : AppSettings.value("promo/desc")
 
     //creates params for request
     function makeParams()
@@ -121,7 +119,7 @@ Item
         var request = new XMLHttpRequest();
         var params = makeParams();
 
-        console.log("request url: " + api + params);
+        console.log(api + params);
 
         //if -1, there was unknown request
         if(params === -1)
@@ -139,7 +137,7 @@ Item
                 if(request.status === 200)
                 {
                     var errorStatus = responseHandler(request.responseText);
-                    console.log("server responseText:" + request.responseText);
+                    console.log("server:" + request.responseText);
 
                     if(errorStatus === 'NO_ERROR')
                     {
@@ -269,9 +267,15 @@ Item
                     }//if(errorStatus === 'NO_ERROR')
                     else toastMessage.setTextAndRun(errorStatus, false);
                 }//if(request.status === 200)
-                else toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status), false);
+                else if(request.status !== null)
+                    toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status), false);
+                else
+                {
+                    console.log("xhr()::request.status is null");
+                    toastMessage.setTextAndRun(Vars.smthWentWrong);
+                }
             }//if(request.readyState === XMLHttpRequest.DONE)
-            else console.log("Pending: " + request.readyState);
+            else console.log("readyState: " + request.readyState);
         }//request.onreadystatechange = function()
 
         request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

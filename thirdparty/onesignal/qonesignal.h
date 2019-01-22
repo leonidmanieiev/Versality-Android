@@ -46,7 +46,7 @@ public slots:
     QString notificationOpen();
     void setNotificationOpen(QString message);
 
-    void sendTag(QString key, QString value);
+    Q_INVOKABLE void sendTag(QString key, QString value);
     void deleteTag(QString key);
 
 signals:
