@@ -36,8 +36,9 @@ QtObject
     readonly property color listViewGrey: "#e8e9ea"
     readonly property color mainPurple: "#631964"
     readonly property color fontsPurple: "#471261"
+    readonly property color forgetPassPurple: "#a03576"
     readonly property color errorRed: "RED"
-    readonly property color activeCouponColor: "#ff3c3c"
+    readonly property color activeCouponColor: "#ff3333"
     readonly property color copyrightBackgroundColor: "#c4c5c6"
     readonly property color darkGreyColor: "#9f9fa0"
     readonly property color subCatSelectedColor: "#f0e4ff"
@@ -60,13 +61,20 @@ QtObject
     property string previewPromData: ''
     property string fullPromData: ''
 
+    //COMPANY CONSTANTS
+    property string fullCompanyData: ''
+
     //FOOTERBUTTONS CONSTANTS
     readonly property int footerButtonsFieldHeight: screenHeight*0.125
     readonly property int footerButtonsHeight: screenHeight*0.08
 
+    //HEADERBUTTONS CONSTANTS
+    readonly property int headerButtonsHeight: screenHeight*0.08
+
     //SCREEN CONSTANTS
     readonly property int dpi: Screen.pixelDensity * 25.4
     readonly property int pageHeight: screenHeight-footerButtonsFieldHeight
+    readonly property int companyPageHeight: screenHeight-2*footerButtonsFieldHeight
     readonly property int screenHeight: Qt.platform.os === "windows" ?
                                         Helper.toDp(480, dpi) :
                                         Helper.toDp(Screen.height, dpi)
@@ -77,19 +85,38 @@ QtObject
     //LISTVIEW CONSTANTS
     readonly property int listItemRadius: 20
 
-    //INTERTEN ACCESS FLAG          check QTBUG-40328
+    //INTERNET ACCESS FLAG          check QTBUG-40328
     property bool isConnected: Qt.platform.os === "windows" ? true : false
 
     //LOCATION ACCESS FLAG
     property bool isLocated: Qt.platform.os === "windows" ? true : false
 
     //API REQUESTS
-
+    readonly property string domen: "http://club.versality.ru"
+    readonly property string main: ":8082/"
+    readonly property string mobile: ":8080/"
+    readonly property string userInfo: domen+mobile+"api/user?"
+    readonly property string userMarkedProms: domen+mobile+"api/user/marked?"
+    readonly property string userLogin: domen+main+"api/login?"
+    readonly property string userResetPass: domen+mobile+"api/user/reset-pass?"
+    readonly property string userChangePass: domen+mobile+"api/user/set-pass?"
+    readonly property string userMarkProm: domen+mobile+"api/user/mark?"
+    readonly property string userUnmarkProm: domen+mobile+"api/user/unmark?"
+    readonly property string allCats: domen+mobile+"api/categories"
+    readonly property string userActivateProm: domen+mobile+"api/user/activate?"
+    readonly property string userSelectCats: domen+mobile+"api/user/categories?"
+    readonly property string userSignup: domen+main+"api/register?"
+    readonly property string allPromsTilesModel: domen+mobile+"api/promos1?"
+    readonly property string promPreViewModel: domen+mobile+"api/promos2?"
+    readonly property string promFullViewModel: domen+mobile+"api/promos3?"
+    readonly property string allPromsListViewModel: domen+mobile+"api/promos4?"
+    readonly property string companyInfo: domen+mobile+"api/company?"
 
     //POPUP TEXT CONSTS
     readonly property string smthWentWrong: "Что-то пошло не так, попробуйте позже"
     readonly property string getCloserToProm: "Подойдите ближе к акции"
     readonly property string noSuitablePromsNearby: "Рядом нет подходящих для Вас акций"
+    readonly property string noPromsFromCompany: "У компании нет акций"
     readonly property string noFavouriteProms: "У Вас нет избранных акций"
     readonly property string noInternetConnection: "Нет соединения с интернетом"
     readonly property string noLocationPrivileges: "Нет привилегий на получение местоположения"
@@ -109,7 +136,8 @@ QtObject
     readonly property string profileSettings: "Настройки\nпрофиля"
     readonly property string login: "ВОЙТИ"
     readonly property string email: "E-mail:"
-    readonly property string emailPlaceHolder: "*****@****.**"
+    readonly property string emailPlaceHolder: "E-MAIL"
+    readonly property string emailPlaceHolderStars: "*****@****.**"
     readonly property string incorrectEmail: "Некорректный e-mail"
     readonly property string pass: "Пароль:"
     readonly property string more: "ПОДРОБНЕЕ"
@@ -119,6 +147,10 @@ QtObject
     readonly property string birthdayMask: "00.00.0000"
     readonly property string changePass: "Изменить пароль:"
     readonly property string enterNewPass: "ВВЕДИТЕ НОВЫЙ ПАРОЛЬ"
+    readonly property string enterYourPass: "ВВЕДИТЕ ВАШ ПАРОЛЬ"
+    readonly property string forgetPass: "ЗАБЫЛ ПАРОЛЬ"
+    readonly property string submit: "ПОДТВЕРДИТЬ"
+    readonly property string enterCode: "ВВЕДИТЕ КОД"
     readonly property string nameNotNecessary: "Имя (не обязательно):"
     readonly property string enterName: "ВВЕДИТЕ ИМЯ"
     readonly property string chooseCats: "Выберите категории:"
@@ -133,4 +165,9 @@ QtObject
     readonly property string mapPageId: "mapPage"
     readonly property string promotionPageId: "promotionPage"
     readonly property string userLocationIsNAN: "user location is NaN"
+
+    //FONTS
+    readonly property string regularFont: "../fonts/Roboto-Regular.ttf"
+    readonly property string mediumFont: "../fonts/Roboto-Medium.ttf"
+    readonly property string boldFont: "../fonts/Roboto-Bold.ttf"
 }

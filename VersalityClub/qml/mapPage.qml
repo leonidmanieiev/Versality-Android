@@ -30,7 +30,7 @@ import QtQuick.Controls 2.4
 import QtLocation 5.9
 import QtPositioning 5.8
 import QtQuick.Layouts 1.3
-import OneSignal 1.0
+//import OneSignal 1.0 // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
 
 Page
 {
@@ -41,6 +41,8 @@ Page
     property real defaultLat: 59.933284
     property real defaultLon: 30.343614
     property bool allGood: false
+    property bool requestFromCompany: false
+    property string pressedFrom: requestFromCompany ? 'companyPage.qml' : 'mapPage.qml'
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
     readonly property string mapCopyright: 'Tiles style by <a href="http://corp.sputnik.ru/maps"'
                                            +' style="color: '+Vars.fontsPurple+'">Cпутник</a> © '
@@ -81,8 +83,11 @@ Page
     function clusterizeAndApply()
     {
         //clusterization accounding to current zoom level
+        var jsonFromServer =
+                requestFromCompany ? JSON.stringify(AppSettings.value("company/promos")) : Vars.allPromsData;
+
         var clustersTextJson =
-                PromotionClusters.clustering(Vars.allPromsData, mainMap.zoomLevel);
+                PromotionClusters.clustering(jsonFromServer, mainMap.zoomLevel);
 
         /*/clusterization was unsuccessful
           check console log*/
@@ -91,7 +96,7 @@ Page
             allGood = false;
             notifier.notifierText = Vars.smthWentWrong;
             notifier.visible = true;
-            console.log("Parsing response " + clustersTextJson);
+            //console.log("Parsing response " + clustersTextJson);
         }
 
         try {
@@ -110,7 +115,7 @@ Page
 
     id: mapPage
     enabled: Vars.isConnected
-    height: Vars.pageHeight
+    height: requestFromCompany ? Vars.companyPageHeight : Vars.pageHeight
     width: Vars.screenWidth
 
     //checking internet connetion
@@ -119,7 +124,7 @@ Page
     FontLoader
     {
         id: regulatText
-        source: "../fonts/Qanelas_Regular.ttf"
+        source: Vars.regularFont
     }
 
     Map
@@ -170,7 +175,7 @@ Page
             sourceItem: Image
             {
                 id: userMarkerIcon
-                source: "../icons/userLocationMarkerIcon.svg"
+                source: "../icons/user_location_marker_icon.svg"
                 sourceSize.width: markerSize
                 sourceSize.height: markerSize
             }
@@ -233,10 +238,20 @@ Page
                             AppSettings.beginGroup("promo");
                             AppSettings.setValue("id", id);
                             AppSettings.endGroup();
-                            mapPageLoader.setSource("xmlHttpRequest.qml",
-                                                    { "api": Vars.promPreViewModel,
-                                                      "functionalFlag": 'user/preprom'
-                                                    });
+                            if(requestFromCompany)
+                            {
+                                appWindowLoader.setSource("xmlHttpRequest.qml",
+                                                        { "api": Vars.promPreViewModel,
+                                                          "functionalFlag": 'user/preprom'
+                                                        });
+                            }
+                            else
+                            {
+                                mapPageLoader.setSource("xmlHttpRequest.qml",
+                                                        { "api": Vars.promPreViewModel,
+                                                          "functionalFlag": 'user/preprom'
+                                                        });
+                            }
                         }
                     }
                 }
@@ -247,6 +262,8 @@ Page
         {
             //check if server responded
             if(Vars.allPromsData.length > 0)
+                clusterizeAndApply()
+            else if(requestFromCompany)
                 clusterizeAndApply()
         }
     }//Map
@@ -414,10 +431,20 @@ Page
                         AppSettings.beginGroup("promo");
                         AppSettings.setValue("id", cid);
                         AppSettings.endGroup();
-                        mapPageLoader.setSource("xmlHttpRequest.qml",
-                                                { "api": Vars.promPreViewModel,
-                                                  "functionalFlag": 'user/preprom'
-                                                  });
+                        if(requestFromCompany)
+                        {
+                            appWindowLoader.setSource("xmlHttpRequest.qml",
+                                                    { "api": Vars.promPreViewModel,
+                                                      "functionalFlag": 'user/preprom'
+                                                      });
+                        }
+                        else
+                        {
+                            mapPageLoader.setSource("xmlHttpRequest.qml",
+                                                    { "api": Vars.promPreViewModel,
+                                                      "functionalFlag": 'user/preprom'
+                                                      });
+                        }
                     }
                 }
             }//parentCategoryIcon
@@ -447,6 +474,7 @@ Page
     TopControlButton
     {
         id: showInListViewButton
+        visible: requestFromCompany ? false : true
         buttonWidth: Vars.screenWidth*0.57
         buttonText: Vars.showListView
         buttonIconSource: "../icons/show_listview.png"
@@ -467,24 +495,31 @@ Page
         source: "../backgrounds/map_f.png"
     }
 
-    FooterButtons { id: footerButton; pressedFromPageName: "mapPage.qml" }
+    FooterButtons { id: footerButton; pressedFromPageName: pressedFrom }
 
     Component.onCompleted:
     {
-        if(AppSettings.value("user/hash") !== undefined)
-            QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+        // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
+        //if(AppSettings.value("user/hash") !== undefined)
+        //    QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
 
-        PageNameHolder.clear();
         //setting active focus for key capturing
         mapPage.forceActiveFocus();
-        //start capturing user location and getting all promotions
-        mapPageLoader.source = "userLocation.qml";
+
+        if(!requestFromCompany)
+        {
+            //exit app from map page
+            PageNameHolder.clear();
+            //start capturing user location and getting all promotions
+            mapPageLoader.source = "userLocation.qml";
+        }
     }
 
     function runParsing()
     {
-        if(Vars.allPromsData.substring(0, 6) !== 'PROM-1'
+        if((Vars.allPromsData.substring(0, 6) !== 'PROM-1'
            && Vars.allPromsData.substring(0, 6) !== '[]')
+           || requestFromCompany)
         {      
             clusterizeAndApply();
         }
@@ -503,7 +538,12 @@ Page
     Timer
     {
         id: waitForResponse
-        running: Vars.allPromsData === '' ? false : true
+        running:
+        {
+            if(requestFromCompany)
+                true;
+            else Vars.allPromsData === '' ? false : true
+        }
         interval: 1
         onTriggered: runParsing()
     }
@@ -516,13 +556,18 @@ Page
             event.accepted = true;
             var pageName = PageNameHolder.pop();
 
-            //if no pages in sequence
-            if(pageName === "")
-                appWindow.close();
-            else mapPageLoader.source = pageName;
+            if(requestFromCompany)
+                appWindowLoader.source = "promotionPage.qml";
+            else
+            {
+                //if no pages in sequence
+                if(pageName === "")
+                    appWindow.close();
+                else mapPageLoader.source = pageName;
 
-            //to avoid not loading bug
-            mapPageLoader.reload();
+                //to avoid not loading bug
+                mapPageLoader.reload();
+            }
         }
     }
 

@@ -82,23 +82,6 @@ Page
 
     StaticNotifier { id: notifier }
 
-    Keys.onReleased:
-    {
-        //back button pressed for android and windows
-        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
-        {
-            event.accepted = true;
-            var pageName = PageNameHolder.pop();
-            //if no pages in sequence
-            if(pageName === "")
-                appWindow.close();
-            else favouritePageLoader.source = pageName;
-
-            //to avoid not loading bug
-            favouritePageLoader.reload();
-        }
-    }
-
     ToastMessage { id: toastMessage }
 
     ListView
@@ -209,6 +192,24 @@ Page
     }
 
     FooterButtons { pressedFromPageName: 'favouritePage.qml' }
+
+    Keys.onReleased:
+    {
+        //back button pressed for android and windows
+        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
+        {
+            event.accepted = true;
+            var pageName = PageNameHolder.pop();
+
+            //if no pages in sequence
+            if(pageName === "")
+                appWindow.close();
+            else favouritePageLoader.source = pageName;
+
+            //to avoid not loading bug
+            favouritePageLoader.reload();
+        }
+    }
 
     Loader
     {

@@ -34,6 +34,15 @@ Promotion::Promotion(const QJsonValue& jsonValue)
     this->lon = jsonValue["lon"].toDouble();
 }
 
+Promotion::Promotion(const QJsonValue& jsonValue, double lat, double lon)
+{
+    this->id = jsonValue["id"].toString();
+    this->title = jsonValue["title"].toString();
+    this->icon = jsonValue["icon"].toInt();
+    this->lat = lat;
+    this->lon = lon;
+}
+
 void Promotion::print() const
 {
     qDebug() << "id:" << id << "\ntitle:" << title

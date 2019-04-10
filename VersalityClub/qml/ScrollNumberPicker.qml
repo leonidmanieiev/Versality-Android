@@ -48,7 +48,7 @@ Rectangle
     FontLoader
     {
         id: mediumText;
-        source: "../fonts/Qanelas_Medium.ttf"
+        source: Vars.mediumFont
     }
 
     ListView

@@ -36,7 +36,7 @@ RoundButton
     FontLoader
     {
         id: regularText;
-        source: "../fonts/Qanelas_Regular.ttf"
+        source: Vars.regularFont
     }
 
     id: topControlButton

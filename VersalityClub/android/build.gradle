@@ -60,7 +60,7 @@ android {
     defaultConfig {
         applicationId "org.versalityclub"
         manifestPlaceholders = [
-          onesignal_app_id: "YOUR KEY GOES HERE",
+          onesignal_app_id: "89497872-d7b2-428d-bc6b-b53412a2f319",
           onesignal_google_project_number: "REMOTE"
         ]
     }

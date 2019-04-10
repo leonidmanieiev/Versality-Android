@@ -51,7 +51,7 @@ RowLayout
     FontLoader
     {
         id: boldText;
-        source: "../fonts/Qanelas_Bold.ttf"
+        source: Vars.boldFont
     }
 
     Label

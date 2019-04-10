@@ -40,10 +40,12 @@ public:
                   QCoreApplication::instance()->applicationName(),
                   parent)
     {
-        //DELETE AFTER LAUNCH
+        // TODO DELETE AFTER LAUNCH
         //clearAllAppSettings();
-        //clears promotions cache on each app launch
+
+        //clears promotions and company cache on each app launch
         this->remove("promo");
+        this->remove("company");
     }
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
     { QSettings::setValue(key, value); }

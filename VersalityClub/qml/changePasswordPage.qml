@@ -20,15 +20,15 @@
 **
 ****************************************************************************/
 
-//sign up and log in buttons page
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 
 Page
 {
-    id: initialPage
+    id: changePassPage
     enabled: Vars.isConnected
     height: Vars.screenHeight
     width: Vars.screenWidth
@@ -71,32 +71,72 @@ Page
 
     ColumnLayout
     {
-        id: middleButtonsColumn
+        id: middleLayout
         width: parent.width*0.8
         anchors.centerIn: parent
-        spacing: parent.height*0.035
+        spacing: parent.height*0.05
 
-        ControlButton
+        CustomTextField
         {
-            id: signUpButton
+            id: codeField
             Layout.fillWidth: true
-            labelText: Vars.signup
-            buttonClickableArea.onClicked:
+            setFillColor: Vars.backgroundWhite
+            setBorderColor: Vars.fontsPurple
+            setTextColor: Vars.backgroundBlack
+            selectByMouse: false
+            placeholderText: Vars.enterCode
+            placeholderTextColor: Vars.fontsPurple
+
+            onPressed:
             {
-                PageNameHolder.push("initialPage.qml");
-                initialPageLoader.source = "signUpPage.qml";
+                if(color === Vars.errorRed)
+                {
+                    text = '';
+                    color = Vars.backgroundBlack;
+                }
+            }
+        }
+
+        CustomTextField
+        {
+            id: newPassField
+            Layout.fillWidth: true
+            setFillColor: Vars.backgroundWhite
+            setBorderColor: Vars.fontsPurple
+            setTextColor: Vars.backgroundBlack
+            echoMode: TextInput.Password
+            inputMethodHints: Qt.ImhSensitiveData
+            selectByMouse: false
+            placeholderText: Vars.enterNewPass
+            placeholderTextColor: Vars.fontsPurple
+
+            onPressed:
+            {
+                if(color === Vars.errorRed)
+                {
+                    text = '';
+                    color = Vars.backgroundBlack;
+                }
             }
         }
 
         ControlButton
         {
-            id: logInButton
+            id: submitButton
             Layout.fillWidth: true
-            labelText: Vars.login
+            labelText: Vars.submit
+            labelColor: Vars.backgroundWhite
+            backgroundColor: Vars.fontsPurple
             buttonClickableArea.onClicked:
             {
-                PageNameHolder.push("initialPage.qml");
-                initialPageLoader.source = "logInPage.qml";
+                AppSettings.beginGroup("user");
+                AppSettings.setValue("password", newPassField.text);
+                AppSettings.endGroup();
+                changePasswordPageLoader.setSource("xmlHttpRequest.qml",
+                                                  { "api": Vars.userChangePass,
+                                                    "functionalFlag": 'user/set-pass',
+                                                    "code": codeField.text
+                                                  });
             }
         }
     }//ColumnLayout
@@ -105,36 +145,9 @@ Page
 
     Loader
     {
-        id: initialPageLoader
+        id: changePasswordPageLoader
         asynchronous: true
         anchors.fill: parent
         visible: status == Loader.Ready
-
-        function reload()
-        {
-            var oldSource = source;
-            source = "";
-            source = oldSource;
-        }
-    }
-
-    //setting active focus for key capturing
-    Component.onCompleted: initialPage.forceActiveFocus()
-
-    Keys.onReleased:
-    {
-        //back button pressed for android and windows
-        if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
-        {
-            event.accepted = true;
-            var pageName = PageNameHolder.pop();
-
-            if(pageName === "")
-                appWindow.close();
-            else initialPageLoader.source = pageName;
-
-            //to avoid not loading bug
-            initialPageLoader.reload();
-        }
     }
 }

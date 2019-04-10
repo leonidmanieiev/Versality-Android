@@ -36,25 +36,45 @@ Page
     //checking internet connetion
     Network { toastMessage: toastMessage }
 
+    Image
+    {
+        id: background
+        clip: true
+        width: parent.width
+        height: parent.height
+        source: "../backgrounds/init_page_bg.png"
+    }
+
+    Image
+    {
+        id: header_logo_full
+        clip: true
+        source: "../icons/logo_full.png"
+        width: parent.width
+        height: parent.height*0.06
+        anchors.top: parent.top
+        anchors.topMargin: parent.height*0.1
+        fillMode: Image.PreserveAspectFit
+    }
+
+    Image
+    {
+        id: footer_logo
+        clip: true
+        source: "../icons/logo.png"
+        width: parent.width
+        height: parent.height*0.15
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: parent.height*0.08
+        fillMode: Image.PreserveAspectFit
+    }
+
     ColumnLayout
     {
         id: middleLayout
         width: parent.width*0.8
         anchors.centerIn: parent
         spacing: parent.height*0.05
-
-        Label
-        {
-            id: passLabel
-            clip: true
-            Layout.fillWidth: true
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: Vars.pass
-            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                        Vars.dpi)
-            color: Vars.fontsPurple
-        }
 
         CustomTextField
         {
@@ -66,6 +86,8 @@ Page
             echoMode: TextInput.Password
             inputMethodHints: Qt.ImhSensitiveData
             selectByMouse: false
+            placeholderText: Vars.enterYourPass
+            placeholderTextColor: Vars.fontsPurple
 
             onPressed:
             {
@@ -96,6 +118,24 @@ Page
                                                   });
             }
         }
+
+        ControlButton
+        {
+            id: forgerPassButton
+            Layout.fillWidth: true
+            labelText: Vars.forgetPass
+            labelColor: Vars.backgroundWhite
+            backgroundColor: Vars.forgetPassPurple
+            borderColor: Vars.forgetPassPurple
+            buttonClickableArea.onClicked:
+            {
+                passwordInputPageLoader.setSource("xmlHttpRequest.qml",
+                                                  { "api": Vars.userResetPass,
+                                                    "functionalFlag": 'user/reset-pass'
+                                                  });
+            }
+        }
+
     }//ColumnLayout
 
     ToastMessage { id: toastMessage }

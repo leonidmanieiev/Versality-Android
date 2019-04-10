@@ -37,7 +37,7 @@ Rectangle
     FontLoader
     {
         id: regulatText
-        source: "../fonts/Qanelas_Regular.ttf"
+        source: Vars.regularFont
     }
 
     Label

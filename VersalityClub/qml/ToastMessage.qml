@@ -61,6 +61,12 @@ Popup
         }
     }
 
+    FontLoader
+    {
+        id: regularText;
+        source: Vars.regularFont
+    }
+
     id: toastMessage
     x: (parent.width-popupBackground.width)*0.5
     y: parent.height*0.8
@@ -73,6 +79,7 @@ Popup
         width: Helper.toDp(text.length, Vars.dpi)
         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                     Vars.dpi)
+        font.family: regularText.name
         color: Vars.backgroundWhite
         wrapMode: Text.WordWrap
         horizontalAlignment: Text.AlignHCenter

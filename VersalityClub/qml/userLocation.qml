@@ -57,7 +57,8 @@ Item
         userLocationItem.parent.parent.enabled = true;
     }
 
-    GeoLocationInfo
+    // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
+    /*GeoLocationInfo
     {
         onPositionUpdated:
         {
@@ -73,7 +74,7 @@ Item
                 toastMessage.close();
             }
         }
-    }
+    }*/
 
     PositionSource
     {
@@ -87,7 +88,7 @@ Item
         active: true
         updateInterval: 1000
         //using .nmea if OS is win, because win does not have GPS module
-        //nmeaSource: Qt.platform.os === "windows" ? "../output_new.nmea" : ""
+        nmeaSource: Qt.platform.os === "windows" ? "../output_new.nmea" : ""
 
         //handling errors
         function sourceErrorMessage(sourceError)

@@ -41,6 +41,7 @@ Item
     property string cats: AppSettings.getCatsAmount() === 0 ? '0' : AppSettings.getStrCats()
     property string password: AppSettings.value("user/password") === undefined ? "" : AppSettings.value("user/password")
     property bool hasPassChanged
+    property string code: ''
     //to authenticate client on server side
     property string secret: AppSettings.value("user/hash") === undefined ? "" : AppSettings.value("user/hash")
     //flags
@@ -52,6 +53,8 @@ Item
     //promotions data
     property string promo_id: AppSettings.value("promo/id") === undefined ? '' : AppSettings.value("promo/id")
     property string promo_desc: AppSettings.value("promo/desc") === undefined ? '' : AppSettings.value("promo/desc")
+    //company data
+    property string comp_id: AppSettings.value("company/id") === undefined ? '' : AppSettings.value("company/id")
 
     //creates params for request
     function makeParams()
@@ -86,6 +89,12 @@ Item
             case 'user/preprom': return 'promo_id='+promo_id+'&secret='+secret;
             //request for full data for promotion
             case 'user/fullprom': return 'promo_id='+promo_id+'&secret='+secret;
+            //request for password reset
+            case 'user/reset-pass': return 'login='+email;
+            //request for password change
+            case 'user/set-pass': return 'login='+email+'&code='+code+'&new='+password;
+            //request for company info
+            case 'company': return 'secret='+secret+'&id='+comp_id+'&promos=true';
             //unknown request
             default: return -1;
         }
@@ -137,7 +146,7 @@ Item
                 if(request.status === 200)
                 {
                     var errorStatus = responseHandler(request.responseText);
-                    console.log("server:" + request.responseText);
+                    //console.log("server:" + request.responseText);
 
                     if(errorStatus === 'NO_ERROR')
                     {
@@ -260,6 +269,46 @@ Item
                                 else allGood = false;
 
                                 xmlHttpRequestLoader.setSource("promotionPage.qml",
+                                                               { "allGood": allGood });
+                                break;
+                            case 'user/reset-pass':
+                                xmlHttpRequestLoader.setSource("changePasswordPage.qml");
+                                break;
+                            case 'user/set-pass':
+                                //refresh hash(secret) with new one
+                                AppSettings.beginGroup("user");
+                                AppSettings.setValue("hash", request.responseText);
+                                AppSettings.endGroup();
+                                xmlHttpRequestLoader.source = "passwordInputPage.qml";
+                                break;
+                            case 'company':
+                                Vars.fullCompanyData = request.responseText;
+
+                                //if we got correct response
+                                if(Vars.fullCompanyData.length > 50)
+                                {
+                                    try {
+                                        //formating data
+                                        var fсdInJSON = JSON.parse(Vars.fullCompanyData);
+                                        allGood = true;
+                                        //initializing vars
+                                        AppSettings.beginGroup("company");
+                                        AppSettings.setValue("id", fсdInJSON.id);
+                                        AppSettings.setValue("logo", fсdInJSON.logo);
+                                        AppSettings.setValue("about", fсdInJSON.about);
+                                        AppSettings.setValue("phone", fсdInJSON.phone);
+                                        AppSettings.setValue("name", fсdInJSON.name);
+                                        AppSettings.setValue("pictures", fсdInJSON.pictures);
+                                        AppSettings.setValue("website", fсdInJSON.website);
+                                        AppSettings.setValue("promos", fсdInJSON.promos);
+                                        AppSettings.endGroup();
+                                    } catch (e) {
+                                        allGood = false;
+                                    }
+                                }
+                                else allGood = false;
+
+                                xmlHttpRequestLoader.setSource("companyPage.qml",
                                                                { "allGood": allGood });
                                 break;
                             default: console.log("Unknown functionalFlag"); break;

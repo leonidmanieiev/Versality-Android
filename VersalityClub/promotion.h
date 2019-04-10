@@ -36,6 +36,7 @@ class Promotion
 public:
     Promotion();
     Promotion(const QJsonValue& jsonValue);
+    Promotion(const QJsonValue& jsonValue, double lat, double lon);
     void print() const;
     QJsonObject toJsonObject() const;
     //distance between two promotions in meters

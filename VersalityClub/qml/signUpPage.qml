@@ -60,7 +60,7 @@ Page
         FontLoader
         {
             id: mediumText;
-            source: "../fonts/Qanelas_Medium.ttf"
+            source: Vars.mediumFont
         }
 
         CustomLabel
@@ -120,7 +120,7 @@ Page
             setFillColor: Vars.backgroundWhite
             setBorderColor: Vars.fontsPurple
             setTextColor: Vars.backgroundBlack
-            placeholderText: Vars.emailPlaceHolder
+            placeholderText: Vars.emailPlaceHolderStars
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
             { regExp: Vars.emailRegEx }

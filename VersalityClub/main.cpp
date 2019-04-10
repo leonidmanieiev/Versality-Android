@@ -52,8 +52,9 @@ int main(int argc, char *argv[])
 #endif
 
     QtWebView::initialize();
-
+#ifdef __ANDROID__
     QOneSignal::registerQMLTypes();
+#endif
     qmlRegisterType<NetworkInfo>("Network", 1, 0, "NetworkInfo");
     qmlRegisterType<GeoLocationInfo>("GeoLocation", 1, 0, "GeoLocationInfo");
     qmlRegisterType<AppSettings>("org.versalityclub", 1, 0, "AppSettings");
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
-
+#ifdef __ANDROID__
     //if user has an account so do hash
     if(!AppSettings().value("user/hash").toString().isEmpty())
     {
@@ -87,6 +88,6 @@ int main(int argc, char *argv[])
         "(Landroid/content/Context;)V", QtAndroid::androidActivity().object());
     }
     else qDebug() << "No user hash yet";
-
+#endif
     return app.exec();
 }

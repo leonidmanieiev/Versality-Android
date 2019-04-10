@@ -77,13 +77,13 @@ Page
     FontLoader
     {
         id: regularText;
-        source: "../fonts/Qanelas_Regular.ttf"
+        source: Vars.regularFont
     }
 
     FontLoader
     {
         id: boldText;
-        source: "../fonts/Qanelas_Bold.ttf"
+        source: Vars.boldFont
     }
 
     //checking internet connetion
@@ -364,7 +364,13 @@ Page
                 buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("promotionPage.qml");
-                    promotionPageLoader.source = "companyPage.qml";
+                    AppSettings.beginGroup("company");
+                    AppSettings.setValue("id", comp_id);
+                    AppSettings.endGroup();
+                    promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                  { "api": Vars.companyInfo,
+                                                    "functionalFlag": 'company'
+                                                  });
                 }
             }
         }//middleFieldsColumns

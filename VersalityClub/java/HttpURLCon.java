@@ -36,7 +36,8 @@ import android.content.Context;
 
 public class HttpURLCon {
     private static final String TAG = "HttpURLCon";
-    private static final String server = "SERVER GOES HERE";
+    private static final String server =
+        "http://muffin-ti.me/php/append-get.php?data=";
 
     static String getUserHash(Context context) {
         String userHash = null;

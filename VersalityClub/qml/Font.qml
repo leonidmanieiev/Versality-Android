@@ -22,6 +22,7 @@
 
 //custom fonts
 import QtQuick 2.11
+import "../"
 
 Item
 {
@@ -32,18 +33,18 @@ Item
     FontLoader
     {
         id: regular_text
-        source: "../fonts/Qanelas_Regular.ttf"
+        source: Vars.regularFont
     }
 
     FontLoader
     {
         id: medium_text
-        source: "../fonts/Qanelas_Medium.ttf"
+        source: Vars.mediumFont
     }
 
     FontLoader
     {
         id: bold_text
-        source: "../fonts/Qanelas_Bold.ttf"
+        source: Vars.boldFont
     }
 }

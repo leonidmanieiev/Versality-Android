@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-#include "promotionClusters.h"
+#include "promotionclusters.h"
 
 PromotionClusters::PromotionClusters(QObject *parent) :
     QObject(parent), clusters{QVector<QVector<Promotion>>()} { }
@@ -36,11 +36,32 @@ QVector<Promotion> PromotionClusters::getPromotions(const QString &jsonText) con
         QJsonArray jsonArr = json.array();
 
         for(int i = 0; i < jsonArr.count(); ++i)
-            promotions.push_back(Promotion(jsonArr.at(i)));
-    }
-    else throw std::invalid_argument(error->errorString().toStdString());
+        {
+            /* if true - this mean, that we call from companyPage and
+               promo has several coordinates, i.e. more than one store
+               of current company have this promo. so we need to parse coords */
+            if(jsonArr.at(i)["lat"].isArray())
+            {
+                QJsonArray jsonLatArr = jsonArr.at(i)["lat"].toArray();
+                QJsonArray jsonLonArr = jsonArr.at(i)["lon"].toArray();
 
-return promotions;
+                for(int j = 0; j < jsonLatArr.size(); ++j)
+                {
+                    promotions.push_back(Promotion(jsonArr.at(i), jsonLatArr.at(j).toDouble(),
+                                                   jsonLonArr.at(j).toDouble()));
+                }
+            }
+            else promotions.push_back(Promotion(jsonArr.at(i)));
+        }
+    }
+    else
+    {
+        qDebug() << "json.isNull() or !json.isArray()";
+        if(error != nullptr)
+            throw std::invalid_argument(error->errorString().toStdString());
+    }
+
+    return promotions;
 }
 
 void PromotionClusters::addToCluster(const Promotion& currProm,
@@ -81,8 +102,8 @@ QString PromotionClusters::clustering(const QString& jsonText,
 
     /*converts zoom level (zoomLevel-8) to min distance
       between to promotions in meters*/
-    static constexpr std::array<unsigned short, 12> zoomLevelToDist
-            = { 6400, 3200, 1600, 800, 400, 200, 100, 50, 24, 12, 6, 3 };
+    static constexpr std::array<unsigned short, 12> zoomLevelToDist =
+        {{ 6400, 3200, 1600, 800, 400, 200, 100, 50, 24, 12, 6, 3 }}; // {{ }} because of clang bug
     /*if dist (in meters) between two proms are less than this
       value, they should be clusterized*/
     const unsigned short currMinDist{zoomLevelToDist.at(zoomLevel-8)};

@@ -29,11 +29,13 @@ import QtQuick.Controls 2.4
 Page
 {
     property bool allGood: false
+    property bool requestFromCompany: false
+    property string pressedfrom: requestFromCompany ? 'companyPage.qml' : 'listViewPage.qml'
     readonly property int promItemHeight: Vars.screenHeight*0.25
 
     id: listViewPage
     enabled: Vars.isConnected
-    height: Vars.pageHeight
+    height: requestFromCompany ? Vars.companyPageHeight : Vars.pageHeight
     width: Vars.screenWidth
 
     //checking internet connetion
@@ -50,11 +52,28 @@ Page
     {
         //setting active focus for key capturing
         listViewPage.forceActiveFocus();
-        //start capturing user location and getting promotions
-        listViewPageLoader.setSource("userLocation.qml",
-                                     {"callFromPageName": 'listViewPage',
-                                      "api": Vars.allPromsListViewModel,
-                                      "isTilesApi": false});
+
+        if(!requestFromCompany)
+        {
+            //start capturing user location and getting promotions
+            listViewPageLoader.setSource("userLocation.qml",
+                                         {"callFromPageName": 'listViewPage',
+                                          "api": Vars.allPromsListViewModel,
+                                          "isTilesApi": false});
+        }
+        else
+        {
+            if(AppSettings.value("company/promos").length < 1)
+            {
+                notifier.notifierText = Vars.noPromsFromCompany;
+                notifier.visible = true;
+            }
+            else
+            {
+                //applying promotions at list model
+                Helper.promsJsonToListModel(AppSettings.value("company/promos"));
+            }
+        }
     }
 
     function runParsing()
@@ -88,7 +107,12 @@ Page
     Timer
     {
         id: waitForResponse
-        running: Vars.allUniquePromsData === '' ? false : true
+        running:
+        {
+            if (requestFromCompany)
+                false;
+            else Vars.allUniquePromsData === '' ? false : true
+        }
         interval: 1
         onTriggered: runParsing()
     }
@@ -161,7 +185,8 @@ Page
                     //rounding company logo item background image
                     ImageRounder
                     {
-                        imageSource: company_logo
+                        //because when requesting from company page, where is no logo in promos array
+                        imageSource: requestFromCompany ? AppSettings.value("company/logo") : company_logo
                         roundValue: parent.height*0.5
                     }
                 }
@@ -174,12 +199,13 @@ Page
                     onClicked:
                     {
                         PageNameHolder.push("listViewPage.qml");
-                        listViewPageLoader.setSource("xmlHttpRequest.qml",
+                        appWindowLoader.setSource("xmlHttpRequest.qml",
                                                 { "api": Vars.promFullViewModel,
                                                   "functionalFlag": 'user/fullprom',
                                                   "promo_id": id,
                                                   "promo_desc": description
                                                 });
+                        //listViewPage.header = null;
                     }
                 }
             }//Rectangle
@@ -190,6 +216,7 @@ Page
     TopControlButton
     {
         id: showOnMapButton
+        visible: requestFromCompany ? false : true
         buttonWidth: Vars.screenWidth*0.47
         buttonText: Vars.showOnMap
         buttonIconSource: "../icons/on_map.png"
@@ -198,7 +225,7 @@ Page
         onClicked: listViewPageLoader.source = "mapPage.qml"
     }
 
-    FooterButtons { pressedFromPageName: 'listViewPage.qml' }
+    FooterButtons { pressedFromPageName: pressedfrom }
 
     Keys.onReleased:
     {
@@ -208,13 +235,18 @@ Page
             event.accepted = true;
             var pageName = PageNameHolder.pop();
 
-            //if no pages in sequence
-            if(pageName === "")
-                appWindow.close();
-            else listViewPageLoader.source = pageName;
+            if(requestFromCompany)
+                appWindowLoader.source = "promotionPage.qml";
+            else
+            {
+                //if no pages in sequence
+                if(pageName === "")
+                    appWindow.close();
+                else listViewPageLoader.source = pageName;
 
-            //to avoid not loading bug
-            listViewPageLoader.reload();
+                //to avoid not loading bug
+                listViewPageLoader.reload();
+            }
         }
     }
 

@@ -51,13 +51,13 @@ Page
     FontLoader
     {
         id: regularText;
-        source: "../fonts/Qanelas_Regular.ttf"
+        source: Vars.regularFont
     }
 
     FontLoader
     {
         id: boldText;
-        source: "../fonts/Qanelas_Bold.ttf"
+        source: Vars.boldFont
     }
 
     //checking internet connetion

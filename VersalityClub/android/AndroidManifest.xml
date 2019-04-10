@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <manifest package="org.versalityclub" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0" android:versionCode="1" android:installLocation="auto">
-    <application android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="Versality Club" android:icon="@drawable/icon">
-        <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="org.versalityclub.CustomAppActivity" android:label="Versality Club" android:screenOrientation="portrait" android:launchMode="singleTop">
+    <application android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="Versality" android:icon="@drawable/icon">
+        <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="org.versalityclub.CustomAppActivity" android:label="Versality" android:screenOrientation="portrait" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -9,7 +9,7 @@
 
             <!-- Application arguments -->
             <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
-            <meta-data android:name="onesignal_app_id" android:value="YOUR KEY GOES HERE"/>
+            <meta-data android:name="onesignal_app_id" android:value="89497872-d7b2-428d-bc6b-b53412a2f319"/>
             <!-- Application arguments -->
 
             <meta-data android:name="android.app.lib_name" android:value="-- %%INSERT_APP_LIB_NAME%% --"/>
@@ -116,7 +116,7 @@
         <receiver android:name="com.onesignal.NotificationOpenedReceiver"/>
             <service android:name="com.onesignal.GcmIntentService"/>
             <service android:name="com.onesignal.SyncService" android:stopWithTask="true"/>
-            <activity android:name="com.onesignal.PermissionsActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" android:label="Versality Club">
+            <activity android:name="com.onesignal.PermissionsActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" android:label="Versality">
                 <meta-data android:name="android.app.lib_name" android:value="-- %%INSERT_APP_LIB_NAME%% --"/>
             </activity>
 

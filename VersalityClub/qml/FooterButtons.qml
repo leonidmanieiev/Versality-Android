@@ -83,13 +83,4 @@ RowLayout
                                      });
         }
     }
-
-    Loader
-    {
-        id: footerButtonsLoader
-        asynchronous: true
-        height: Vars.screenHeight
-        width: Vars.screenWidth
-        visible: status == Loader.Ready
-    }
 }//RowLayout

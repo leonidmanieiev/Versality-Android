@@ -30,15 +30,11 @@
         <file>qml/TopControlButton.qml</file>
         <file>qml/companyPage.qml</file>
         <file>qml/previewPromotionPage.qml</file>
-        <file>icons/userLocationMarkerIcon.svg</file>
         <file>qml/Network.qml</file>
         <file>qml/StaticNotifier.qml</file>
         <file>qml/ScrollDatePicker.qml</file>
         <file>qml/ScrollNumberPicker.qml</file>
         <file>qml/Font.qml</file>
-        <file>fonts/Qanelas_Bold.ttf</file>
-        <file>fonts/Qanelas_Medium.ttf</file>
-        <file>fonts/Qanelas_Regular.ttf</file>
         <file>backgrounds/almost_done_bg.png</file>
         <file>backgrounds/category_settings_hf.png</file>
         <file>backgrounds/init_page_bg.png</file>
@@ -85,5 +81,19 @@
         <file>icons/logo_gradient.png</file>
         <file>icons/cat_1.png</file>
         <file>icons/add_to_favourites_on.png</file>
+        <file>fonts/Roboto-Bold.ttf</file>
+        <file>fonts/Roboto-Medium.ttf</file>
+        <file>fonts/Roboto-Regular.ttf</file>
+        <file>qml/changePasswordPage.qml</file>
+        <file>qml/HeaderButtons.qml</file>
+        <file>icons/user_location_marker_icon.svg</file>
+        <file>icons/comp_back.png</file>
+        <file>icons/comp_info_off.png</file>
+        <file>icons/comp_info_on.png</file>
+        <file>icons/comp_proms_list_off.png</file>
+        <file>icons/comp_proms_list_on.png</file>
+        <file>icons/comp_proms_map_off.png</file>
+        <file>icons/comp_proms_map_on.png</file>
+        <file>backgrounds/comp_pictures_fade_out.png</file>
     </qresource>
 </RCC>
