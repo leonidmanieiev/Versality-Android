@@ -35,8 +35,9 @@ QtObject
     readonly property color toastGrey: "#76797c"
     readonly property color listViewGrey: "#e8e9ea"
     readonly property color mainPurple: "#631964"
-    readonly property color fontsPurple: "#471261"
     readonly property color forgetPassPurple: "#a03576"
+    readonly property color dragerLineColor: "#ae4a8c"
+    readonly property color popupWindowColor: "#4e1563"
     readonly property color errorRed: "RED"
     readonly property color activeCouponColor: "#ff3333"
     readonly property color copyrightBackgroundColor: "#c4c5c6"
@@ -134,6 +135,7 @@ QtObject
     readonly property string signupNoun: "Регистрация"
     readonly property string almostDone: "Все почти готово..."
     readonly property string profileSettings: "Настройки\nпрофиля"
+    readonly property string appInfoTitle: "Информация\nо приложении"
     readonly property string login: "ВОЙТИ"
     readonly property string email: "E-mail:"
     readonly property string emailPlaceHolder: "E-MAIL"
@@ -165,6 +167,17 @@ QtObject
     readonly property string mapPageId: "mapPage"
     readonly property string promotionPageId: "promotionPage"
     readonly property string userLocationIsNAN: "user location is NaN"
+    readonly property string appSiteName: "http://club.versality.ru:8082/"
+    readonly property string appInfoText: "В данном поле будет размещена информация о том, "+
+                                          "что при разработке приложения использовалось такое-то "+
+                                          "открытое П.О., размещено пользовательское соглашение в "+
+                                          "текстовом виде. А вверху обязательно ссылка на сайт приложения..."
+    readonly property string firstHelpText: "В самом начале рекомендуем\nперейти в настрочки\n"+
+                                            "и выбрать интересные Вам акции"
+    readonly property string secondHelpText: "Все акции Вы можете смотреть\nв виде списка или "+
+                                             "на карте города"
+    readonly property string thirdHelpText: "Понравившиеся акции Вы можете\nдобавить в список "+
+                                            "«Мне понравилось»\nи возвращаться к ним позже"
 
     //FONTS
     readonly property string regularFont: "../fonts/Roboto-Regular.ttf"

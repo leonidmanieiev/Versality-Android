@@ -29,23 +29,23 @@ import QtQuick.Layouts 1.3
 
 RowLayout
 {
+    property bool showInfoButton: false
+    property bool infoClicked: false
     property string pageTitleText
-    property real pageTitleLeftMargin: Vars.screenWidth*0.07
 
     id: logoAndPageTitle
+    anchors.top: parent.top
     height: parent.height*0.15
-    Layout.alignment: Qt.AlignCenter
-    spacing: Vars.screenWidth*0.07
+    width: parent.width
 
     Image
     {
         id: logo
         clip: true
         source: "../icons/logo_white_fill.png"
-        Layout.preferredWidth: parent.width
+        Layout.preferredWidth: Vars.screenHeight*0.1
         Layout.preferredHeight: Vars.screenHeight*0.1
-        Layout.leftMargin: Vars.screenWidth*0.09
-        fillMode: Image.PreserveAspectFit
+        Layout.alignment: Qt.AlignRight
     }
 
     FontLoader
@@ -59,10 +59,47 @@ RowLayout
         id: pageTitle
         text: pageTitleText
         color: Vars.backgroundWhite
-        width: parent.width*0.3
         height: Vars.screenHeight*0.1
-        Layout.leftMargin: -pageTitleLeftMargin
+        Layout.alignment: Qt.AlignHCenter
         font.family: boldText.name
+        font.bold: true
         font.pixelSize: Helper.toDp(14, Vars.dpi)
+    }
+
+    Rectangle
+    {
+        id: infoButtonField
+        visible: showInfoButton
+        width: Vars.screenHeight*0.065
+        height: Vars.screenHeight*0.065
+        Layout.alignment: Qt.AlignTop
+        Layout.topMargin: parent.height*0.25
+        Layout.rightMargin: parent.height*0.25
+        radius: height*0.5
+        color: infoClicked ? Vars.backgroundWhite : "transparent"
+
+        IconedButton
+        {
+            id: infoButton
+            width: Vars.screenHeight*0.05
+            height: Vars.screenHeight*0.05
+            anchors.centerIn: parent
+            buttonIconSource: infoClicked ? "../icons/app_info_on.png" :
+                                            "../icons/app_info_off.png"
+            clickArea.onClicked:
+            {
+                if(infoClicked)
+                {
+                    appWindowLoader.source = "profileSettingsPage.qml";
+                    infoClicked = false;
+                }
+                else
+                {
+                    appWindowLoader.source = "appInfoPage.qml";
+                    PageNameHolder.push("profileSettingsPage.qml")
+                    infoClicked = true;
+                }
+            }
+        }
     }
 }

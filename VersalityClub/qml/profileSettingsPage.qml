@@ -31,6 +31,8 @@ import QtQuick.Controls.Styles 1.4
 Page
 {
     property bool hasPassChanged: false
+    //alias
+    property alias loader: profileSettingsPageLoader
 
     id: profileSettingsPage
     enabled: Vars.isConnected
@@ -222,8 +224,8 @@ Page
 
     LogoAndPageTitle
     {
+        showInfoButton: true
         pageTitleText: Vars.profileSettings
-        pageTitleLeftMargin: Vars.screenHeight*0.03
     }
 
     ScrollDatePicker
@@ -281,7 +283,7 @@ Page
         contentItem: Text
         {
             text: Vars.save
-            color: Vars.fontsPurple
+            color: Vars.popupWindowColor
             font.family: mediumText.name
             font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                         Vars.dpi)
@@ -293,7 +295,7 @@ Page
         {
             implicitWidth: parent.width
             implicitHeight: parent.height
-            border.color: Vars.fontsPurple
+            border.color: Vars.popupWindowColor
             border.width: height*0.06
             radius: Vars.listItemRadius
             color: "transparent"

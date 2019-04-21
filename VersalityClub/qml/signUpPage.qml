@@ -67,7 +67,7 @@ Page
         {
             id: sexLabel
             labelText: Vars.sex
-            labelColor: Vars.fontsPurple
+            labelColor: Vars.popupWindowColor
         }
 
         ControlButton
@@ -84,7 +84,7 @@ Page
         {
             id: dateofbirthLabel
             labelText: Vars.birthday
-            labelColor: Vars.fontsPurple
+            labelColor: Vars.popupWindowColor
         }
 
         CustomTextField
@@ -93,7 +93,7 @@ Page
             Layout.fillWidth: true
             setTextColor: Vars.backgroundBlack
             setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.fontsPurple
+            setBorderColor: Vars.popupWindowColor
             inputMask: Vars.birthdayMask
             inputMethodHints: Qt.ImhDigitsOnly
 
@@ -110,7 +110,7 @@ Page
         {
             id: emailLabel
             labelText: Vars.email
-            labelColor: Vars.fontsPurple
+            labelColor: Vars.popupWindowColor
         }
 
         CustomTextField
@@ -118,7 +118,7 @@ Page
             id: emailField
             Layout.fillWidth: true
             setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.fontsPurple
+            setBorderColor: Vars.popupWindowColor
             setTextColor: Vars.backgroundBlack
             placeholderText: Vars.emailPlaceHolderStars
             inputMethodHints: Qt.ImhEmailCharactersOnly

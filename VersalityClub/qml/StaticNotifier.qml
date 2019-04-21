@@ -36,7 +36,7 @@ Rectangle
     anchors.top: parent.top
     anchors.topMargin: parent.height*0.3
     anchors.horizontalCenter: parent.horizontalCenter
-    color: Vars.fontsPurple
+    color: Vars.popupWindowColor
     radius: height*0.5
     opacity: 0.9
 

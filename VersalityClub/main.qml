@@ -36,7 +36,7 @@ ApplicationWindow
     Loader
     {
         id: appWindowLoader
-        asynchronous: true
+        asynchronous: false
         anchors.fill: parent
         visible: status == Loader.Ready
         //whether user was signed(loged) in

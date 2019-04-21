@@ -37,14 +37,34 @@ Rectangle
     id: rootBackground
     width: Vars.screenWidth*0.8
     height: Vars.screenHeight*0.4
-    color: Vars.copyrightBackgroundColor
+    color: Vars.popupWindowColor
     radius: Vars.defaultRadius
+
+    function monthToNumber(month)
+    {
+        switch(month)
+        {
+            case 'Январь': return '01'
+            case 'Февраль': return '02'
+            case 'Март': return '03'
+            case 'Апрель': return '04'
+            case 'Май': return '05'
+            case 'Июнь': return '06'
+            case 'Июль': return '07'
+            case 'Август': return '08'
+            case 'Сентябрь': return '09'
+            case 'Октябрь': return '10'
+            case 'Ноябрь': return '11'
+            case 'Декабрь': return '12'
+            default: return Vars.defaultMonth
+        }
+    }
 
     RowLayout
     {
         id: rowLayout
-        spacing: width * 0.05
-        width: parent.width * 0.8
+        //spacing: width * 0.005
+        width: parent.width
         anchors.top: parent.top
         anchors.topMargin: parent.height * 0.05
         anchors.horizontalCenter: parent.horizontalCenter
@@ -54,15 +74,18 @@ Rectangle
             id: daySNP
             minNumber: 1
             maxNumber: 31
+            width: Vars.screenWidth*0.192
+            Layout.alignment: Qt.AlignRight
             onIndexChanged: selectedDay = t_number
         }
 
         ScrollNumberPicker
         {
             id: monthSNP
-            minNumber: 1
-            maxNumber: 12
-            onIndexChanged: selectedMonth = t_number
+            isMonthScroller: true
+            width: Vars.screenWidth*0.25
+            Layout.alignment: Qt.AlignHCenter
+            onIndexChanged: selectedMonth = monthToNumber(t_number)
         }
 
         ScrollNumberPicker
@@ -70,6 +93,8 @@ Rectangle
             id: yearSNP
             minNumber: 1900
             maxNumber: 2200
+            width: Vars.screenWidth*0.192
+            Layout.alignment: Qt.AlignLeft
             onIndexChanged: selectedYear = t_number+1899
         }
     }
@@ -78,28 +103,30 @@ Rectangle
     {
         id: proceedButton
         opacity: clickableArea.pressed ? 0.8 : 1
-        width: parent.width * 0.25
+        width: parent.width * 0.65
         height: buttonText.height*2
         radius: Vars.defaultRadius
-        color: Vars.fontsPurple
+        color: Vars.popupWindowColor
+        border.color: Vars.backgroundWhite
+        border.width: Vars.defaultFontPixelSize*0.2
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height*0.05
         anchors.horizontalCenter: parent.horizontalCenter
 
         FontLoader
         {
-            id: mediumText;
-            source: Vars.mediumFont
+            id: regularText;
+            source: Vars.regularFont
         }
 
         Text
         {
             id: buttonText
             text: Vars.proceed
-            font.family: mediumText.name
+            font.family: regularText.name
             font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                         Vars.dpi)
-            color: Vars.backgroundBlack
+            color: Vars.backgroundWhite
             anchors.centerIn: parent
         }
 

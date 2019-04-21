@@ -127,7 +127,7 @@ Page
                         {
                             downArrow.rotation = collapsed ? 180 : 0;
                             catsItem.border.color = collapsed ? "transparent" : Vars.backgroundWhite
-                            catsItem.color = collapsed ? Vars.fontsPurple : "transparent"
+                            catsItem.color = collapsed ? Vars.popupWindowColor : "transparent"
                             catsModel.setProperty(index, "collapsed", !collapsed);
                         }
                     }
@@ -237,7 +237,7 @@ Page
     LogoAndPageTitle
     {
         pageTitleText: Vars.profileSettings
-        pageTitleLeftMargin: Vars.screenHeight*0.03
+        showInfoButton: true
     }
 
     ControlButton

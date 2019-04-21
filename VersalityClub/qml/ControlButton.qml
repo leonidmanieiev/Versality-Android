@@ -30,9 +30,9 @@ import QtQuick.Layouts 1.3
 ControlBackground
 {
     property string labelText: ''
-    property color labelColor: Vars.fontsPurple
+    property color labelColor: Vars.popupWindowColor
     property color backgroundColor: Vars.backgroundWhite
-    property color borderColor: Vars.fontsPurple
+    property color borderColor: Vars.popupWindowColor
     property real buttonHeight: Vars.screenHeight*0.09
     property real buttonWidth: Vars.screenWidth*0.8
     property int fontPixelSize: Vars.defaultFontPixelSize

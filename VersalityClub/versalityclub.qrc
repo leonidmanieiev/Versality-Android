@@ -95,5 +95,12 @@
         <file>icons/comp_proms_map_off.png</file>
         <file>icons/comp_proms_map_on.png</file>
         <file>backgrounds/comp_pictures_fade_out.png</file>
+        <file>icons/app_info_on.png</file>
+        <file>icons/app_info_off.png</file>
+        <file>qml/appInfoPage.qml</file>
+        <file>backgrounds/app_info_h.png</file>
+        <file>icons/favourites_help.png</file>
+        <file>icons/settings_help.png</file>
+        <file>qml/HelpComponent.qml</file>
     </qresource>
 </RCC>

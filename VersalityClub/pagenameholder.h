@@ -47,7 +47,12 @@ public:
         return "";
     }
     Q_INVOKABLE void push(const QString& pageName)
-    { pageNames.push(pageName); }
+    {
+        if(pageNames.isEmpty())
+            pageNames.push(pageName);
+        else if(pageNames.top() != pageName)
+            pageNames.push(pageName);
+    }
     Q_INVOKABLE void clear()
     { pageNames.clear(); }
     Q_INVOKABLE bool empty() const

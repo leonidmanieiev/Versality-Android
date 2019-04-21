@@ -81,11 +81,11 @@ Page
             id: codeField
             Layout.fillWidth: true
             setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.fontsPurple
+            setBorderColor: Vars.popupWindowColor
             setTextColor: Vars.backgroundBlack
             selectByMouse: false
             placeholderText: Vars.enterCode
-            placeholderTextColor: Vars.fontsPurple
+            placeholderTextColor: Vars.popupWindowColor
 
             onPressed:
             {
@@ -102,13 +102,13 @@ Page
             id: newPassField
             Layout.fillWidth: true
             setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.fontsPurple
+            setBorderColor: Vars.popupWindowColor
             setTextColor: Vars.backgroundBlack
             echoMode: TextInput.Password
             inputMethodHints: Qt.ImhSensitiveData
             selectByMouse: false
             placeholderText: Vars.enterNewPass
-            placeholderTextColor: Vars.fontsPurple
+            placeholderTextColor: Vars.popupWindowColor
 
             onPressed:
             {
@@ -126,7 +126,7 @@ Page
             Layout.fillWidth: true
             labelText: Vars.submit
             labelColor: Vars.backgroundWhite
-            backgroundColor: Vars.fontsPurple
+            backgroundColor: Vars.popupWindowColor
             buttonClickableArea.onClicked:
             {
                 AppSettings.beginGroup("user");

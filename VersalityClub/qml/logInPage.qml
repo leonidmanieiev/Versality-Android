@@ -80,9 +80,9 @@ Page
             id: emailField
             Layout.fillWidth: true
             placeholderText: Vars.emailPlaceHolder
-            placeholderTextColor: Vars.fontsPurple
+            placeholderTextColor: Vars.popupWindowColor
             setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.fontsPurple
+            setBorderColor: Vars.popupWindowColor
             setTextColor: Vars.backgroundBlack
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
@@ -103,7 +103,7 @@ Page
             id: enterButton
             Layout.fillWidth: true
             labelColor: Vars.backgroundWhite
-            backgroundColor: Vars.fontsPurple
+            backgroundColor: Vars.popupWindowColor
             labelText: Vars.login
             buttonClickableArea.onClicked:
             {

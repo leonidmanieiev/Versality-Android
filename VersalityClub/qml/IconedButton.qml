@@ -27,6 +27,7 @@ import QtQuick 2.11
 Rectangle
 {
     property string buttonIconSource
+    property int rotateAngle: 0
     property alias clickArea: clickableArea
 
     id: buttonBackground
@@ -41,6 +42,7 @@ Rectangle
         source: buttonIconSource
         width: parent.width
         height: parent.height
+        rotation: rotateAngle
         fillMode: Image.PreserveAspectFit
     }
 

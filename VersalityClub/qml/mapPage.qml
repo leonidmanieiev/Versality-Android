@@ -30,6 +30,7 @@ import QtQuick.Controls 2.4
 import QtLocation 5.9
 import QtPositioning 5.8
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 //import OneSignal 1.0 // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
 
 Page
@@ -45,11 +46,11 @@ Page
     property string pressedFrom: requestFromCompany ? 'companyPage.qml' : 'mapPage.qml'
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
     readonly property string mapCopyright: 'Tiles style by <a href="http://corp.sputnik.ru/maps"'
-                                           +' style="color: '+Vars.fontsPurple+'">Cпутник</a> © '
+                                           +' style="color: '+Vars.popupWindowColor+'">Cпутник</a> © '
                                            +'<a href="https://www.rt.ru/" style="color: '+
-                                           Vars.fontsPurple+'">Ростелеком</a>'
+                                           Vars.popupWindowColor+'">Ростелеком</a>'
     readonly property string mapDataCopyright: ' Data © <a href="https://www.openstreetmap.org/'
-                                               +'copyright" style="color: '+Vars.fontsPurple+'">'
+                                               +'copyright" style="color: '+Vars.popupWindowColor+'">'
                                                +'OpenStreetMap</a>'
     readonly property int markerSize: Vars.screenWidth*0.1
     readonly property int fromButtonZoomLevel: 16
@@ -59,7 +60,7 @@ Page
     readonly property int popupWindowHeight: height*0.3
     readonly property int popupWindowDurat: 400
     readonly property real popupWindowOpacity: 0.8
-    readonly property int popupShowTo: height-Vars.footerButtonsFieldHeight-popupWindowHeight
+    readonly property int popupShowTo: height-Vars.footerButtonsFieldHeight-popupWindowHeight*0.9
     readonly property int yToHide: height-Vars.footerButtonsFieldHeight-popupWindowHeight/2
     readonly property int yToInvisible: height-Vars.footerButtonsFieldHeight
 
@@ -295,11 +296,11 @@ Page
     {
         id: popupWindow
         visible: false
-        opacity: 0.9
-        radius: Vars.defaultRadius
-        width: parent.width;
+        //opacity: 0.9
+        radius: Vars.defaultRadius*0.75
+        width: parent.width*0.9
         height: popupWindowHeight
-        color: Vars.copyrightBackgroundColor
+        color: Vars.popupWindowColor
         anchors.horizontalCenter: parent.horizontalCenter
 
         NumberAnimation
@@ -327,13 +328,13 @@ Page
         Rectangle
         {
             id: dragerLine
-            width: parent.width*0.1
+            width: parent.width*0.3
             height: parent.height*0.05
             anchors.top: parent.top
             anchors.topMargin: Vars.defaultRadius*0.5
             radius: Vars.defaultRadius
             anchors.horizontalCenter: parent.horizontalCenter
-            color: Vars.darkGreyColor
+            color: Vars.dragerLineColor
         }
 
         MouseArea
@@ -377,8 +378,7 @@ Page
             id: promsTilesListView
             clip: true
             anchors.fill: parent
-            anchors.topMargin: Vars.defaultRadius
-            anchors.bottomMargin: Vars.defaultRadius
+            anchors.topMargin: Vars.defaultRadius + parent.height*0.05
             contentHeight: promsTilesItemHeight
             delegate: promsTilesDelegate
         }
@@ -391,34 +391,45 @@ Page
         {
             width: popupWindow.width
             anchors.horizontalCenter: parent.horizontalCenter
-            leftPadding: width*0.1
-            bottomPadding: markerSize*0.25
+            bottomPadding: markerSize*0.15
             Rectangle
             {
                 id: parentCategoryIcon
                 height: markerSize
-                width: parent.width
+                width: parent.width*0.95
                 radius: height*0.5
-                color: "transparent"
+                color: Vars.subCatSelectedColor
+                anchors.horizontalCenter: parent.horizontalCenter
 
                 Image
                 {
                     id: icon
                     source: "../icons/cat_"+cicon+".png"
-                    width: markerSize
-                    height: markerSize
+                    width: markerSize*0.8
+                    height: markerSize*0.8
+                    anchors.left: parent.left
+                    anchors.leftMargin: width*0.5
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                ColorOverlay
+                {
+                    anchors.fill: icon
+                    source: icon
+                    color: Vars.popupWindowColor
                 }
 
                 Label
                 {
                     id: promotionTitle
                     anchors.left: icon.right
-                    anchors.leftMargin: parent.width*0.1
+                    anchors.leftMargin: icon.width*0.5
                     anchors.verticalCenter: parent.verticalCenter
                     text: ctitle
                     font.pixelSize: Helper.toDp(16, Vars.dpi)
                     font.bold: true
-                    color: Vars.backgroundBlack
+                    font.family: regulatText.name
+                    color: Vars.popupWindowColor
                 }
 
                 MouseArea

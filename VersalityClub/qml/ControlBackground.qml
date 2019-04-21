@@ -30,7 +30,7 @@ Rectangle
     property real rectWidth: Vars.screenWidth*0.8
     property int rectRadius: rectHeight*0.5
     property color rectFillColor: Vars.backgroundWhite
-    property color rectBorderColor: Vars.fontsPurple
+    property color rectBorderColor: Vars.popupWindowColor
     property int rectBorderWidth: rectHeight*0.06
 
     id: controlBackground

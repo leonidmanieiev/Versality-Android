@@ -29,12 +29,12 @@ Rectangle
 {
     property int minNumber: 0
     property int maxNumber: 0
+    property bool isMonthScroller: false
     readonly property int itemHeight: Vars.screenHeight*0.1
 
     signal indexChanged(var t_number)
 
     id: rootRect
-    width: Vars.screenWidth*0.192
     height: Vars.screenHeight*0.3
     color: "transparent"
 
@@ -47,8 +47,8 @@ Rectangle
 
     FontLoader
     {
-        id: mediumText;
-        source: Vars.mediumFont
+        id: regularText;
+        source: Vars.regularFont
     }
 
     ListView
@@ -63,15 +63,33 @@ Rectangle
             Component.onCompleted:
             {
                 append({ value: -1, text: ' ' })
-                for(var i = minNumber; i <= maxNumber; i++)
+                if(isMonthScroller)
                 {
-                    var si;
+                    append({ value: 1, text: 'Январь' })
+                    append({ value: 2, text: 'Февраль' })
+                    append({ value: 3, text: 'Март' })
+                    append({ value: 4, text: 'Апрель' })
+                    append({ value: 5, text: 'Май' })
+                    append({ value: 6, text: 'Июнь' })
+                    append({ value: 7, text: 'Июль' })
+                    append({ value: 8, text: 'Август' })
+                    append({ value: 9, text: 'Сентябрь' })
+                    append({ value: 10, text: 'Октябрь' })
+                    append({ value: 11, text: 'Ноябрь' })
+                    append({ value: 12, text: 'Декабрь' })
+                }
+                else
+                {
+                    for(var i = minNumber; i <= maxNumber; i++)
+                    {
+                        var si;
 
-                    if(i < 10)
-                        si = '0'+i
-                    else si = i.toString();
+                        if(i < 10)
+                            si = '0'+i
+                        else si = i.toString();
 
-                    append({ value: i, text: si })
+                        append({ value: i, text: si })
+                    }
                 }
                 append({ value: -1, text: ' ' })
             }
@@ -86,8 +104,10 @@ Rectangle
             {
                 id: delegateItemText
                 text: model.text
-                font.family: mediumText.name
-                font.pixelSize: Helper.toDp(20, Vars.dpi)
+                font.family: regularText.name
+                color: Vars.backgroundWhite
+                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                            Vars.dpi)
                 anchors.centerIn: parent
             }
         }

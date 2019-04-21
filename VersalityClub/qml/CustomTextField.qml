@@ -29,7 +29,7 @@ import QtQuick.Layouts 1.3
 
 TextField
 {
-    property color setFillColor: Vars.fontsPurple
+    property color setFillColor: Vars.popupWindowColor
     property color setBorderColor: Vars.backgroundWhite
     property color setTextColor: Vars.backgroundWhite
 

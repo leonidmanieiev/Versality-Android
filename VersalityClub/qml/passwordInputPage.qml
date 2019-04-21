@@ -81,13 +81,13 @@ Page
             id: passField
             Layout.fillWidth: true
             setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.fontsPurple
+            setBorderColor: Vars.popupWindowColor
             setTextColor: Vars.backgroundBlack
             echoMode: TextInput.Password
             inputMethodHints: Qt.ImhSensitiveData
             selectByMouse: false
             placeholderText: Vars.enterYourPass
-            placeholderTextColor: Vars.fontsPurple
+            placeholderTextColor: Vars.popupWindowColor
 
             onPressed:
             {
@@ -106,7 +106,7 @@ Page
             Layout.fillWidth: true
             labelText: Vars.login
             labelColor: Vars.backgroundWhite
-            backgroundColor: Vars.fontsPurple
+            backgroundColor: Vars.popupWindowColor
             buttonClickableArea.onClicked:
             {
                 AppSettings.beginGroup("user");

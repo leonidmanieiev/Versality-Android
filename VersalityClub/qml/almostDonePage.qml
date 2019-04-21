@@ -29,6 +29,32 @@ import QtQuick.Layouts 1.3
 
 Page
 {
+    property string currComp: "firstComp"
+
+    function nextLeftHelp()
+    {
+        if(currComp === "secondComp")
+        {
+            currComp = "firstComp";
+            return firstComp
+        }
+
+        currComp = "secondComp";
+        return secondComp
+    }
+
+    function nextRightHelp()
+    {
+        if(currComp === "firstComp")
+        {
+            currComp = "secondComp";
+            return secondComp
+        }
+
+        currComp = "thirdComp";
+        return thirdComp
+    }
+
     id: almostDonePage
     enabled: Vars.isConnected
     height: Vars.screenHeight
@@ -50,9 +76,103 @@ Page
 
     FontLoader
     {
-        id: mediumText;
-        source: Vars.mediumFont
+        id: regularText;
+        source: Vars.regularFont
     }
+
+    Rectangle
+    {
+        id: middleItem
+        width: parent.width
+        height: Vars.screenHeight*0.5
+        anchors.centerIn: parent
+        color: "transparent"
+
+        RowLayout
+        {
+            id: btnViewBtn
+            width: parent.width*0.9
+            height: Vars.screenHeight*0.5
+            anchors.centerIn: parent
+
+            IconedButton
+            {
+                id: leftArrowButton
+                width: parent.width*0.1
+                height: parent.width*0.1
+                Layout.alignment: Qt.AlignTop
+                Layout.topMargin: parent.height*0.22
+                buttonIconSource: "../icons/left_arrow.png"
+                clickArea.onClicked:
+                {
+                    if(currComp !== "firstComp")
+                        stackView.push(nextLeftHelp());
+                }
+            }
+
+            StackView
+            {
+                id: stackView
+                initialItem: firstComp
+                width: Vars.screenWidth*0.54
+                height: Vars.screenHeight*0.5
+                Layout.alignment: Qt.AlignHCenter
+
+                Component
+                {
+                    id: firstComp
+
+                    HelpComponent
+                    {
+                        id: firstHelpComp
+                        helpText: Vars.firstHelpText
+                        helpImageSource: "../icons/settings_help.png"
+                    }
+                }
+
+                Component
+                {
+                    id: secondComp
+
+                    HelpComponent
+                    {
+                        id: secondHelpComp
+                        helpText: Vars.secondHelpText
+                        helpImageSource: "../icons/logo_gradient.png"
+                    }
+                }
+
+                Component
+                {
+                    id: thirdComp
+
+                    HelpComponent
+                    {
+                        id: thirdHelpComp
+                        helpText: Vars.thirdHelpText
+                        helpImageSource: "../icons/favourites_help.png"
+                    }
+                }
+            }//stackView
+
+            IconedButton
+            {
+                id: rightArrowButton
+                width: parent.width*0.1
+                height: parent.width*0.1
+                rotateAngle: 180
+                Layout.alignment: Qt.AlignTop
+                Layout.topMargin: parent.height*0.22
+                buttonIconSource: "../icons/left_arrow.png"
+                clickArea.onClicked:
+                {
+                    if(currComp !== "thirdComp")
+                        stackView.push(nextRightHelp());
+                }
+            }
+        }//btnViewBtn
+    }//middleItem
+
 
     ControlButton
     {
