@@ -35,8 +35,8 @@ RowLayout
 
     id: logoAndPageTitle
     anchors.top: parent.top
-    height: parent.height*0.15
-    width: parent.width
+    height: Vars.screenHeight*0.15
+    width: Vars.screenWidth
 
     Image
     {

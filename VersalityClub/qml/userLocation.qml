@@ -58,7 +58,7 @@ Item
     }
 
     // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
-    /*GeoLocationInfo
+    GeoLocationInfo
     {
         onPositionUpdated:
         {
@@ -74,7 +74,7 @@ Item
                 toastMessage.close();
             }
         }
-    }*/
+    }
 
     PositionSource
     {

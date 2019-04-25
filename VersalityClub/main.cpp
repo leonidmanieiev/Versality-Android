@@ -65,10 +65,13 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
+
 #ifdef __ANDROID__
     //if user has an account so do hash
     if(!AppSettings().value("user/hash").toString().isEmpty())
     {
+        qDebug() << "1 in -> user has an account so do hash";
+
         QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/hash.txt");
         if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
@@ -76,16 +79,22 @@ int main(int argc, char *argv[])
             return -1;
         }
 
+        qDebug() << '2';
+
         //saving user hash to file
         QTextStream out(&file);
         out << AppSettings().value("user/hash").toString();
         out.flush();
         file.close();
 
+        qDebug() << '3';
+
         //starting location service
         QAndroidJniObject::callStaticMethod<void>(
         "org.versalityclub.LocationService", "startLocationService",
         "(Landroid/content/Context;)V", QtAndroid::androidActivity().object());
+
+        qDebug() << '4';
     }
     else qDebug() << "No user hash yet";
 #endif

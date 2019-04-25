@@ -88,7 +88,7 @@ RowLayout
             if(currPageName != "companyPage.qml")
             {
                 currPageName = "companyPage.qml";
-                parent.parent.loader.setSource(currPageName);
+                parent.parent.comp_loader.setSource(currPageName);
                 setButtonsStates();
             }
         }
@@ -106,7 +106,7 @@ RowLayout
             if(currPageName != "companyMapPage.qml")
             {
                 currPageName = "companyMapPage.qml";
-                parent.parent.loader.setSource("mapPage.qml",
+                parent.parent.comp_loader.setSource("mapPage.qml",
                     {"allGood": true, "requestFromCompany": true});
                 setButtonsStates();
             }
@@ -125,7 +125,7 @@ RowLayout
             if(currPageName != "companyListPage.qml")
             {
                 currPageName = "companyListPage.qml";
-                parent.parent.loader.setSource("listViewPage.qml",
+                parent.parent.comp_loader.setSource("listViewPage.qml",
                     {"allGood": true, "requestFromCompany": true});
                 setButtonsStates();
             }

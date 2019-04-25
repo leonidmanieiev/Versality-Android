@@ -146,8 +146,8 @@ Page
                 text: p_title
                 font.pixelSize: Helper.toDp(16, Vars.dpi)
                 font.family: boldText.name
-                font.bold: true
-                color: "#5c1b5c"
+                font.weight: Font.Bold
+                color: Vars.popupWindowColor
                 Layout.alignment: Qt.AlignHCenter
             }
 

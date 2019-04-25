@@ -39,7 +39,7 @@ ApplicationWindow
         asynchronous: false
         anchors.fill: parent
         visible: status == Loader.Ready
-        //whether user was signed(loged) in
+        //whether user was not signed(loged) in
         source: AppSettings.value("user/hash") === undefined ?
                      "qml/initialPage.qml" : "qml/mapPage.qml"
     }

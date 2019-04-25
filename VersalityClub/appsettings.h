@@ -41,7 +41,7 @@ public:
                   parent)
     {
         // TODO DELETE AFTER LAUNCH
-        //clearAllAppSettings();
+        clearAllAppSettings();
 
         //clears promotions and company cache on each app launch
         this->remove("promo");

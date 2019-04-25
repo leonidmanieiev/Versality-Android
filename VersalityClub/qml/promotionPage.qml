@@ -48,6 +48,8 @@ Page
     property real nearestStoreLon
     property real minDistToStore: 5000000
     //readonly property int storeInfoItemHeight: Vars.screenHeight*0.06
+    //alias
+    property alias prom_loader: promotionPageLoader
 
     //setting lat and lon of the nearest to user store
     function setNearestStoreCoords(promJSON)
@@ -136,7 +138,7 @@ Page
                 text: p_title
                 font.pixelSize: Helper.toDp(16, Vars.dpi)
                 font.family: boldText.name
-                font.bold: true
+                font.weight: Font.Bold
                 color: Vars.backgroundBlack
                 Layout.alignment: Qt.AlignHCenter
             }

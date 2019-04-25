@@ -24,7 +24,7 @@
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
-import QtQuick.Controls 2.4
+import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
@@ -46,7 +46,7 @@ Page
     //all good flag
     property bool allGood: AppSettings.value("company/id") === undefined ? false : true
     //alias
-    property alias loader: companyPageLoader
+    property alias comp_loader: companyPageLoader
 
     header: HeaderButtons { }
 
@@ -92,12 +92,11 @@ Page
             id: middleFieldsColumns
             width: parent.width
             spacing: Vars.screenHeight*0.05
-            anchors.horizontalCenter: parent.horizontalCenter
 
             RowLayout
             {
                 id: logoContactInfo
-                width: parent.width
+                width: Vars.screenWidth
                 height: Vars.footerButtonsFieldHeight
                 Layout.alignment: Qt.AlignHCenter
                 spacing: parent.width*0.0625
@@ -142,14 +141,14 @@ Page
                     Label
                     {
                         id: compSite
-                        text: '<a href="'+comp_website+'"'
+                        textFormat: Text.RichText;
+                        text: '<a href="http://'+comp_website+'"'
                               +' style="color: '+Vars.mainPurple+'">'
                               +comp_website+'</a>'
-                        font.bold: true
-                        font.family: boldText.name
                         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+                        font.family: boldText.name
+                        font.bold: true
                         onLinkActivated: Qt.openUrlExternally(link)
-                        textFormat: Text.RichText;
                     }
                 }//namePhoneSite
             }//compLogoField
@@ -160,6 +159,9 @@ Page
                 clip: true
                 width: parent.width
                 height: parent.width*0.4
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: parent.width*0.05
 
                 Flickable
                 {
@@ -182,7 +184,6 @@ Page
                             id: compPicField1
                             width: parent.height
                             height: parent.height
-                            Layout.leftMargin: middleFieldsColumns.height*0.09
                             color: "transparent"
 
                             ImageRounder
@@ -200,6 +201,7 @@ Page
                                 {
                                     picSource = pic1Source;
                                     compPicPopup.visible = true;
+                                    PageNameHolder.push('popupImage');
                                 }
                             }
                         }
@@ -226,6 +228,7 @@ Page
                                 {
                                     picSource = pic2Source;
                                     compPicPopup.visible = true;
+                                    PageNameHolder.push('popupImage');
                                 }
                             }
                         }
@@ -252,6 +255,7 @@ Page
                                 {
                                     picSource = pic3Source;
                                     compPicPopup.visible = true;
+                                    PageNameHolder.push('popupImage');
                                 }
                             }
                         }
@@ -278,6 +282,7 @@ Page
                                 {
                                     picSource = pic4Source;
                                     compPicPopup.visible = true;
+                                    PageNameHolder.push('popupImage');
                                 }
                             }
                         }
@@ -290,6 +295,7 @@ Page
                     clip: true
                     width: parent.width
                     height: parent.height
+                    anchors.right: parent.right
                     source: "../backgrounds/comp_pictures_fade_out.png"
                 }
             }//flicker_image_field
@@ -319,13 +325,15 @@ Page
     {
         id: compPicPopup
         x: 0
-        y: Vars.screenHeight*0.2
+        y: (Vars.companyPageHeight-height)/2
         width: parent.width
         height: parent.height*0.35
         padding: 0
         modal: true
         focus: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        onClosed: PageNameHolder.pop()
 
         Image
         {
@@ -376,6 +384,8 @@ Page
             //if no pages in sequence
             if(pageName === "")
                 appWindow.close();
+            else if (pageName === 'popupImage')
+                compPicPopup.close();
             else
             {
                 //to avoid not loading bug
@@ -389,10 +399,8 @@ Page
     {
         id: companyPageLoader
         asynchronous: false
-        anchors.top: parent.top
-        anchors.topMargin: -Vars.footerButtonsFieldHeight
-        width: parent.width
-        height: Vars.screenHeight
+        anchors.fill: parent
+        anchors.topMargin: -header.height
         visible: status == Loader.Ready
 
         function reload()

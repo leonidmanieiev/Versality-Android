@@ -31,7 +31,7 @@ import QtLocation 5.9
 import QtPositioning 5.8
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-//import OneSignal 1.0 // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
+import OneSignal 1.0 // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
 
 Page
 {
@@ -128,6 +128,12 @@ Page
         source: Vars.regularFont
     }
 
+    FontLoader
+    {
+        id: boldText
+        source: Vars.boldFont
+    }
+
     Map
     {
         id: mainMap
@@ -177,8 +183,8 @@ Page
             {
                 id: userMarkerIcon
                 source: "../icons/user_location_marker_icon.svg"
-                sourceSize.width: markerSize
-                sourceSize.height: markerSize
+                sourceSize.width: markerSize*0.7
+                sourceSize.height: markerSize*1.2
             }
         }
 
@@ -377,7 +383,11 @@ Page
         {
             id: promsTilesListView
             clip: true
-            anchors.fill: parent
+            width: parent.width
+            height: parent.height*0.75
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
             anchors.topMargin: Vars.defaultRadius + parent.height*0.05
             contentHeight: promsTilesItemHeight
             delegate: promsTilesDelegate
@@ -389,6 +399,7 @@ Page
         id: promsTilesDelegate
         Column
         {
+            id: column
             width: popupWindow.width
             anchors.horizontalCenter: parent.horizontalCenter
             bottomPadding: markerSize*0.15
@@ -426,9 +437,8 @@ Page
                     anchors.leftMargin: icon.width*0.5
                     anchors.verticalCenter: parent.verticalCenter
                     text: ctitle
-                    font.pixelSize: Helper.toDp(16, Vars.dpi)
-                    font.bold: true
-                    font.family: regulatText.name
+                    font.pixelSize: Helper.toDp(18, Vars.dpi)
+                    font.family: boldText.name
                     color: Vars.popupWindowColor
                 }
 
@@ -468,7 +478,7 @@ Page
         enabled: Vars.isLocated
         width: Vars.footerButtonsHeight*0.9
         height: Vars.footerButtonsHeight*0.9
-        buttonIconSource: "../icons/geo_location.png"
+        buttonIconSource: "../icons/geo_location.svg"
         anchors.right: parent.right
         anchors.rightMargin: parent.width*0.02
         anchors.verticalCenter: parent.verticalCenter
@@ -510,9 +520,9 @@ Page
 
     Component.onCompleted:
     {
-        // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
-        //if(AppSettings.value("user/hash") !== undefined)
-        //    QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+        //TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
+        if(AppSettings.value("user/hash") !== undefined)
+            QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
 
         //setting active focus for key capturing
         mapPage.forceActiveFocus();
