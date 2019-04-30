@@ -102,5 +102,6 @@
         <file>qml/HelpComponent.qml</file>
         <file>icons/user_location_marker_icon.svg</file>
         <file>icons/geo_location.svg</file>
+        <file>appInfoText.txt</file>
     </qresource>
 </RCC>

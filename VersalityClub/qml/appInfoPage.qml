@@ -1,22 +1,22 @@
 /****************************************************************************
 **
-** Copyright (C) 2018 Leonid Manieiev.
+** Copyright (C) 2019 Leonid Manieiev.
 ** Contact: leonid.manieiev@gmail.com
 **
-** This file is part of Versality Club.
+** This file is part of Versality.
 **
-** Versality Club is free software: you can redistribute it and/or modify
+** Versality is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation, either version 3 of the License, or
 ** (at your option) any later version.
 **
-** Versality Club is distributed in the hope that it will be useful,
+** Versality is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
 **
 ** You should have received a copy of the GNU General Public License
-** along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+** along with Versality. If not, see <https://www.gnu.org/licenses/>.
 **
 ****************************************************************************/
 
@@ -30,6 +30,19 @@ import QtQuick.Layouts 1.3
 
 Page
 {
+    property var appInfoText
+
+    function getAppInfoText()
+    {
+        var request = new XMLHttpRequest()
+        request.open('GET', '../appInfoText.txt')
+        request.onreadystatechange = function(event) {
+            if (request.readyState === XMLHttpRequest.DONE)
+                appInfoText = request.responseText;
+        }
+        request.send()
+    }
+
     id: profileSettingsPage
     enabled: Vars.isConnected
     height: Vars.screenHeight
@@ -80,12 +93,12 @@ Page
 
                 Label
                 {
-                    id: appInfoMain
+                    id: appInfo
                     width: parent.width
-                    text: 'Узнайте больше о Versality Club:<br><br>'+
-                          '<a href="'+Vars.appSiteName+'"'
-                          +' style="color: '+Vars.mainPurple+'">'
-                          +Vars.appSiteName+'</a><br><br>' + Vars.appInfoText
+                    text: 'Узнайте больше о Versality:<br><br>'+
+                          '<a href="'+Vars.appSiteLink+'"'
+                          +' style="color: '+Vars.popupWindowColor+'">'
+                          +Vars.appSiteName+'</a><br><br>' + appInfoText
                     font.pixelSize: Helper.toDp(13, Vars.dpi)
                     font.family: regularText.name
                     color: Vars.backgroundBlack
@@ -113,7 +126,11 @@ Page
         pageTitleText: Vars.profileSettings
     }
 
-    Component.onCompleted: profileSettingsPage.forceActiveFocus()
+    Component.onCompleted:
+    {
+        getAppInfoText();
+        profileSettingsPage.forceActiveFocus();
+    }
 
     Keys.onReleased:
     {

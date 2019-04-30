@@ -1,22 +1,22 @@
 /****************************************************************************
 **
-** Copyright (C) 2018 Leonid Manieiev.
+** Copyright (C) 2019 Leonid Manieiev.
 ** Contact: leonid.manieiev@gmail.com
 **
-** This file is part of Versality Club.
+** This file is part of Versality.
 **
-** Versality Club is free software: you can redistribute it and/or modify
+** Versality is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation, either version 3 of the License, or
 ** (at your option) any later version.
 **
-** Versality Club is distributed in the hope that it will be useful,
+** Versality is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
 **
 ** You should have received a copy of the GNU General Public License
-** along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+** along with Versality. If not, see <https://www.gnu.org/licenses/>.
 **
 ****************************************************************************/
 
@@ -33,15 +33,12 @@ QtObject
     readonly property color backgroundWhite: "#FFFFFF"
     readonly property color backgroundBlack: "#000000"
     readonly property color toastGrey: "#76797c"
-    readonly property color listViewGrey: "#e8e9ea"
-    readonly property color mainPurple: "#631964"
     readonly property color forgetPassPurple: "#a03576"
     readonly property color dragerLineColor: "#ae4a8c"
     readonly property color popupWindowColor: "#4e1563"
     readonly property color errorRed: "RED"
     readonly property color activeCouponColor: "#ff3333"
     readonly property color copyrightBackgroundColor: "#c4c5c6"
-    readonly property color darkGreyColor: "#9f9fa0"
     readonly property color subCatSelectedColor: "#f0e4ff"
 
     //OTHERS
@@ -167,11 +164,8 @@ QtObject
     readonly property string mapPageId: "mapPage"
     readonly property string promotionPageId: "promotionPage"
     readonly property string userLocationIsNAN: "user location is NaN"
-    readonly property string appSiteName: "http://club.versality.ru:8082/"
-    readonly property string appInfoText: "В данном поле будет размещена информация о том, "+
-                                          "что при разработке приложения использовалось такое-то "+
-                                          "открытое П.О., размещено пользовательское соглашение в "+
-                                          "текстовом виде. А вверху обязательно ссылка на сайт приложения..."
+    readonly property string appSiteLink: "http://club.versality.ru:8082/"
+    readonly property string appSiteName: "club.versality.ru"
     readonly property string firstHelpText: "В самом начале рекомендуем\nперейти в настрочки\n"+
                                             "и выбрать интересные Вам акции"
     readonly property string secondHelpText: "Все акции Вы можете смотреть\nв виде списка или "+

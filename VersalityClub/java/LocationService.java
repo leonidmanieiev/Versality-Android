@@ -22,8 +22,8 @@ public class LocationService extends QtService
     private static final float LOCATION_DISTANCE = 100.0f; //100 meters
 
     public static String LocationToString(final Location location) {
-        return Location.convert(location.getLatitude(), Location.FORMAT_DEGREES) + ","
-               + Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
+        return "&lat="+Location.convert(location.getLatitude(), Location.FORMAT_DEGREES) +
+               "&lon="+Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
     }
 
     public static void startLocationService(Context ctx) {
