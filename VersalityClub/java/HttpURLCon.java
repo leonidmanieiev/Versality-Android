@@ -80,7 +80,6 @@ public class HttpURLCon {
             HttpURLConnection con =
                 (HttpURLConnection) new URL(url).openConnection();
             int responseCode = con.getResponseCode();
-            Log.d(TAG, "Response Code : " + responseCode);
         } catch (Exception e) {
             e.printStackTrace();
         }

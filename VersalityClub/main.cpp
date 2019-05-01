@@ -41,6 +41,8 @@
 #include "QApplication"
 #endif
 
+
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -55,11 +57,11 @@ int main(int argc, char *argv[])
 #ifdef __ANDROID__
     QOneSignal::registerQMLTypes();
 #endif
-    qmlRegisterType<NetworkInfo>("Network", 1, 0, "NetworkInfo");
-    qmlRegisterType<GeoLocationInfo>("GeoLocation", 1, 0, "GeoLocationInfo");
-    qmlRegisterType<AppSettings>("org.versalityclub", 1, 0, "AppSettings");
-    qmlRegisterType<PageNameHolder>("org.versalityclub", 1, 0, "PageNameHolder");
-    qmlRegisterType<PromotionClusters>("org.versalityclub", 1, 0, "PromotionClusters");
+    qmlRegisterType<NetworkInfo>("Network", 0, 6, "NetworkInfo");
+    qmlRegisterType<GeoLocationInfo>("GeoLocation", 0, 6, "GeoLocationInfo");
+    qmlRegisterType<AppSettings>("org.versalityclub", 0, 6, "AppSettings");
+    qmlRegisterType<PageNameHolder>("org.versalityclub", 0, 6, "PageNameHolder");
+    qmlRegisterType<PromotionClusters>("org.versalityclub", 0, 6, "PromotionClusters");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
@@ -79,22 +81,16 @@ int main(int argc, char *argv[])
             return -1;
         }
 
-        qDebug() << '2';
-
         //saving user hash to file
         QTextStream out(&file);
         out << AppSettings().value("user/hash").toString();
         out.flush();
         file.close();
 
-        qDebug() << '3';
-
         //starting location service
         QAndroidJniObject::callStaticMethod<void>(
         "org.versalityclub.LocationService", "startLocationService",
         "(Landroid/content/Context;)V", QtAndroid::androidActivity().object());
-
-        qDebug() << '4';
     }
     else qDebug() << "No user hash yet";
 #endif

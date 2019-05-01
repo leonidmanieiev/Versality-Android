@@ -17,7 +17,7 @@ public class QOneSignalBinding {
     public Activity activity = null;
 
     //! This has to be called inside the onCreate of Activity
-    static public void onCreate(Activity activity, Bundle savedInstanceState) {
+    static public void onCreate(Activity activity) {
         m_instance.activity = activity;
 
         OneSignal.startInit(m_instance.activity)

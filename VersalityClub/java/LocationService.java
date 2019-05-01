@@ -27,6 +27,7 @@ public class LocationService extends QtService
     }
 
     public static void startLocationService(Context ctx) {
+        Log.d(TAG, "from main.cpp startLocationService");
         ctx.startService(new Intent(ctx, LocationService.class));
     }
 
@@ -93,6 +94,7 @@ public class LocationService extends QtService
             _locationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL,
                     LOCATION_DISTANCE, _locationListeners[1]);
+            Log.d(TAG, "requestLocationUpdates NETWORK_PROVIDER");
         } catch (java.lang.SecurityException ex) {
             Log.e(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
@@ -103,6 +105,7 @@ public class LocationService extends QtService
             _locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL,
                     LOCATION_DISTANCE, _locationListeners[0]);
+            Log.d(TAG, "requestLocationUpdates GPS_PROVIDER");
         } catch (java.lang.SecurityException ex) {
             Log.e(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
