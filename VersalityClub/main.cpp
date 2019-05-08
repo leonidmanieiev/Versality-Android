@@ -72,8 +72,6 @@ int main(int argc, char *argv[])
     //if user has an account so do hash
     if(!AppSettings().value("user/hash").toString().isEmpty())
     {
-        qDebug() << "1 in -> user has an account so do hash";
-
         QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/hash.txt");
         if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {

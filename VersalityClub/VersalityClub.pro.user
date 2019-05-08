@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.8.2, 2019-05-01T17:24:05. -->
+<!-- Written by QtCreator 4.8.2, 2019-05-09T01:29:12. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -180,7 +180,7 @@
      </valuemap>
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.3">
       <value type="QString" key="BuildTargetSdk">android-28</value>
-      <value type="QString" key="KeystoreLocation">D:/VersalityClub/Docs/qt keystore and cert/android_release.keystore</value>
+      <value type="QString" key="KeystoreLocation">D:\Qt\qt keystore and cert\android_release.keystore</value>
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Build Android APK</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>

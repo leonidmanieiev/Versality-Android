@@ -18,8 +18,8 @@ public class LocationService extends QtService
 {
     private LocationManager _locationManager = null;
     private static final String TAG = "LocationService";
-    private static final int LOCATION_INTERVAL = 1800000; //30 minutes
-    private static final float LOCATION_DISTANCE = 100.0f; //100 meters
+    private static final int LOCATION_INTERVAL = 3600000; //60 minutes
+    private static final float LOCATION_DISTANCE = 300.0f; //300 meters
 
     public static String LocationToString(final Location location) {
         return "&lat="+Location.convert(location.getLatitude(), Location.FORMAT_DEGREES) +
@@ -37,7 +37,7 @@ public class LocationService extends QtService
 
         public LocationListener(String provider)
         {
-            Log.d(TAG, "LocationListener " + provider);
+            Log.d(TAG, "LocationListener: " + provider);
             _lastLocation = new Location(provider);
         }
 
@@ -46,7 +46,7 @@ public class LocationService extends QtService
         {
             Log.d(TAG, "onLocationChanged: " + location);
             _lastLocation.set(location);
-            HttpURLCon.send(LocationToString(location), getApplicationContext());
+            HttpURLCon.sendCoords(LocationToString(location), getApplicationContext());
         }
 
         @Override
@@ -94,22 +94,26 @@ public class LocationService extends QtService
             _locationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL,
                     LOCATION_DISTANCE, _locationListeners[1]);
-            Log.d(TAG, "requestLocationUpdates NETWORK_PROVIDER");
+            Log.d(TAG, "onCreate: requestLocationUpdates NETWORK_PROVIDER");
         } catch (java.lang.SecurityException ex) {
-            Log.e(TAG, "fail to request location update, ignore", ex);
+            Log.e(TAG, "onCreate: fail to request location update, ignore", ex);
+            HttpURLCon.sendLog(TAG+"::onCreate: fail to request location update from NETWORK_PROVIDER", getApplicationContext());
         } catch (IllegalArgumentException ex) {
-            Log.e(TAG, "network provider does not exist, " + ex.getMessage());
+            Log.e(TAG, "onCreate: network provider does not exist, " + ex.getMessage());
+            HttpURLCon.sendLog(TAG+"::onCreate: NETWORK_PROVIDER does not exist", getApplicationContext());
         }
 
         try {
             _locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL,
                     LOCATION_DISTANCE, _locationListeners[0]);
-            Log.d(TAG, "requestLocationUpdates GPS_PROVIDER");
+            Log.d(TAG, "onCreate: requestLocationUpdates GPS_PROVIDER");
         } catch (java.lang.SecurityException ex) {
-            Log.e(TAG, "fail to request location update, ignore", ex);
+            Log.e(TAG, "onCreate: fail to request location update, ignore", ex);
+            HttpURLCon.sendLog(TAG+"::onCreate: fail to request location update from GPS_PROVIDER", getApplicationContext());
         } catch (IllegalArgumentException ex) {
-            Log.e(TAG, "gps provider does not exist " + ex.getMessage());
+            Log.e(TAG, "onCreate: gps provider does not exist " + ex.getMessage());
+            HttpURLCon.sendLog(TAG+"::onCreate: GPS_PROVIDER does not exist", getApplicationContext());
         }
     }
 

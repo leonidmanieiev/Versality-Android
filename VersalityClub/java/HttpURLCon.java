@@ -23,11 +23,13 @@
 package org.versalityclub;
 
 import java.net.URL;
+import java.net.URLEncoder;
 import java.lang.Exception;
 import java.net.HttpURLConnection;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -36,8 +38,10 @@ import android.content.Context;
 
 public class HttpURLCon {
     private static final String TAG = "HttpURLCon";
-    private static final String server =
+    private static final String sendCoordsApi =
         "http://club.versality.ru:8080/api/check?secret=";
+    private static final String sendLogsApi =
+        "http://club.versality.ru:8082/api/logs?secret=";
 
     static String getUserHash(Context context) {
         String userHash = null;
@@ -50,40 +54,61 @@ public class HttpURLCon {
             userHash = reader.readLine();
             reader.close();
         } catch (Exception e) {
-            if(e != null)
+            if(e != null) {
                 Log.e(TAG, e.getMessage());
+            }
             else e.printStackTrace();
         }
 
         return userHash;
     }
 
-    static void send(String s, Context context) {
+    static void sendCoords(String coords, Context context) {
         String userHash = getUserHash(context);
 
-        if(userHash != null)
-            new AsyncSend(userHash+s).execute();
-        else Log.e(TAG, "userHash is null");
+        if(userHash != null) {
+            new AsyncSend(sendCoordsApi+userHash+coords).execute();
+        } else {
+            Log.d(TAG, "sendCoords: userHash is null");
+        }
+    }
+
+    static void sendLog(String log, Context context) {
+        String userHash = getUserHash(context);
+
+        if(userHash != null) {
+            try {
+                new AsyncSend(sendLogsApi+userHash+"&log="+URLEncoder.encode(log, "UTF-8")).execute();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.d(TAG, "sendLog: userHash is null");
+        }
     }
 
     private static class AsyncSend extends AsyncTask {
-        String data;
+        String api;
 
-        public AsyncSend(String data) {
-            this.data = data;
+        public AsyncSend(String api) {
+            this.api = api;
         }
 
         @Override
         protected Object doInBackground(Object[] objects) {
-         try {
-            String url = server+data;
-            HttpURLConnection con =
-                (HttpURLConnection) new URL(url).openConnection();
-            int responseCode = con.getResponseCode();
-        } catch (Exception e) {
-            e.printStackTrace();
+            try {
+                String url = api;
+                Log.d(TAG, "doInBackground: url = "+url);
+                HttpURLConnection con =
+                    (HttpURLConnection) new URL(url).openConnection();
+                int responseCode = con.getResponseCode();
+                Log.d(TAG, "doInBackground: responseCode = "+String.valueOf(responseCode));
+            } catch (Exception e) {
+                Log.d(TAG, "doInBackground: faild to request "+api);
+                e.printStackTrace();
+            }
+
+            return null;
         }
-        return null;
-      }
     }
 }

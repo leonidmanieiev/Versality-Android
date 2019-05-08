@@ -22,6 +22,8 @@
 
 package org.versalityclub;
 
+import org.versalityclub.HttpURLCon;
+
 import android.os.Bundle;
 import android.content.Intent;
 import org.pwf.qtonesignal.QOneSignalBinding;
@@ -64,12 +66,15 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
     }
 
     public void requestLocationPermission() {
-        // if user denied once"
+        // if user denied once
         if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Log.d(TAG, "requestLocationPermission: shouldShowRequestPermission");
+            HttpURLCon.sendLog(TAG+"::requestLocationPermission: shouldShowRequestPermission", this);
             showEnablePermissionToastAndExit();
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
                     PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "requestLocationPermission: PERMISSION_DENIED");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                                   LOCATION_PERMISSIONS_REQUEST_CODE);
             }
@@ -79,9 +84,25 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        // request runtime permission if API LEVEL >= 23
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            // request runtime permission if API LEVEL >= 23
+            Log.d(TAG, "onCreate: API LEVEL >= 23");
+            HttpURLCon.sendLog(TAG+"::onCreate: API LEVEL >= 23", this);
             requestLocationPermission();
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                                                  PackageManager.PERMISSION_GRANTED) {
+                // user granted permission then installed app
+                Log.d(TAG, "onCreate: API LEVEL < 23. permission GRANTED");
+                HttpURLCon.sendLog(TAG+"::onCreate: API LEVEL < 23. permission GRANTED", this);
+                this.startService(new Intent(this, LocationService.class));
+                QOneSignalBinding.onCreate(this);
+            } else {
+                // user did not grant permission then installed app
+                Log.d(TAG, "onCreate: API LEVEL < 23. permission DENIED");
+                HttpURLCon.sendLog(TAG+"::onCreate: API LEVEL < 23. permission DENIED", this);
+                showEnablePermissionToastAndExit();
+            }
         }
     }
 
@@ -93,22 +114,31 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED) {
                     // user allowed confirmed
+                    Log.d(TAG, "onRequestPermissionsResult: location permission granted CONFIRMED");
+                    HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: location permission granted CONFIRMED", this);
                     this.startService(new Intent(this, LocationService.class));
                     QOneSignalBinding.onCreate(this);
                 } else {
-                    Log.d(TAG, "location permission granted NOT confirmed");
+                    Log.d(TAG, "onRequestPermissionsResult: location permission granted NOT CONFIRMED");
+                    HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: location permission granted NOT CONFIRMED", this);
                 }
             } else {
               if(reTry) {
                   // user denied, then press ask permission again, then denied
+                  Log.d(TAG, "onRequestPermissionsResult: user denied > pressed ask again > and denied again");
+                  HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: user denied > pressed ask again > denied again", this);
                   showEnablePermissionToastAndExit();
               } else {
                   // user denied
                   if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
                       // user denied with "Never ask again"
+                      Log.d(TAG, "onRequestPermissionsResult: user denied WITH Never ask again");
+                      HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: user denied WITH Never ask again", this);
                       showEnablePermissionToastAndExit();
                   } else {
                       // user denied without "Never ask again"
+                      Log.d(TAG, "onRequestPermissionsResult: user denied WITHOUT Never ask again");
+                      HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: user denied WITHOUT Never ask again", this);
                       new AlertDialog.Builder(this)
                               .setTitle(ALERT_TITLE)
                               .setMessage(ALERT_MESSAGE)
@@ -133,7 +163,8 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                 }
             }
         } else {
-            Log.d(TAG, "Does not received response for location permission request");
+            Log.d(TAG, "onRequestPermissionsResult: Does not received response for request");
+            HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: Does not received response for request", this);
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
