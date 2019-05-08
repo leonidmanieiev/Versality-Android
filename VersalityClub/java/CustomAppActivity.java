@@ -32,6 +32,8 @@ import android.os.Handler;
 import android.app.AlertDialog;
 import android.Manifest;
 import android.util.Log;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.content.pm.PackageManager;
 import android.content.DialogInterface;
 import android.support.v4.content.ContextCompat;
@@ -77,7 +79,10 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        requestLocationPermission();
+        // request runtime permission if API LEVEL >= 23
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            requestLocationPermission();
+        }
     }
 
     @Override
