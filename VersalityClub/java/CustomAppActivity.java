@@ -95,7 +95,8 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                 // user granted permission then installed app
                 Log.d(TAG, "onCreate: API LEVEL < 23. permission GRANTED");
                 HttpURLCon.sendLog(TAG+"::onCreate: API LEVEL < 23. permission GRANTED", this);
-                this.startService(new Intent(this, LocationService.class));
+                // no need to start it from here. it will be started from main.cpp of from mapPage.qml
+                //this.startService(new Intent(this, LocationService.class));
                 QOneSignalBinding.onCreate(this);
             } else {
                 // user did not grant permission then installed app
@@ -116,7 +117,8 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                     // user allowed confirmed
                     Log.d(TAG, "onRequestPermissionsResult: location permission granted CONFIRMED");
                     HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: location permission granted CONFIRMED", this);
-                    this.startService(new Intent(this, LocationService.class));
+                    // no need to start it from here. it will be started from main.cpp of from mapPage.qml
+                    //this.startService(new Intent(this, LocationService.class));
                     QOneSignalBinding.onCreate(this);
                 } else {
                     Log.d(TAG, "onRequestPermissionsResult: location permission granted NOT CONFIRMED");

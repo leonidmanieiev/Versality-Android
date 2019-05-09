@@ -23,6 +23,7 @@
 //http client
 import "../"
 import "../js/helpFunc.js" as Helper
+import CppCall 0.6
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 
@@ -55,6 +56,8 @@ Item
     property string promo_desc: AppSettings.value("promo/desc") === undefined ? '' : AppSettings.value("promo/desc")
     //company data
     property string comp_id: AppSettings.value("company/id") === undefined ? '' : AppSettings.value("company/id")
+
+    CppMethodCall { id: cppCall }
 
     //creates params for request
     function makeParams()
@@ -165,6 +168,9 @@ Item
                                 AppSettings.setValue("hash", request.responseText);
                                 AppSettings.endGroup();
 
+                                //saving hash to file
+                                cppCall.saveHashToFile();
+
                                 //determine whether user seen app instructions
                                 if(AppSettings.value("user/seen_almost_done_page") === undefined)
                                 {
@@ -202,6 +208,10 @@ Item
                                     AppSettings.beginGroup("user");
                                     AppSettings.setValue("hash", uInfoJSON.secret);
                                     AppSettings.endGroup();
+
+                                    //saving hash to file
+                                    cppCall.saveHashToFile();
+
                                     xmlHttpRequestLoader.source = "mapPage.qml";
                                 } catch (e) {
                                     toastMessage.setTextAndRun(Vars.smthWentWrong, true);
@@ -279,6 +289,10 @@ Item
                                 AppSettings.beginGroup("user");
                                 AppSettings.setValue("hash", request.responseText);
                                 AppSettings.endGroup();
+
+                                //saving hash to file
+                                cppCall.saveHashToFile();
+
                                 xmlHttpRequestLoader.source = "passwordInputPage.qml";
                                 break;
                             case 'company':

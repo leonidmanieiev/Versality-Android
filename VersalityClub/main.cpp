@@ -32,6 +32,7 @@
 #include "geolocationinfo.h"
 #include "pagenameholder.h"
 #include "promotionclusters.h"
+#include "cppmethodcall.h"
 #ifdef __ANDROID__
 #include <QGuiApplication>
 #include <QtAndroid>
@@ -41,7 +42,7 @@
 #include "QApplication"
 #endif
 
-
+bool CppMethodCall::locationServiceStarted = false;
 
 int main(int argc, char *argv[])
 {
@@ -59,6 +60,7 @@ int main(int argc, char *argv[])
 #endif
     qmlRegisterType<NetworkInfo>("Network", 0, 6, "NetworkInfo");
     qmlRegisterType<GeoLocationInfo>("GeoLocation", 0, 6, "GeoLocationInfo");
+    qmlRegisterType<CppMethodCall>("CppCall", 0, 6, "CppMethodCall");
     qmlRegisterType<AppSettings>("org.versalityclub", 0, 6, "AppSettings");
     qmlRegisterType<PageNameHolder>("org.versalityclub", 0, 6, "PageNameHolder");
     qmlRegisterType<PromotionClusters>("org.versalityclub", 0, 6, "PromotionClusters");
@@ -69,28 +71,11 @@ int main(int argc, char *argv[])
         return -1;
 
 #ifdef __ANDROID__
-    //if user has an account so do hash
-    if(!AppSettings().value("user/hash").toString().isEmpty())
-    {
-        QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/hash.txt");
-        if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-            qDebug() << "Failed to open 'AppDataLocation/hash.txt'";
-            return -1;
-        }
-
-        //saving user hash to file
-        QTextStream out(&file);
-        out << AppSettings().value("user/hash").toString();
-        out.flush();
-        file.close();
-
-        //starting location service
-        QAndroidJniObject::callStaticMethod<void>(
-        "org.versalityclub.LocationService", "startLocationService",
-        "(Landroid/content/Context;)V", QtAndroid::androidActivity().object());
-    }
-    else qDebug() << "No user hash yet";
+    CppMethodCall cppCall;
+    //saving hash to file
+    cppCall.saveHashToFile();
+    //starting location service
+    cppCall.startLocationService();
 #endif
     return app.exec();
 }

@@ -64,6 +64,7 @@ HEADERS += \
     geolocationinfo.h \
     promotion.h \
     pagenameholder.h \
-    promotionclusters.h
+    promotionclusters.h \
+    cppmethodcall.h
 
 include(android-openssl.pri)

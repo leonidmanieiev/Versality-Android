@@ -82,6 +82,7 @@ public class LocationService extends QtService
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
+        HttpURLCon.sendLog(TAG+"::onStartCommand", getApplicationContext());
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }

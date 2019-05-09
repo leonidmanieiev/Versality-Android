@@ -32,6 +32,7 @@ import QtPositioning 5.8
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import OneSignal 1.0 // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
+import CppCall 0.6
 
 Page
 {
@@ -518,11 +519,18 @@ Page
 
     FooterButtons { id: footerButton; pressedFromPageName: pressedFrom }
 
+    CppMethodCall { id: cppCall }
+
     Component.onCompleted:
-    {
+    {        
         //TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
         if(AppSettings.value("user/hash") !== undefined)
+        {
+            //sending user hash for identification for notifs.
             QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+            //if mapPage loaded -> user chosen cats -> we can start service
+            cppCall.startLocationService();
+        }
 
         //setting active focus for key capturing
         mapPage.forceActiveFocus();
