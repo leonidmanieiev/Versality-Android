@@ -23,6 +23,6 @@
 //stack to store history of loaded pages
 pragma Singleton
 import QtQuick 2.11
-import org.versalityclub 1.0
+import org.versalityclub 0.7
 
 PageNameHolder { }

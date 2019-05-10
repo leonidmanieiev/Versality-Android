@@ -32,7 +32,7 @@ import QtPositioning 5.8
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import OneSignal 1.0 // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
-import CppCall 1.0
+import CppCall 0.7
 
 Page
 {
