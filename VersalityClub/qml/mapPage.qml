@@ -32,7 +32,7 @@ import QtPositioning 5.8
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import OneSignal 1.0 // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
-import CppCall 0.6
+import CppCall 1.0
 
 Page
 {
@@ -91,7 +91,7 @@ Page
         var clustersTextJson =
                 PromotionClusters.clustering(jsonFromServer, mainMap.zoomLevel);
 
-        /*/clusterization was unsuccessful
+        /*clusterization was unsuccessful
           check console log*/
         if(clustersTextJson.substring(0, 5) === "Error")
         {

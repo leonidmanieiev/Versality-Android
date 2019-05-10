@@ -43,6 +43,7 @@
 #endif
 
 bool CppMethodCall::locationServiceStarted = false;
+bool AppSettings::needToRemovePromsAndComps = true;
 
 int main(int argc, char *argv[])
 {
@@ -58,12 +59,12 @@ int main(int argc, char *argv[])
 #ifdef __ANDROID__
     QOneSignal::registerQMLTypes();
 #endif
-    qmlRegisterType<NetworkInfo>("Network", 0, 6, "NetworkInfo");
-    qmlRegisterType<GeoLocationInfo>("GeoLocation", 0, 6, "GeoLocationInfo");
-    qmlRegisterType<CppMethodCall>("CppCall", 0, 6, "CppMethodCall");
-    qmlRegisterType<AppSettings>("org.versalityclub", 0, 6, "AppSettings");
-    qmlRegisterType<PageNameHolder>("org.versalityclub", 0, 6, "PageNameHolder");
-    qmlRegisterType<PromotionClusters>("org.versalityclub", 0, 6, "PromotionClusters");
+    qmlRegisterType<NetworkInfo>("Network", 1, 0, "NetworkInfo");
+    qmlRegisterType<GeoLocationInfo>("GeoLocation", 1, 0, "GeoLocationInfo");
+    qmlRegisterType<CppMethodCall>("CppCall", 1, 0, "CppMethodCall");
+    qmlRegisterType<AppSettings>("org.versalityclub", 1, 0, "AppSettings");
+    qmlRegisterType<PageNameHolder>("org.versalityclub", 1, 0, "PageNameHolder");
+    qmlRegisterType<PromotionClusters>("org.versalityclub", 1, 0, "PromotionClusters");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

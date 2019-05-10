@@ -43,9 +43,16 @@ public:
         //clearAllAppSettings();
 
         //clears promotions and company cache on each app launch
-        this->remove("promo");
-        this->remove("company");
+        if(needToRemovePromsAndComps)
+        {
+            needToRemovePromsAndComps = false;
+            this->remove("promo");
+            this->remove("company");
+        }
     }
+
+    static bool needToRemovePromsAndComps;
+
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
     { QSettings::setValue(key, value); }
     Q_INVOKABLE QVariant value(const QString& key, const QVariant &defaultValue = QVariant())

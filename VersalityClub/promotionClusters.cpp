@@ -56,7 +56,10 @@ QVector<Promotion> PromotionClusters::getPromotions(const QString &jsonText) con
     }
     else
     {
-        qDebug() << "json.isNull() or !json.isArray()";
+        if(json.isNull())
+            qDebug() << "json.isNull()";
+        else qDebug() << "!json.isArray()";
+
         if(error != nullptr)
             throw std::invalid_argument(error->errorString().toStdString());
     }
