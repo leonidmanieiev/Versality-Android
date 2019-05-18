@@ -34,10 +34,12 @@
 #include "promotionclusters.h"
 #include "cppmethodcall.h"
 #ifdef __ANDROID__
+#include <QSysInfo>
 #include <QGuiApplication>
 #include <QtAndroid>
 #include "jni.h"
 #include "qonesignal.h"
+#include "sslsafenetworkfactory.h"
 #else
 #include "QApplication"
 #endif
@@ -67,6 +69,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<PromotionClusters>("org.versalityclub", 0, 7, "PromotionClusters");
 
     QQmlApplicationEngine engine;
+#ifdef __ANDROID__
+    //workaround of "SSL handshake failed" issue on 4.4 KitKat
+    if(QSysInfo::productVersion() == "4.4")
+        engine.setNetworkAccessManagerFactory(new SSLSafeNetworkFactory);
+#endif
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;

@@ -57,7 +57,6 @@
         <file>icons/settings.png</file>
         <file>backgrounds/fade_out_h.png</file>
         <file>backgrounds/description_fade_out.png</file>
-        <file>backgrounds/preview_bg.png</file>
         <file>icons/add_to_favourites_2_off.png</file>
         <file>icons/add_to_favourites_2_on.png</file>
         <file>icons/add_to_favourites_off.png</file>
@@ -103,5 +102,6 @@
         <file>icons/user_location_marker_icon.svg</file>
         <file>icons/geo_location.svg</file>
         <file>appInfoText.txt</file>
+        <file>backgrounds/preview_bg.jpg</file>
     </qresource>
 </RCC>

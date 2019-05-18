@@ -25,6 +25,8 @@ import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import QtGraphicalEffects 1.0
+import QtQuick.Layouts 1.3
 
 Page
 {
@@ -153,18 +155,30 @@ Page
         id: promsDelegate
         Column
         {
+            id: column
             width: Vars.screenWidth*0.8
             anchors.horizontalCenter: parent.horizontalCenter
             bottomPadding: Vars.screenHeight*0.1
+
             Rectangle
             {
-                id: promsItem
+                id: promsRect
                 height: promItemHeight
                 width: Vars.screenWidth*0.8
                 radius: Vars.listItemRadius
-                color: "transparent"
+                color: "white"
 
-                //rounding promotion item background image
+                RectangularGlow
+                {
+                    id: effect
+                    z: -1
+                    anchors.fill: promsRect
+                    color: "grey"
+                    glowRadius: 40
+                    cornerRadius: promsRect.radius
+                }
+
+                //rounding promotion item background imageSELECT * FROM PROMOTION
                 ImageRounder
                 {
                     imageSource: picture
@@ -210,6 +224,7 @@ Page
                 }
             }//Rectangle
         }//Column
+
     }//Component
 
     //switch to mapPage (proms on map view)
@@ -217,7 +232,6 @@ Page
     {
         id: showOnMapButton
         visible: requestFromCompany ? false : true
-        buttonWidth: Vars.screenWidth*0.47
         buttonText: Vars.showOnMap
         buttonIconSource: "../icons/on_map.png"
         iconAlias.width: height*0.56

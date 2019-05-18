@@ -69,7 +69,7 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
         // if user denied once
         if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
             Log.d(TAG, "requestLocationPermission: shouldShowRequestPermission");
-            HttpURLCon.sendLog(TAG+"::requestLocationPermission: shouldShowRequestPermission", this);
+            //HttpURLCon.sendLog(TAG+"::requestLocationPermission: shouldShowRequestPermission", this);
             showEnablePermissionToastAndExit();
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -94,7 +94,8 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                                                   PackageManager.PERMISSION_GRANTED) {
                 // user granted permission then installed app
                 Log.d(TAG, "onCreate: API LEVEL < 23. permission GRANTED");
-                HttpURLCon.sendLog(TAG+"::onCreate: API LEVEL < 23. permission GRANTED", this);
+                //HttpURLCon.sendLog(TAG+"::onCreate: API LEVEL < 23. permission GRANTED", this);
+
                 // no need to start it from here. it will be started from main.cpp of from mapPage.qml
                 //this.startService(new Intent(this, LocationService.class));
                 QOneSignalBinding.onCreate(this);
@@ -115,7 +116,7 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED) {
                     // user allowed confirmed
-                    Log.d(TAG, "onRequestPermissionsResult: location permission granted CONFIRMED");
+                    //Log.d(TAG, "onRequestPermissionsResult: location permission granted CONFIRMED");
                     HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: location permission granted CONFIRMED", this);
                     // no need to start it from here. it will be started from main.cpp of from mapPage.qml
                     //this.startService(new Intent(this, LocationService.class));

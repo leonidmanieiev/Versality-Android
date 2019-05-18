@@ -65,6 +65,8 @@ HEADERS += \
     promotion.h \
     pagenameholder.h \
     promotionclusters.h \
-    cppmethodcall.h
+    cppmethodcall.h \
+    sslsafenetworkaccessmanager.h \
+    sslsafenetworkfactory.h
 
 include(android-openssl.pri)

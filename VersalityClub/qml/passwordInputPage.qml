@@ -111,6 +111,8 @@ Page
             {
                 // close keyboard
                 Qt.inputMethod.hide();
+                passField.selectByMouse = false;
+                passField.readOnly = true;
                 AppSettings.beginGroup("user");
                 AppSettings.setValue("password", passField.text);
                 AppSettings.endGroup();

@@ -41,29 +41,46 @@ RoundButton
 
     id: topControlButton
     radius: height*0.5
-    width: buttonWidth
+    width: row.width*1.2
     height: Vars.screenHeight*0.05
     opacity: pressed ? Vars.defaultOpacity : 1
     anchors.top: parent.top
     anchors.topMargin: Helper.toDp(parent.height*0.05, Vars.dpi)
     anchors.horizontalCenter: parent.horizontalCenter
-    contentItem: Text
+    contentItem: Item
     {
-        id: buttonTextContent
-        clip: true
-        text: buttonText
-        font.pixelSize: Helper.toDp(13, Vars.dpi)
-        font.family: regularText.name
-        color: Vars.backgroundWhite
-        leftPadding: parent.radius*0.8
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
+        Row
+        {
+            id: row
+            spacing: topControlButton.radius
+            anchors.centerIn: parent
+
+            Text
+            {
+                id: buttonTextContent
+                clip: true
+                text: buttonText
+                font.pixelSize: Helper.toDp(13, Vars.dpi)
+                font.family: regularText.name
+                color: Vars.backgroundWhite
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Image
+            {
+                id: topControlButtonIcon
+                source: buttonIconSource
+                width: topControlButton.radius
+                height: topControlButton.radius
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
     }
     background: Rectangle
     {
         id: buttonBackground
         clip: true
-        radius: height*0.5
+        radius: parent.radius
         anchors.centerIn: parent
         /*swaped geometry and rotation is a
         trick for left to right gradient*/
@@ -77,14 +94,4 @@ RoundButton
         }
     }
 
-    Image
-    {
-        id: topControlButtonIcon
-        source: buttonIconSource
-        width: parent.radius
-        height: parent.radius
-        anchors.right: parent.right
-        anchors.rightMargin: parent.radius
-        anchors.verticalCenter: parent.verticalCenter
-    }
 }

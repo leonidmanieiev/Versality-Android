@@ -39,8 +39,6 @@ public:
                   QCoreApplication::instance()->applicationName(),
                   parent)
     {
-        // TODO DELETE AFTER LAUNCH
-        //clearAllAppSettings();
 
         //clears promotions and company cache on each app launch
         if(needToRemovePromsAndComps)
@@ -48,6 +46,9 @@ public:
             needToRemovePromsAndComps = false;
             this->remove("promo");
             this->remove("company");
+
+            // TODO DELETE AFTER LAUNCH
+            // clearAllAppSettings();
         }
     }
 

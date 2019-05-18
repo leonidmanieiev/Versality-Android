@@ -22,8 +22,15 @@ public class LocationService extends QtService
     private static final float LOCATION_DISTANCE = 300.0f; //300 meters
 
     public static String LocationToString(final Location location) {
-        return "&lat="+Location.convert(location.getLatitude(), Location.FORMAT_DEGREES) +
-               "&lon="+Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
+        String lat = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES);
+        String lon = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
+
+        // if smartphone has RU locale, coords has ',' not '.'
+        // as separator of integer and fractional parts
+        lat = lat.replace(",", ".");
+        lon = lon.replace(",", ".");
+
+        return "&lat="+lat + "&lon="+lon;
     }
 
     public static void startLocationService(Context ctx) {

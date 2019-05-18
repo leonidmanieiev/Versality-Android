@@ -38,15 +38,20 @@ Page
     readonly property string comp_name: AppSettings.value("company/name")
     readonly property var comp_pictures: AppSettings.value("company/pictures")
     readonly property string comp_website: AppSettings.value("company/website")
-    readonly property string pic1Source: comp_pictures[0]
-    readonly property string pic2Source: comp_pictures[1]
-    readonly property string pic3Source: comp_pictures[2]
-    readonly property string pic4Source: comp_pictures[3]
-    property string picSource: ''
+    readonly property var picsSources: [comp_pictures[0], comp_pictures[1],
+                                        comp_pictures[2], comp_pictures[3]]
+    property int picInd: 0
     //all good flag
     property bool allGood: AppSettings.value("company/id") === undefined ? false : true
     //alias
     property alias comp_loader: companyPageLoader
+
+    function setPopupPicAndShow()
+    {
+        compPicPopup.picItem.source = picsSources[picInd];
+        compPicPopup.visible = true;
+        PageNameHolder.push('popupImage');
+    }
 
     header: HeaderButtons { }
 
@@ -98,7 +103,8 @@ Page
                 id: logoContactInfo
                 width: Vars.screenWidth
                 height: Vars.footerButtonsFieldHeight
-                Layout.alignment: Qt.AlignHCenter
+                anchors.left: parent.left
+                anchors.leftMargin: parent.width*0.05
                 spacing: parent.width*0.0625
 
                 Rectangle
@@ -189,7 +195,7 @@ Page
                             ImageRounder
                             {
                                 id: compPic1
-                                imageSource: pic1Source
+                                imageSource: picsSources[0]
                                 roundValue: parent.height*0.1
                             }
 
@@ -199,9 +205,8 @@ Page
                                 anchors.fill: parent
                                 onClicked:
                                 {
-                                    picSource = pic1Source;
-                                    compPicPopup.visible = true;
-                                    PageNameHolder.push('popupImage');
+                                    picInd = 0;
+                                    setPopupPicAndShow()
                                 }
                             }
                         }
@@ -216,7 +221,7 @@ Page
                             ImageRounder
                             {
                                 id: compPic2
-                                imageSource: pic2Source
+                                imageSource: picsSources[1]
                                 roundValue: parent.height*0.1
                             }
 
@@ -226,9 +231,8 @@ Page
                                 anchors.fill: parent
                                 onClicked:
                                 {
-                                    picSource = pic2Source;
-                                    compPicPopup.visible = true;
-                                    PageNameHolder.push('popupImage');
+                                    picInd = 1;
+                                    setPopupPicAndShow()
                                 }
                             }
                         }
@@ -243,7 +247,7 @@ Page
                             ImageRounder
                             {
                                 id: compPic3
-                                imageSource: pic3Source
+                                imageSource: picsSources[2]
                                 roundValue: parent.height*0.1
                             }
 
@@ -253,9 +257,8 @@ Page
                                 anchors.fill: parent
                                 onClicked:
                                 {
-                                    picSource = pic3Source;
-                                    compPicPopup.visible = true;
-                                    PageNameHolder.push('popupImage');
+                                    picInd = 2;
+                                    setPopupPicAndShow()
                                 }
                             }
                         }
@@ -270,7 +273,7 @@ Page
                             ImageRounder
                             {
                                 id: compPic4
-                                imageSource: pic4Source
+                                imageSource: picsSources[3]
                                 roundValue: parent.height*0.1
                             }
 
@@ -280,9 +283,8 @@ Page
                                 anchors.fill: parent
                                 onClicked:
                                 {
-                                    picSource = pic4Source;
-                                    compPicPopup.visible = true;
-                                    PageNameHolder.push('popupImage');
+                                    picInd = 3;
+                                    setPopupPicAndShow()
                                 }
                             }
                         }
@@ -305,7 +307,8 @@ Page
                 id: textArea
                 width: parent.width*0.9
                 color: "transparent"
-                Layout.leftMargin: middleFieldsColumns.height*0.09
+                anchors.left: parent.left
+                anchors.leftMargin: parent.width*0.05
 
                 Label
                 {
@@ -323,6 +326,8 @@ Page
 
     Popup
     {
+        property alias picItem: pic
+
         id: compPicPopup
         x: 0
         y: (Vars.companyPageHeight-height)/2
@@ -338,8 +343,44 @@ Page
         Image
         {
             id: pic
-            source: picSource
             anchors.fill: parent
+        }
+
+        MouseArea
+        {
+            property int xStart: 0
+            property bool canSwipe: false
+
+            id: swiper
+            enabled: parent.visible
+            anchors.fill: parent
+
+            onPressed:
+            {
+                canSwipe = true;
+                xStart = mouse.x;
+            }
+
+            onPositionChanged:
+            {
+                var dist = mouse.x - xStart;
+                xStart = mouse.x;
+
+                if(picInd > 0 && dist > 15 && canSwipe)
+                {
+                    // swipe from left to right
+                    canSwipe = false;
+                    picInd = picInd-1;
+                    pic.source = picsSources[picInd];
+                }
+                else if(picInd < 3 && dist < -15 && canSwipe)
+                {
+                    // swipe from right to left
+                    canSwipe = false;
+                    picInd = picInd+1;
+                    pic.source = picsSources[picInd];
+                }
+            }
         }
     }
 

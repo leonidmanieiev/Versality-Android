@@ -27,6 +27,7 @@ import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 import QtPositioning 5.8
+import QtGraphicalEffects 1.0
 
 Page
 {
@@ -104,14 +105,15 @@ Page
         visible: allGood
         clip: true
         width: parent.width
-        height: Vars.screenHeight//parent.height
+        height: Vars.screenHeight
         contentHeight: middleFieldsColumns.height*1.1
+        anchors.horizontalCenter: parent.horizontalCenter
         boundsBehavior: Flickable.DragOverBounds
 
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: parent.width*0.8
+            width: parent.width
             spacing: Vars.screenHeight*0.05
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -120,9 +122,19 @@ Page
                 id: promsImage
                 Layout.alignment: Qt.AlignHCenter
                 height: Vars.screenHeight*0.25
-                width: parent.width
+                width: parent.width*0.9
                 radius: Vars.listItemRadius
                 color: "transparent"
+
+                RectangularGlow
+                {
+                    id: effect
+                    z: -1
+                    anchors.fill: promsImage
+                    color: "grey"
+                    glowRadius: 40
+                    cornerRadius: promsImage.radius
+                }
 
                 //rounding promotion image
                 ImageRounder
@@ -140,16 +152,18 @@ Page
                 font.family: boldText.name
                 font.weight: Font.Bold
                 color: Vars.backgroundBlack
-                Layout.alignment: Qt.AlignHCenter
+                Layout.alignment: Qt.AlignLeft
+                Layout.leftMargin: parent.width*0.1
             }
 
             Rectangle
             {
                 id: textArea
-                width: promsImage.width
+                width: parent.width*0.9
                 height: promotionDescription.height
-                Layout.alignment: Qt.AlignHCenter
                 color: Vars.backgroundWhite
+                Layout.alignment: Qt.AlignLeft
+                Layout.leftMargin: parent.width*0.1
 
                 Label
                 {
@@ -166,14 +180,15 @@ Page
             RowLayout
             {
                 id: rowLayout1
-                width: parent.width
-                Layout.alignment: Qt.AlignHCenter
-                spacing: Vars.screenWidth*0.1
+                width: parent.width*0.9
+                Layout.alignment: Qt.AlignLeft
+                Layout.leftMargin: parent.width*0.1
+                spacing: parent.width*0.055
 
                 ControlButton
                 {
                     id: activeCoupon
-                    buttonWidth: Vars.screenWidth*0.6
+                    buttonWidth: Vars.screenWidth*0.7
                     labelText: Vars.activateCoupon
                     labelColor: Vars.backgroundWhite
                     backgroundColor: Vars.activeCouponColor
@@ -196,8 +211,8 @@ Page
                 IconedButton
                 {
                     id: addToFavourite
-                    width: Vars.screenHeight*0.1
-                    height: Vars.screenHeight*0.1
+                    width: Vars.screenHeight*0.08
+                    height: Vars.screenHeight*0.08
                     Layout.alignment: Qt.AlignRight
                     buttonIconSource: p_is_marked ?
                                       "../icons/add_to_favourites_on.png" :
@@ -340,10 +355,11 @@ Page
             ControlButton
             {
                 id: nearestStoreButton
-                Layout.fillWidth: true
+                buttonWidth: parent.width*0.9
+                Layout.alignment: Qt.AlignLeft
+                Layout.leftMargin: parent.width*0.1
                 labelText: Vars.closestAddress
                 backgroundColor: "transparent"
-                Layout.alignment: Qt.AlignHCenter
                 buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("promotionPage.qml");
@@ -358,7 +374,9 @@ Page
             ControlButton
             {
                 id: companyCardButton
-                Layout.fillWidth: true
+                buttonWidth: parent.width*0.9
+                Layout.alignment: Qt.AlignLeft
+                Layout.leftMargin: parent.width*0.1
                 labelText: Vars.openCompanyCard
                 labelColor: Vars.backgroundBlack
                 backgroundColor: "transparent"
@@ -410,7 +428,6 @@ Page
     {
         id: backButton
         visible: allGood
-        buttonWidth: Vars.screenWidth*0.54
         buttonText: Vars.backToPromsPicking
         buttonIconSource: "../icons/left_arrow.png"
         iconAlias.width: height*0.5

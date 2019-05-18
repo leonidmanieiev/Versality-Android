@@ -25,6 +25,7 @@ import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import QtGraphicalEffects 1.0
 
 Page
 {
@@ -133,6 +134,16 @@ Page
                 radius: Vars.listItemRadius
                 color: "transparent"
 
+                RectangularGlow
+                {
+                    id: effect
+                    z: -1
+                    anchors.fill: promsItem
+                    color: "grey"
+                    glowRadius: 40
+                    cornerRadius: promsItem.radius
+                }
+
                 //rounding promotion item background image
                 ImageRounder
                 {
@@ -183,7 +194,6 @@ Page
     TopControlButton
     {
         id: showOnMapButton
-        buttonWidth: Vars.screenWidth*0.47
         buttonText: Vars.showOnMap
         buttonIconSource: "../icons/on_map.png"
         iconAlias.width: height*0.56

@@ -26,6 +26,7 @@ import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 
 Page
 {
@@ -69,14 +70,15 @@ Page
         clip: true
         width: parent.width
         height: parent.height
-        source: "../backgrounds/preview_bg.png"
+        source: "../backgrounds/preview_bg.jpg"
     }
 
     Flickable
     {
         id: flickableArea
+        interactive: false
         clip: true
-        width: Vars.screenWidth
+        width: parent.width
         height: Vars.screenHeight
         contentHeight: middleFieldsColumns.height
         anchors.top: parent.top
@@ -88,6 +90,7 @@ Page
             id: middleFieldsColumns
             width: parent.width
             spacing: Vars.screenHeight*0.05
+            anchors.horizontalCenter: parent.horizontalCenter
 
             IconedButton
             {
@@ -125,12 +128,22 @@ Page
             Rectangle
             {
                 id: promsImage
-                Layout.topMargin: parent.spacing*3
+                Layout.topMargin: parent.spacing*2
                 Layout.alignment: Qt.AlignHCenter
                 height: Vars.screenHeight*0.25
-                width: Vars.screenWidth*0.8
+                width: Vars.screenWidth*0.9
                 radius: Vars.listItemRadius
                 color: "transparent"
+
+                RectangularGlow
+                {
+                    id: effect
+                    z: -1
+                    anchors.fill: promsImage
+                    color: "#3a3a3a"
+                    glowRadius: 40
+                    cornerRadius: promsImage.radius
+                }
 
                 //rounding promotion image
                 ImageRounder
@@ -148,7 +161,8 @@ Page
                 font.family: boldText.name
                 font.weight: Font.Bold
                 color: Vars.popupWindowColor
-                Layout.alignment: Qt.AlignHCenter
+                Layout.alignment: Qt.AlignLeft
+                Layout.leftMargin: parent.width*0.1
             }
 
             Rectangle
@@ -156,7 +170,8 @@ Page
                 id: textArea
                 width: promsImage.width
                 height: childrenRect.height
-                Layout.alignment: Qt.AlignHCenter
+                Layout.alignment: Qt.AlignLeft
+                Layout.leftMargin: parent.width*0.1
                 color: "transparent"
 
                 Label
@@ -187,9 +202,10 @@ Page
             ControlButton
             {
                 id: moreButton
-                Layout.fillWidth: true
+                buttonWidth: parent.width*0.9
+                Layout.alignment: Qt.AlignLeft
+                Layout.leftMargin: parent.width*0.1
                 labelText: Vars.more
-                Layout.alignment: Qt.AlignHCenter
                 buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("previewPromotionPage.qml");
@@ -216,7 +232,6 @@ Page
     {
         id: backButton
         anchors.topMargin: Vars.screenWidth*0.25
-        buttonWidth: Vars.screenWidth*0.54
         buttonText: Vars.backToPromsPicking
         buttonIconSource: "../icons/left_arrow.png"
         iconAlias.width: height*0.5

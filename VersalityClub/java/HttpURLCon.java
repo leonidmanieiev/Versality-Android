@@ -65,6 +65,7 @@ public class HttpURLCon {
 
     static void sendCoords(String coords, Context context) {
         String userHash = getUserHash(context);
+        sendLog("sendCoords request: "+sendCoordsApi+userHash+coords, context);
 
         if(userHash != null) {
             new AsyncSend(sendCoordsApi+userHash+coords).execute();

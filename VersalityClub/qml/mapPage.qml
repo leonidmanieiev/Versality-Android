@@ -497,7 +497,6 @@ Page
     {
         id: showInListViewButton
         visible: requestFromCompany ? false : true
-        buttonWidth: Vars.screenWidth*0.57
         buttonText: Vars.showListView
         buttonIconSource: "../icons/show_listview.png"
         onClicked:
