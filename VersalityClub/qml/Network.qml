@@ -22,7 +22,7 @@
 
 //Network information component
 import "../"
-import Network 0.7
+import Network 0.8
 import QtQuick 2.11
 
 NetworkInfo

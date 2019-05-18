@@ -23,7 +23,7 @@
 //http client
 import "../"
 import "../js/helpFunc.js" as Helper
-import CppCall 0.7
+import CppCall 0.8
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 

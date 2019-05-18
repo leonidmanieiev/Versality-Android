@@ -61,12 +61,12 @@ int main(int argc, char *argv[])
 #ifdef __ANDROID__
     QOneSignal::registerQMLTypes();
 #endif
-    qmlRegisterType<NetworkInfo>("Network", 0, 7, "NetworkInfo");
-    qmlRegisterType<GeoLocationInfo>("GeoLocation", 0, 7, "GeoLocationInfo");
-    qmlRegisterType<CppMethodCall>("CppCall", 0, 7, "CppMethodCall");
-    qmlRegisterType<AppSettings>("org.versalityclub", 0, 7, "AppSettings");
-    qmlRegisterType<PageNameHolder>("org.versalityclub", 0, 7, "PageNameHolder");
-    qmlRegisterType<PromotionClusters>("org.versalityclub", 0, 7, "PromotionClusters");
+    qmlRegisterType<NetworkInfo>("Network", 0, 8, "NetworkInfo");
+    qmlRegisterType<GeoLocationInfo>("GeoLocation", 0, 8, "GeoLocationInfo");
+    qmlRegisterType<CppMethodCall>("CppCall", 0, 8, "CppMethodCall");
+    qmlRegisterType<AppSettings>("org.versalityclub", 0, 8, "AppSettings");
+    qmlRegisterType<PageNameHolder>("org.versalityclub", 0, 8, "PageNameHolder");
+    qmlRegisterType<PromotionClusters>("org.versalityclub", 0, 8, "PromotionClusters");
 
     QQmlApplicationEngine engine;
 #ifdef __ANDROID__

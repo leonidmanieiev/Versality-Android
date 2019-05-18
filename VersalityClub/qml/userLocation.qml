@@ -27,7 +27,7 @@ import QtQuick 2.11
 import QtQml 2.2
 import QtPositioning 5.8
 import QtLocation 5.9
-import GeoLocation 0.7
+import GeoLocation 0.8
 
 Item
 {

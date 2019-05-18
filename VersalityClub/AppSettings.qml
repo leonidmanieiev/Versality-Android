@@ -23,6 +23,6 @@
 //place to store user sensetive data and app states for recreation
 pragma Singleton
 import QtQuick 2.11
-import org.versalityclub 0.7
+import org.versalityclub 0.8
 
 AppSettings { }
