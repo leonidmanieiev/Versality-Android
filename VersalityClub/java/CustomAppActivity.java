@@ -87,17 +87,12 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
             // request runtime permission if API LEVEL >= 23
             Log.d(TAG, "onCreate: API LEVEL >= 23");
-            HttpURLCon.sendLog(TAG+"::onCreate: API LEVEL >= 23", this);
             requestLocationPermission();
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                                                   PackageManager.PERMISSION_GRANTED) {
                 // user granted permission then installed app
-                Log.d(TAG, "onCreate: API LEVEL < 23. permission GRANTED");
-                //HttpURLCon.sendLog(TAG+"::onCreate: API LEVEL < 23. permission GRANTED", this);
-
-                // no need to start it from here. it will be started from main.cpp of from mapPage.qml
-                //this.startService(new Intent(this, LocationService.class));
+                Log.d(TAG, "onCreate: API LEVEL < 23. permission GRANTED");;
                 QOneSignalBinding.onCreate(this);
             } else {
                 // user did not grant permission then installed app
@@ -116,10 +111,8 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED) {
                     // user allowed confirmed
-                    //Log.d(TAG, "onRequestPermissionsResult: location permission granted CONFIRMED");
-                    HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: location permission granted CONFIRMED", this);
-                    // no need to start it from here. it will be started from main.cpp of from mapPage.qml
-                    //this.startService(new Intent(this, LocationService.class));
+                    Log.d(TAG, "onRequestPermissionsResult: location permission granted CONFIRMED");
+                    //HttpURLCon.sendLog(TAG+"::onRequestPermissionsResult: location permission granted CONFIRMED", this);
                     QOneSignalBinding.onCreate(this);
                 } else {
                     Log.d(TAG, "onRequestPermissionsResult: location permission granted NOT CONFIRMED");

@@ -43,7 +43,7 @@ Page
     //all good flag
     property bool allGood: true
     //dist (in meters) to be able to active coupon
-    readonly property int promCloseDist: 100
+    readonly property int promCloseDist: 250
     //other
     property real nearestStoreLat
     property real nearestStoreLon

@@ -5,6 +5,8 @@ package org.versalityclub;
 import org.versalityclub.HttpURLCon;
 import org.qtproject.qt5.android.bindings.QtService;
 
+import android.app.Service;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -13,13 +15,16 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Service;
+import android.content.SharedPreferences;
 
 public class LocationService extends QtService
 {
     private LocationManager _locationManager = null;
     private static final String TAG = "LocationService";
-    private static final int LOCATION_INTERVAL = 3600000; //60 minutes
+    private static final long LOCATION_INTERVAL = 3600000L; //60 minutes
+    private static final long TIME_UPPER_BOUND = 2592000000L; //1 month
     private static final float LOCATION_DISTANCE = 300.0f; //300 meters
+    private static final float DIST_UPPER_BOUND = 1000000.0f; //1000 kilometers
 
     public static String LocationToString(final Location location) {
         String lat = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES);
@@ -34,7 +39,7 @@ public class LocationService extends QtService
     }
 
     public static void startLocationService(Context ctx) {
-        Log.d(TAG, "from main.cpp startLocationService");
+        Log.d(TAG, "from onClosing event: startLocationService");
         ctx.startService(new Intent(ctx, LocationService.class));
     }
 
@@ -52,8 +57,20 @@ public class LocationService extends QtService
         public void onLocationChanged(Location location)
         {
             Log.d(TAG, "onLocationChanged: " + location);
+
+            float dist = _lastLocation.distanceTo(location);
+            long time = location.getTime()-_lastLocation.getTime();
+
+            if((dist < DIST_UPPER_BOUND && dist >= LOCATION_DISTANCE) ||
+               (time < TIME_UPPER_BOUND && time >= LOCATION_INTERVAL)) {
+                HttpURLCon.sendCoords(LocationToString(location), getApplicationContext());
+            }
+
+            HttpURLCon.sendLog("dist. delta: "+Float.toString(dist), getApplicationContext());
+            HttpURLCon.sendLog("time delta: "+Long.toString(time), getApplicationContext());
+
             _lastLocation.set(location);
-            HttpURLCon.sendCoords(LocationToString(location), getApplicationContext());
+            _lastLocation.setTime(location.getTime());
         }
 
         @Override
@@ -89,7 +106,6 @@ public class LocationService extends QtService
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
-        HttpURLCon.sendLog(TAG+"::onStartCommand", getApplicationContext());
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }

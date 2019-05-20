@@ -24,6 +24,7 @@ import '.' //QTBUG-34418, singletons require explicit import to load qmldir file
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Window 2.11
+import CppCall 0.8
 
 ApplicationWindow
 {
@@ -42,5 +43,20 @@ ApplicationWindow
         //whether user was not signed(loged) in
         source: AppSettings.value("user/hash") === undefined ?
                      "qml/initialPage.qml" : "qml/mapPage.qml"
+    }
+
+    CppMethodCall { id: cppCall }
+
+    onClosing:
+    {
+        // start location service if user has secret and this is app first closing
+        if(AppSettings.value("user/hash") !== undefined &&
+           AppSettings.value("user/first_launch") === undefined)
+        {
+            AppSettings.beginGroup("user");
+            AppSettings.setValue("first_launch", 1);
+            AppSettings.endGroup();
+            cppCall.startLocationService();
+        }
     }
 }

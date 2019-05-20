@@ -82,8 +82,6 @@ int main(int argc, char *argv[])
     CppMethodCall cppCall;
     //saving hash to file
     cppCall.saveHashToFile();
-    //starting location service
-    cppCall.startLocationService();
 #endif
     return app.exec();
 }

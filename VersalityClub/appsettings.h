@@ -48,7 +48,7 @@ public:
             this->remove("company");
 
             // TODO DELETE AFTER LAUNCH
-            // clearAllAppSettings();
+            //clearAllAppSettings();
         }
     }
 
