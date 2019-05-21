@@ -6,7 +6,6 @@ import org.versalityclub.HttpURLCon;
 import org.qtproject.qt5.android.bindings.QtService;
 
 import android.app.Service;
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -14,8 +13,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.app.Service;
-import android.content.SharedPreferences;
+
+import android.app.PendingIntent;
+import android.app.AlarmManager;
+import android.os.SystemClock;
 
 public class LocationService extends QtService
 {
@@ -66,8 +67,8 @@ public class LocationService extends QtService
                 HttpURLCon.sendCoords(LocationToString(location), getApplicationContext());
             }
 
-            HttpURLCon.sendLog("dist. delta: "+Float.toString(dist), getApplicationContext());
-            HttpURLCon.sendLog("time delta: "+Long.toString(time), getApplicationContext());
+            HttpURLCon.sendLog("dist. delta: "+Float.toString(dist)+" | time delta: "+Long.toString(time),
+                               getApplicationContext());
 
             _lastLocation.set(location);
             _lastLocation.setTime(location.getTime());
@@ -115,9 +116,14 @@ public class LocationService extends QtService
         initializeLocationManager();
 
         try {
+            // for distance > LOCATION_DISTANCE
+            _locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 0,
+                    LOCATION_DISTANCE, _locationListeners[1]);
+            // for time > LOCATION_INTERVAL
             _locationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL,
-                    LOCATION_DISTANCE, _locationListeners[1]);
+                    0, _locationListeners[1]);
             Log.d(TAG, "onCreate: requestLocationUpdates NETWORK_PROVIDER");
         } catch (java.lang.SecurityException ex) {
             Log.e(TAG, "onCreate: fail to request location update, ignore", ex);
@@ -128,9 +134,14 @@ public class LocationService extends QtService
         }
 
         try {
+            // for distance > LOCATION_DISTANCE
+            _locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, 0,
+                    LOCATION_DISTANCE, _locationListeners[0]);
+            // for time > LOCATION_INTERVAL
             _locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL,
-                    LOCATION_DISTANCE, _locationListeners[0]);
+                    0, _locationListeners[0]);
             Log.d(TAG, "onCreate: requestLocationUpdates GPS_PROVIDER");
         } catch (java.lang.SecurityException ex) {
             Log.e(TAG, "onCreate: fail to request location update, ignore", ex);
