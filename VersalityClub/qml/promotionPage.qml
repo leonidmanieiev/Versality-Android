@@ -72,6 +72,37 @@ Page
         }
     }
 
+    //get zoomLevel depends on distance between user and nearestStore
+    function getZoomLevel()
+    {
+        var zoomLevelToDist = [25600, 12800, 6400, 3200, 1600, 800, 400, 200, 100, 50];
+        var diff = Math.abs(zoomLevelToDist[0] - minDistToStore), closestDistIndex = 0;
+
+        for(var i = 1; i < zoomLevelToDist.length; i++)
+        {
+            var currDiff = Math.abs(zoomLevelToDist[i] - minDistToStore);
+            if(currDiff < diff)
+            {
+                diff = currDiff;
+                closestDistIndex = i;
+            }
+        }
+
+        switch(closestDistIndex)
+        {
+            case 0: return 9.5;
+            case 1: return 10.5;
+            case 2: return 11;
+            case 3: return 12;
+            case 4: return 13;
+            case 5: return 13.5;
+            case 6: return 14;
+            case 7: return 15.5;
+            case 8: return 16.5;
+            case 9: return 18;
+        }
+    }
+
     id: promotionPage
     enabled: Vars.isConnected
     height: Vars.pageHeight
@@ -197,7 +228,8 @@ Page
                     {
                         if(minDistToStore < promCloseDist)
                         {
-                            promoCodePopup.setText(p_promo_code);
+                            promoCodePopup.visible = true;
+                            flickableArea.enabled = false;
                             //inform server about coupon was activated
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
                                                           {"api": Vars.userActivateProm,
@@ -239,118 +271,7 @@ Page
                         }
                     }
                 }//addToFavourite
-            }//RowLayout1
-
-            //no need of this for now
-            /*ListView
-            {
-                id: storeInfoListView
-                visible: false
-                clip: true
-                Layout.alignment: Qt.AlignHCenter
-                width: Vars.screenWidth*0.8
-                contentHeight: storeInfoItemHeight
-                model:
-                    ListModel
-                    {
-                        id: storeInfoModel;
-                        Component.onCompleted:
-                        {
-                            storeInfoListView.height = adjustHeight();
-                            storeInfoListView.visible = true;
-
-                            function adjustHeight()
-                            {
-                                if(count > 3)
-                                    return storeInfoItemHeight*3;
-                                else return storeInfoItemHeight*count;
-                            }
-                        }
-                    }
-                delegate: storeInfoDelegate
-            }
-
-            Component
-            {
-                id: storeInfoDelegate
-
-                MouseArea
-                {
-                    id: storeInfoClickableArea
-                    width: childrenRect.width
-                    height: childrenRect.height
-                    onClicked:
-                    {
-                        PageNameHolder.push("promotionPage.qml");
-                        promotionPageLoader.setSource("mapPage.qml",
-                                                { "defaultLat": s_lat,
-                                                  "defaultLon": s_lon,
-                                                  "defaultZoomLevel": 16
-                                                });
-                    }
-
-                    RowLayout
-                    {
-                        id: rowLayout2
-                        width: Vars.screenWidth*0.8
-                        Layout.alignment: Qt.AlignCenter
-
-                        Rectangle
-                        {
-                            id: textBox1
-                            width: Vars.screenWidth*0.2
-                            height: storeInfoItemHeight
-                            Layout.alignment: Qt.AlignHCenter
-                            color: "transparent"
-
-                            Label
-                            {
-                                id: distToStore
-                                text: distBetweenCoords() + ' м'
-                                font.family: regularText.name
-                                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                                            Vars.dpi)
-                                color: Vars.backgroundBlack
-
-                                function distBetweenCoords()
-                                {
-                                    var storePos = QtPositioning.coordinate(s_lat, s_lon);
-                                    var userPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
-                                                                           AppSettings.value("user/lon"));
-                                    var currDistToStore = Math.round(storePos.distanceTo(userPos));
-
-                                    if(minDistToStore > currDistToStore)
-                                    {
-                                        minDistToStore = currDistToStore;
-                                        min_d_s_lat = s_lat;
-                                        min_d_s_lon = s_lon;
-                                    }
-
-                                    return currDistToStore;
-                                }
-                            }//distToStore
-                        }//textBox1
-
-                        Rectangle
-                        {
-                            id: textBox2
-                            width: Vars.screenWidth*0.2
-                            height: storeInfoItemHeight
-                            Layout.alignment: Qt.AlignHCenter
-                            color: "transparent"
-
-                            Label
-                            {
-                                id: workingHours
-                                text: Helper.currStoreHours(store_hours)
-                                font.pixelSize: Helper.toDp(13, Vars.dpi)
-                                font.family: regularText.name
-                                color: Vars.backgroundBlack
-                            }
-                        }
-                    }//rowLayout2
-                }//storeInfoClickableArea
-            }//storeInfoDelegate*/
+            }//rowLayout1
 
             ControlButton
             {
@@ -366,8 +287,9 @@ Page
                     promotionPageLoader.setSource("mapPage.qml",
                                         { "defaultLat": nearestStoreLat,
                                           "defaultLon": nearestStoreLon,
-                                          "defaultZoomLevel": 16,
-                                          "showingNearestStore": true
+                                          "defaultZoomLevel": getZoomLevel(),
+                                          "showingNearestStore": true,
+                                          "locButtClicked": true
                                         });
                 }
             }
@@ -393,7 +315,7 @@ Page
                 }
             }
         }//middleFieldsColumns
-    }//Flickable
+    }//flickableArea
 
     Image
     {
@@ -413,11 +335,92 @@ Page
         source: "../backgrounds/fade_out_h.png"
     }
 
-    ToastMessage
+    Rectangle
     {
         id: promoCodePopup
-        backgroundColor: Vars.birthdayPickerColor
-        y: Vars.screenHeight*0.5
+        visible: false
+        width: parent.width*0.8
+        height: parent.height*0.5
+        radius: 30
+        color: Vars.birthdayPickerColor
+        anchors.centerIn: parent
+
+        Label
+        {
+            id: helpText
+            clip: true
+            color: Vars.whiteColor
+            font.family: regularText.name
+            text: Vars.activateCouponHelpText
+            horizontalAlignment: Text.AlignHCenter
+            anchors.top: parent.top
+            anchors.topMargin: parent.height*0.3
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                        Vars.dpi)
+        }
+
+        Rectangle
+        {
+            id: codeSubstrate
+            width: parent.width
+            height: parent.height*0.2
+            color: Vars.chosenPurpleColor
+            anchors.top: helpText.bottom
+            anchors.topMargin: parent.height*0.05
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Label
+            {
+                id: code
+                clip: true
+                text: p_promo_code
+                color: Vars.whiteColor
+                font.family: boldText.name
+                font.weight: Font.Bold
+                anchors.centerIn: parent
+                horizontalAlignment: Text.AlignHCenter
+                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize*2,
+                                            Vars.dpi)
+            }
+        }//codeSubstrate
+
+        Rectangle
+        {
+            id: proceedButton
+            opacity: clickableArea.pressed ? 0.8 : 1
+            width: parent.width * 0.65
+            height: buttonText.height*2
+            radius: Vars.defaultRadius
+            color: "transparent"
+            border.color: Vars.whiteColor
+            border.width: Vars.defaultFontPixelSize*0.2
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: parent.height*0.05
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Text
+            {
+                id: buttonText
+                text: Vars.proceed
+                font.family: regularText.name
+                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize*1.1,
+                                            Vars.dpi)
+                color: Vars.whiteColor
+                anchors.centerIn: parent
+            }
+
+            MouseArea
+            {
+                id: clickableArea
+                anchors.fill: parent
+                onClicked:
+                {
+                    promoCodePopup.visible = false;
+                    flickableArea.enabled = true;
+                }
+            }
+        }//proceedButton
     }
 
     ToastMessage { id: toastMessage }

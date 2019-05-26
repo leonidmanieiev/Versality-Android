@@ -65,7 +65,6 @@ RowLayout
     IconedButton
     {
         id: settingsButton
-        z: 1
         width: Vars.footerButtonsHeight
         height: Vars.footerButtonsHeight
         Layout.alignment: Qt.AlignHCenter
@@ -86,8 +85,6 @@ RowLayout
     IconedButton
     {
         id: homeButton
-        /*workaround, for some reason size of this
-        particular button is smaller than default*/
         width: Vars.footerButtonsHeight
         height: Vars.footerButtonsHeight
         Layout.alignment: Qt.AlignHCenter
@@ -123,4 +120,4 @@ RowLayout
 
         FooterButtonSubstrate { id: favouriteButtonSubstrate }
     }
-}//RowLayout
+}//footerButtonsLayout

@@ -264,8 +264,8 @@ Page
                         }
                     }
                 }
-            }//delegate: MapQuickItem
-        }//MapItemView
+            }//promMarkersDelegate
+        }//promMarkersView
 
         onZoomLevelChanged:
         {
@@ -275,7 +275,7 @@ Page
             else if(requestFromCompany)
                 clusterizeAndApply()
         }
-    }//Map
+    }//mainMap
 
     Rectangle
     {
@@ -471,7 +471,7 @@ Page
                     }
                 }
             }//parentCategoryIcon
-        }//Column
+        }//column
     }//promsTilesDelegate
 
     IconedButton
@@ -495,17 +495,42 @@ Page
         }
     }
 
-    //switch to listViewPage (proms as list)
+    //switch to listViewPage (proms as list) if does not came
+    //from companyPage or promotionPage
     TopControlButton
     {
         id: showInListViewButton
-        visible: requestFromCompany ? false : true
+        visible: (requestFromCompany || showingNearestStore) ? false : true
         buttonText: Vars.showListView
         buttonIconSource: "../icons/show_listview.png"
         onClicked:
         {
             PageNameHolder.push("mapPage.qml");
             mapPageLoader.source = "listViewPage.qml";
+        }
+    }
+
+    //switch back to promotion if came from promotionPage
+    //by clicked on 'show nearest store'
+    TopControlButton
+    {
+        id: showPromotionButton
+        visible: showingNearestStore ? true : false
+        buttonText: Vars.backToPromotion
+        buttonIconSource: "../icons/left_arrow.png"
+        iconAlias.width: height*0.5
+        iconAlias.height: height*0.4
+        onClicked:
+        {
+            var pageName = PageNameHolder.pop();
+
+            //if no pages in sequence
+            if(pageName === "")
+                appWindow.close();
+            else mapPageLoader.source = pageName;
+
+            //to avoid not loading bug
+            //mapPageLoader.reload();
         }
     }
 
@@ -559,6 +584,11 @@ Page
             //exit app from map page
             if(!showingNearestStore)
                 PageNameHolder.clear();
+            else
+            {
+                setUserLocationMarker(defaultLat, defaultLon, defaultZoomLevel, false);
+                mainMap.center = QtPositioning.coordinate(defaultLat, defaultLon);
+            }
 
             //start capturing user location and getting all promotions
             mapPageLoader.source = "userLocation.qml";

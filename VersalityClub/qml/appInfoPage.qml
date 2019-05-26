@@ -31,6 +31,7 @@ import QtQuick.Layouts 1.3
 Page
 {
     property var appInfoText
+    property string pressedFrom: 'appInfoPage.qml'
 
     function getAppInfoText()
     {
@@ -45,7 +46,7 @@ Page
 
     id: profileSettingsPage
     enabled: Vars.isConnected
-    height: Vars.screenHeight
+    height: Vars.pageHeight
     width: Vars.screenWidth
 
     ToastMessage { id: toastMessage }
@@ -68,12 +69,15 @@ Page
     Flickable
     {
         id: flickableArea
+        interactive: false
         clip: true
         width: parent.width
         height: parent.height
-        contentHeight: middleFieldsColumns.height*1.1
+        contentHeight: middleFieldsColumns.height
+        anchors.top: parent.top
+        topMargin: Vars.pageHeight*0.25
+        bottomMargin: Vars.footerButtonsFieldHeight*1.05
         anchors.horizontalCenter: parent.horizontalCenter
-        //anchors.topMargin: Vars.screenHeight*0.30
         boundsBehavior: Flickable.DragOverBounds
 
         ColumnLayout
@@ -89,7 +93,7 @@ Page
                 width: parent.width*0.9
                 color: "transparent"
                 Layout.alignment: Qt.AlignHCenter
-                Layout.topMargin: Vars.screenHeight*0.25
+                //Layout.topMargin: Vars.screenHeight*0.25
 
                 Label
                 {
@@ -107,8 +111,8 @@ Page
                     textFormat: Text.RichText;
                 }
             }
-        }//ColumnLayout
-    }//Flickable
+        }//middleFieldsColumns
+    }//flickableArea
 
     Image
     {
@@ -116,7 +120,7 @@ Page
         clip: true
         width: parent.width
         height: parent.height
-        source: "../backgrounds/app_info_h.png"
+        source: "../backgrounds/profile_settings_h.png"
     }
 
     LogoAndPageTitle
@@ -130,6 +134,22 @@ Page
     {
         getAppInfoText();
         profileSettingsPage.forceActiveFocus();
+    }
+
+    Image
+    {
+        id: backgroundFooter
+        clip: true
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        source: "../backgrounds/map_f.png"
+    }
+
+    FooterButtons
+    {
+        pressedFromPageName: pressedFrom
+        Component.onCompleted: showSubstrateForSettingsButton()
     }
 
     Keys.onReleased:

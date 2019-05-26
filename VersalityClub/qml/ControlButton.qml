@@ -35,10 +35,11 @@ ControlBackground
     property color borderColor: Vars.purpleBorderColor
     property real buttonHeight: Vars.screenHeight*0.09
     property real buttonWidth: Vars.screenWidth*0.8
+    property real buttonRadius: buttonHeight*0.5
     property int fontPixelSize: Vars.defaultFontPixelSize
     property alias buttonClickableArea: clickableArea
     property alias labelAlias: label
-
+    property bool showGradient2: false
 
     id: controlButton
     opacity: clickableArea.pressed ? Vars.defaultOpacity : 1
@@ -46,6 +47,8 @@ ControlBackground
     rectBorderColor: borderColor
     rectHeight: buttonHeight
     rectWidth: buttonWidth
+    rectRadius: buttonRadius
+    showGradient: showGradient2
 
     Text
     {

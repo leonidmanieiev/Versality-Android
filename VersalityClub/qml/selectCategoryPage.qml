@@ -30,23 +30,15 @@ import QtGraphicalEffects 1.0
 Page
 {
     property string strCatsJSON: ''
+    property string pressedFrom: 'selectCategoryPage.qml'
 
     id: selectCategoryPage
     enabled: Vars.isConnected
-    height: Vars.screenHeight
+    height: Vars.pageHeight
     width: Vars.screenWidth
 
     //checking internet connetion
     Network { toastMessage: toastMessage }
-
-    Image
-    {
-        id: background
-        clip: true
-        width: parent.width
-        height: parent.height
-        source: "../backgrounds/settings_bg.png"
-    }
 
     FontLoader
     {
@@ -61,9 +53,12 @@ Page
         id: catsListView
         clip: true
         width: parent.width
-        height: parent.height*0.615
+        height: parent.height
+        //contentHeight: middleFieldsColumn.height
         anchors.top: parent.top
-        anchors.topMargin: parent.height*0.175
+        topMargin: Vars.pageHeight*0.25
+        bottomMargin: Vars.footerButtonsFieldHeight*1.05
+        anchors.horizontalCenter: parent.horizontalCenter
         model: catsModel
         delegate: Component
         {
@@ -80,14 +75,28 @@ Page
                     height: Vars.screenHeight*0.09
                     width: parent.width
                     radius: height*0.5
-                    color: "transparent"
-                    border.color: Vars.whiteColor
+                    color: Vars.whiteColor
                     border.width: height*0.06
+                    border.color: Vars.settingspurpleBorderColor
+
+                    LinearGradient
+                    {
+                        id: catsItemGradient
+                        visible: false
+                        anchors.fill: parent
+                        source: parent
+                        start: Qt.point(0, height*0.5)
+                        end: Qt.point(width, height*0.5)
+                        gradient: Gradient
+                        {
+                            GradientStop { position: 0.0; color: "#862b71" }
+                            GradientStop { position: 1.0; color: "#5b1a5c" }
+                        }
+                    }
 
                     Image
                     {
                         id: catIcon
-                        smooth: true
                         sourceSize.width: parent.radius
                         sourceSize.height: parent.radius
                         anchors.left: parent.left
@@ -95,10 +104,32 @@ Page
                         anchors.verticalCenter: parent.verticalCenter
                         source: "../icons/cat_"+id+".svg"
                         fillMode: Image.PreserveAspectFit
-                    }
+
+                        /*OpacityMask
+                        {
+                            source: catIconGradient
+                            maskSource: catIcon
+                        }
+
+                        LinearGradient
+                        {
+                            id: catIconGradient
+                            source: parent
+                            anchors.fill: parent
+                            start: Qt.point(0, 0)
+                            end: Qt.point(width, height)
+                            gradient: Gradient
+                            {
+                                GradientStop { position: 0.0; color: "#431160" }
+                                GradientStop { position: 1.0; color: "#a33477" }
+                            }
+                        }*/
+                    }                  
 
                     ColorOverlay
                     {
+                        id: catIconColorOverlay
+                        visible: false
                         anchors.fill: catIcon
                         source: catIcon
                         color: Vars.whiteColor
@@ -108,25 +139,36 @@ Page
                     Text
                     {
                         id: catsItemText
+                        text: title
                         x: parent.radius*2
-                        anchors.verticalCenter: parent.verticalCenter
-                        color: Vars.whiteColor
+                        color: Vars.blackColor
                         font.family: mediumText.name
                         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                                     Vars.dpi)
-                        text: title
+                        anchors.verticalCenter: parent.verticalCenter
                     }
 
                     Image
                     {
                         id: downArrow
+                        visible: false
                         width: parent.radius
                         height: parent.radius
                         anchors.right: parent.right
-                        anchors.rightMargin: parent.radius
+                        anchors.rightMargin: Vars.screenHeight*0.045
                         anchors.verticalCenter: parent.verticalCenter
                         fillMode: Image.PreserveAspectFit
                         source: "../icons/down_arrow.png"
+                    }
+
+                    ColorOverlay
+                    {
+                        id: downArrowColorOverlay
+                        visible: true
+                        anchors.fill: downArrow
+                        source: downArrow
+                        color: Vars.chosenPurpleColor
+                        cached: true
                     }
 
                     MouseArea
@@ -135,13 +177,41 @@ Page
                         anchors.fill: parent
                         onClicked:
                         {
-                            downArrow.rotation = collapsed ? 180 : 0;
-                            catsItem.border.color = collapsed ? "transparent" : Vars.whiteColor
-                            catsItem.color = collapsed ? Vars.purpleTextColor : "transparent"
+                            if(collapsed)
+                            {
+                                //trick with visiables is workaroud.
+                                //if just change color it will create a duplicate of icon
+                                downArrow.visible = true;
+                                downArrowColorOverlay.visible = false;
+                                downArrow.rotation = 180;
+                                //another workaround. when rotate icon it displaced left a bit
+                                downArrow.anchors.rightMargin = Vars.screenHeight*0.0425
+
+                                catsItemGradient.visible = true;
+                                //catIconGradient.visible = false;
+                                catIconColorOverlay.visible = true;
+                                catsItemText.color = Vars.whiteColor;
+                            }
+                            else
+                            {
+                                //trick with visiables is workaroud.
+                                //if just change color it will create a duplicate of icon
+                                downArrow.visible = false;
+                                downArrowColorOverlay.visible = true;
+                                downArrow.rotation = 0;
+                                //reset margin
+                                downArrow.anchors.rightMargin = Vars.screenHeight*0.045
+
+                                catsItemGradient.visible = false;
+                                //catIconGradient.visible = true;
+                                catIconColorOverlay.visible = false;
+                                catsItemText.color = Vars.blackColor;
+                            }
+
                             catsModel.setProperty(index, "collapsed", !collapsed);
                         }
                     }
-                }//Rectangle
+                }//catsItem
 
                 Loader
                 {
@@ -174,11 +244,25 @@ Page
                 delegate: Rectangle
                 {
                     id: subCatsItem
-                    color: AppSettings.contains(subid) ? Vars.subCatSelectedColor :
-                                                         "transparent"
                     radius: height*0.5
                     height: Vars.screenHeight*0.07
                     width: parent.width
+                    color: Vars.whiteColor
+
+                    LinearGradient
+                    {
+                        id: subCatsItemGradient
+                        visible: AppSettings.contains(subid)
+                        anchors.fill: parent
+                        source: parent
+                        start: Qt.point(0, height*0.5)
+                        end: Qt.point(width, height*0.5)
+                        gradient: Gradient
+                        {
+                            GradientStop { position: 0.0; color: "#862b71" }
+                            GradientStop { position: 1.0; color: "#5b1a5c" }
+                        }
+                    }
 
                     Text
                     {
@@ -189,8 +273,8 @@ Page
                         font.family: mediumText.name
                         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                                     Vars.dpi)
-                        color: AppSettings.contains(subid) ? "transprent" :
-                                                             Vars.whiteColor
+                        color: AppSettings.contains(subid) ? Vars.whiteColor :
+                                                             Vars.blackColor
                         wrapMode: Text.WordWrap
                         text: subtitle
                     }
@@ -198,14 +282,24 @@ Page
                     Image
                     {
                         id: tickIcon
+                        visible: AppSettings.contains(subid)
                         width: parent.radius*1.2
                         height: parent.radius*1.2
                         anchors.left: parent.left
                         anchors.leftMargin: parent.radius*0.45
                         anchors.verticalCenter: parent.verticalCenter
-                        visible: AppSettings.contains(subid)
                         fillMode: Image.PreserveAspectFit
                         source: "../icons/tick.png"
+                    }
+
+                    ColorOverlay
+                    {
+                        id: tickIconColorOverlay
+                        visible: tickIcon.visible
+                        anchors.fill: tickIcon
+                        source: tickIcon
+                        color: Vars.whiteColor
+                        cached: true
                     }
 
                     MouseArea
@@ -216,32 +310,32 @@ Page
                         {
                             if(AppSettings.contains(subid))
                             {
-                                subCatsItem.color = "transparent";
-                                subCatsText.color = Vars.whiteColor
+                                subCatsItemGradient.visible = false;
+                                subCatsText.color = Vars.blackColor;
                                 tickIcon.visible = false;
                                 AppSettings.removeCat(subid);
                             }
                             else
                             {
-                                subCatsItem.color = Vars.subCatSelectedColor;
-                                subCatsText.color = "transprent";
+                                subCatsItemGradient.visible = true;
+                                subCatsText.color = Vars.whiteColor;
                                 tickIcon.visible = true;
                                 AppSettings.insertCat(subid);
                             }
                         }
                     }
-                }//delegate: Rectangle
-            }//Repeater
-        }//Column
-    }//Component
+                }//subCatsItem
+            }//subCatsRepeater
+        }//middleFieldsSubColumn
+    }//subCatsDelegate
 
     Image
     {
-        id: header_footer
+        id: backgroundHeader
         clip: true
         width: parent.width
         height: parent.height
-        source: "../backgrounds/category_settings_hf.png"
+        source: "../backgrounds/profile_settings_h.png"
     }
 
     LogoAndPageTitle
@@ -250,7 +344,7 @@ Page
         pageTitleText: Vars.profileSettings
     }
 
-    ControlButton
+    /*ControlButton
     {
         id: saveSelectedButton
         buttonWidth: parent.width*0.8
@@ -267,8 +361,7 @@ Page
                                                 "functionalFlag": 'user/refresh-cats'
                                               });
         }
-    }
-
+    }*/
 
     ToastMessage { id: toastMessage }
 
@@ -279,6 +372,22 @@ Page
 
         var catsJSON = JSON.parse(strCatsJSON);
         Helper.catsJsonToListModel(catsJSON);
+    }
+
+    Image
+    {
+        id: backgroundFooter
+        clip: true
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        source: "../backgrounds/map_f.png"
+    }
+
+    FooterButtons
+    {
+        pressedFromPageName: pressedFrom
+        Component.onCompleted: showSubstrateForSettingsButton()
     }
 
     Keys.onReleased:

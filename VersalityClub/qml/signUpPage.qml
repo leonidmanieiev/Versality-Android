@@ -197,7 +197,7 @@ Page
                 }
             }
         }//signUpButton
-    }//ColumnLayout
+    }//middleFieldsColumns
 
     ScrollDatePicker
     {

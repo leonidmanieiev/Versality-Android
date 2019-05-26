@@ -34,12 +34,8 @@
         <file>qml/StaticNotifier.qml</file>
         <file>qml/ScrollDatePicker.qml</file>
         <file>qml/ScrollNumberPicker.qml</file>
-        <file>qml/Font.qml</file>
         <file>backgrounds/almost_done_bg.png</file>
-        <file>backgrounds/category_settings_hf.png</file>
         <file>backgrounds/init_page_bg.png</file>
-        <file>backgrounds/profile_settings_hf.png</file>
-        <file>backgrounds/settings_bg.png</file>
         <file>backgrounds/sign_up_bg.png</file>
         <file>icons/logo.png</file>
         <file>icons/logo_full.png</file>
@@ -49,7 +45,6 @@
         <file>icons/tick.png</file>
         <file>icons/favourites.png</file>
         <file>icons/show_listview.png</file>
-        <file>backgrounds/main_f.png</file>
         <file>qml/IconedButton.qml</file>
         <file>icons/on_map.png</file>
         <file>backgrounds/listview_hf.png</file>
@@ -81,7 +76,6 @@
         <file>icons/comp_proms_map_on.png</file>
         <file>backgrounds/comp_pictures_fade_out.png</file>
         <file>qml/appInfoPage.qml</file>
-        <file>backgrounds/app_info_h.png</file>
         <file>icons/favourites_help.png</file>
         <file>icons/settings_help.png</file>
         <file>qml/HelpComponent.qml</file>
@@ -105,5 +99,6 @@
         <file>icons/footer_button_substrate.png</file>
         <file>icons/home.png</file>
         <file>qml/FooterButtonSubstrate.qml</file>
+        <file>backgrounds/profile_settings_h.png</file>
     </qresource>
 </RCC>

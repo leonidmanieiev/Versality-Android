@@ -122,12 +122,13 @@ Page
     ListView
     {
         id: promsListView
-        visible: allGood
         clip: true
-        anchors.top: parent.top
+        visible: allGood
         width: parent.width
         height: parent.height*0.9
         contentHeight: promItemHeight*3
+        anchors.top: parent.top
+        topMargin: promItemHeight*0.5
         model: ListModel { id: promsModel }
         delegate: promsDelegate
     }
@@ -222,10 +223,9 @@ Page
                         //listViewPage.header = null;
                     }
                 }
-            }//Rectangle
-        }//Column
-
-    }//Component
+            }//promsRect
+        }//column
+    }//promsDelegate
 
     //switch to mapPage (proms on map view)
     TopControlButton

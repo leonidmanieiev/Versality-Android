@@ -88,12 +88,12 @@ Page
     ListView
     {
         id: promsListView
-        visible: allGood
         clip: true
-        anchors.top: parent.top
+        visible: allGood
         width: parent.width
         height: parent.height*0.9
         contentHeight: promItemHeight*3
+        topMargin: promItemHeight*0.5
         model: promsModel
         delegate: promsDelegate
     }
@@ -185,13 +185,13 @@ Page
                                                   "promo_desc": description
                                                 });
                     }
-                }//MouseArea
-            }//Rectangle
+                }//promsClickableArea
+            }//promsItem
         }//Column
-    }//Component
+    }//promsDelegate
 
     //switch to mapPage (proms on map view)
-    TopControlButton
+    /*TopControlButton
     {
         id: showOnMapButton
         buttonText: Vars.showOnMap
@@ -199,7 +199,7 @@ Page
         iconAlias.width: height*0.56
         iconAlias.height: height*0.7
         onClicked: favouritePageLoader.source = "mapPage.qml"
-    }
+    }*/
 
     FooterButtons
     {

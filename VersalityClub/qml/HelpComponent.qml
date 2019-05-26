@@ -62,5 +62,5 @@ Item
             horizontalAlignment: Label.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
         }
-    }
+    }//column
 }//helpCompItem

@@ -142,8 +142,7 @@ Page
                                                   });
             }
         }
-
-    }//ColumnLayout
+    }//middleLayout
 
     ToastMessage { id: toastMessage }
 

@@ -99,7 +99,7 @@ Page
                 initialPageLoader.source = "logInPage.qml";
             }
         }
-    }//ColumnLayout
+    }//middleButtonsColumn
 
     ToastMessage { id: toastMessage }
 

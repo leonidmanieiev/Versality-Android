@@ -147,7 +147,7 @@ Page
             labelText: Vars.checkYourEmail
             Layout.topMargin: -parent.spacing*0.5
         }
-    }//ColumnLayout
+    }//middleLayout
 
     ToastMessage { id: toastMessage }
 

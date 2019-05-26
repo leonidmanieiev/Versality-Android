@@ -138,4 +138,4 @@ RowLayout
         setButtonsStates();
     }
 
-}//RowLayout
+}//headerButtonsLayout

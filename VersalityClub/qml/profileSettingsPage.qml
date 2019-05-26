@@ -31,12 +31,13 @@ import QtQuick.Controls.Styles 1.4
 Page
 {
     property bool hasPassChanged: false
+    property string pressedFrom: 'profileSettingsPage.qml'
     //alias
     property alias loader: profileSettingsPageLoader
 
     id: profileSettingsPage
     enabled: Vars.isConnected
-    height: Vars.screenHeight
+    height: Vars.pageHeight
     width: Vars.screenWidth
 
     //checking internet connetion
@@ -48,13 +49,10 @@ Page
         source: Vars.mediumFont
     }
 
-    Image
+    FontLoader
     {
-        id: background
-        clip: true
-        width: parent.width
-        height: parent.height
-        source: "../backgrounds/settings_bg.png"
+        id: boldText;
+        source: Vars.boldFont
     }
 
     Flickable
@@ -62,10 +60,12 @@ Page
         id: flickableArea
         clip: true
         width: parent.width
-        height: Vars.screenHeight*0.65
-        contentHeight: middleFieldsColumns.height*1.1
-        anchors.centerIn: parent
-        boundsBehavior: Flickable.DragOverBounds
+        height: parent.height
+        contentHeight: middleFieldsColumns.height
+        anchors.top: parent.top
+        topMargin: Vars.pageHeight*0.25
+        bottomMargin: Vars.footerButtonsFieldHeight*1.05
+        anchors.horizontalCenter: parent.horizontalCenter
 
         ColumnLayout
         {
@@ -78,16 +78,18 @@ Page
             {
                 id: selectCategoryLabel
                 labelText: Vars.chooseCats
+                labelColor: Vars.blackColor
             }
 
             ControlButton
             {
                 id: selectCategoryButton
                 Layout.fillWidth: true
+                Layout.topMargin: -Vars.pageHeight*0.02
                 labelText: Vars.choose
-                labelColor: Vars.whiteColor
+                labelColor: Vars.blackColor
                 backgroundColor: "transparent"
-                borderColor: Vars.whiteColor
+                borderColor: Vars.settingspurpleBorderColor
                 buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("profileSettingsPage.qml");
@@ -96,22 +98,25 @@ Page
                                                           "functionalFlag": 'categories'
                                                         });
                 }
-            }//ControlButton
+            }//selectCategoryButton
 
             CustomLabel
             {
                 id: sexLabel
                 labelText: Vars.sex
+                labelColor: Vars.blackColor
+                Layout.topMargin: -Vars.pageHeight*0.02
             }
 
             ControlButton
             {
                 id: sexButton
                 Layout.fillWidth: true
+                Layout.topMargin: -Vars.pageHeight*0.02
                 labelText: AppSettings.value("user/sex");
-                labelColor: Vars.whiteColor
+                labelColor: Vars.blackColor
                 backgroundColor: "transparent"
-                borderColor: Vars.whiteColor
+                borderColor: Vars.settingspurpleBorderColor
                 buttonClickableArea.onClicked:
                 {
                     if(labelText === "M")
@@ -127,7 +132,9 @@ Page
             CustomLabel
             {
                 id: dateofbirthLabel
+                labelColor: Vars.blackColor
                 labelText: Vars.birthday
+                Layout.topMargin: -Vars.pageHeight*0.02
             }
 
             CustomTextField
@@ -135,6 +142,8 @@ Page
                 id: dateofbirthField
                 Layout.fillWidth: true
                 setFillColor: "transparent"
+                setTextColor: Vars.blackColor
+                setBorderColor: Vars.settingspurpleBorderColor
                 text: AppSettings.value("user/birthday");
                 inputMask: Vars.birthdayMask
                 inputMethodHints: Qt.ImhDigitsOnly
@@ -162,6 +171,7 @@ Page
             {
                 id: emailLabel
                 labelText: Vars.email
+                labelColor: Vars.blackColor
             }
 
             CustomTextField
@@ -170,6 +180,8 @@ Page
                 readOnly: true
                 Layout.fillWidth: true
                 setFillColor: "transparent"
+                setTextColor: Vars.blackColor
+                setBorderColor: Vars.settingspurpleBorderColor
                 text: AppSettings.value("user/email");
             }
 
@@ -177,6 +189,7 @@ Page
             {
                 id: changePasswordLabel
                 labelText: Vars.changePass
+                labelColor: Vars.blackColor
             }
 
             CustomTextField
@@ -184,6 +197,8 @@ Page
                 id: changePasswordField
                 Layout.fillWidth: true
                 setFillColor: "transparent"
+                setTextColor: Vars.blackColor
+                setBorderColor: Vars.settingspurpleBorderColor
                 echoMode: TextInput.Password
                 inputMethodHints: Qt.ImhSensitiveData
                 selectByMouse: false
@@ -194,6 +209,7 @@ Page
             {
                 id: firstNameLabel
                 labelText: Vars.nameNotNecessary
+                labelColor: Vars.blackColor
             }
 
             CustomTextField
@@ -201,6 +217,8 @@ Page
                 id: firstNameField
                 Layout.fillWidth: true
                 setFillColor: "transparent"
+                setTextColor: Vars.blackColor
+                setBorderColor: Vars.settingspurpleBorderColor
                 text: AppSettings.value("user/name");
                 placeholderText: Vars.enterName
                 onTextChanged:
@@ -210,16 +228,75 @@ Page
                     AppSettings.endGroup();
                 }
             }
-        }//ColumnLayout
-    }//Flickable
+
+            ControlButton
+            {
+                id: saveButton
+                labelText: Vars.save;
+                labelColor: Vars.whiteColor
+                labelAlias.font.family: boldText.name
+                labelAlias.font.bold: true
+                fontPixelSize: Helper.toDp(20, Vars.dpi)
+                Layout.fillWidth: true
+                Layout.topMargin: Vars.pageHeight*0.03
+                borderColor: "transparent"
+                buttonRadius: 25
+                buttonHeight: Vars.screenHeight*0.13
+                buttonWidth: Vars.screenWidth*0.9
+                showGradient2: true
+
+                buttonClickableArea.onClicked:
+                {
+                    AppSettings.beginGroup("user");
+                    AppSettings.setValue("sex", sexButton.labelText);
+                    if(firstNameField.text.length > 0)
+                        AppSettings.setValue("name", firstNameField.text);
+                    AppSettings.setValue("birthday", dateofbirthField.text);
+                    if(changePasswordField.text.length > 0)
+                    {
+                        AppSettings.setValue("password", changePasswordField.text);
+                        hasPassChanged = true;
+                    }
+                    AppSettings.endGroup();
+
+                    profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
+                                                        { "api": Vars.userInfo,
+                                                          "functionalFlag": 'user/refresh-snbp',
+                                                          "hasPassChanged": hasPassChanged
+                                                        });
+                }
+            }//saveButton
+
+            ControlButton
+            {
+                id: logoutButton
+                labelText: Vars.logout
+                labelColor: Vars.whiteColor
+                labelAlias.font.family: boldText.name
+                labelAlias.font.bold: true
+                fontPixelSize: Helper.toDp(20, Vars.dpi)
+                buttonHeight: Vars.screenHeight*0.13
+                Layout.topMargin: -Vars.pageHeight*0.03
+                Layout.fillWidth: true
+                backgroundColor: Vars.blackColor
+                borderColor: Vars.blackColor
+                buttonRadius: 25
+                buttonClickableArea.onClicked:
+                {
+                    AppSettings.clearAllAppSettings();
+                    appWindowLoader.source = "initialPage.qml";
+                }
+            }
+        }//middleFieldsColumns
+    }//flickableArea
 
     Image
     {
-        id: header_footer
+        id: backgroundHeader
         clip: true
         width: parent.width
         height: parent.height
-        source: "../backgrounds/profile_settings_hf.png"
+        source: "../backgrounds/profile_settings_h.png"
     }
 
     LogoAndPageTitle
@@ -250,63 +327,25 @@ Page
         }
     }
 
-    RoundButton
-    {
-        // TODO make gradient button
-        id: saveButton
-        height: Vars.screenHeight*0.09
-        width: parent.width*0.8
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: Vars.screenHeight*0.06
-        anchors.horizontalCenter: parent.horizontalCenter
-        opacity: pressed ? Vars.defaultOpacity : 1
-        onClicked:
-        {
-            AppSettings.beginGroup("user");
-            AppSettings.setValue("sex", sexButton.labelText);
-            if(firstNameField.text.length > 0)
-                AppSettings.setValue("name", firstNameField.text);
-            AppSettings.setValue("birthday", dateofbirthField.text);
-            if(changePasswordField.text.length > 0)
-            {
-                AppSettings.setValue("password", changePasswordField.text);
-                hasPassChanged = true;
-            }
-            AppSettings.endGroup();
-
-            profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
-                                                { "api": Vars.userInfo,
-                                                  "functionalFlag": 'user/refresh-snbp',
-                                                  "hasPassChanged": hasPassChanged
-                                                });
-        }
-
-        contentItem: Text
-        {
-            text: Vars.save
-            // TODO make gradient button
-            color: Vars.purpleTextColor
-            font.family: mediumText.name
-            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                        Vars.dpi)
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-        }
-
-        background: Rectangle
-        {
-            implicitWidth: parent.width
-            implicitHeight: parent.height
-            border.color: Vars.purpleTextColor
-            border.width: height*0.06
-            radius: Vars.listItemRadius
-            color: "transparent"
-        }
-    }//RoundButton
-
     ToastMessage { id: toastMessage }
 
     Component.onCompleted: profileSettingsPage.forceActiveFocus()
+
+    Image
+    {
+        id: backgroundFooter
+        clip: true
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        source: "../backgrounds/map_f.png"
+    }
+
+    FooterButtons
+    {
+        pressedFromPageName: pressedFrom
+        Component.onCompleted: showSubstrateForSettingsButton()
+    }
 
     Keys.onReleased:
     {

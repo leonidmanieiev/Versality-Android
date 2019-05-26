@@ -213,9 +213,9 @@ Page
                                             { "api": Vars.promFullViewModel,
                                               "functionalFlag": 'user/fullprom'});
                 }
-            }//ControlButton
-        }//ColumnLayout
-    }//Flickable
+            }//moreButton
+        }//middleFieldsColumns
+    }//flickableArea
 
     Image
     {
