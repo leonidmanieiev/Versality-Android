@@ -44,14 +44,15 @@ Page
     property real defaultLon: 30.343614
     property bool allGood: false
     property bool requestFromCompany: false
+    property bool showingNearestStore: false
     property string pressedFrom: requestFromCompany ? 'companyPage.qml' : 'mapPage.qml'
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
     readonly property string mapCopyright: 'Tiles style by <a href="http://corp.sputnik.ru/maps"'
-                                           +' style="color: '+Vars.popupWindowColor+'">Cпутник</a> © '
+                                           +' style="color: '+Vars.purpleTextColor+'">Cпутник</a> © '
                                            +'<a href="https://www.rt.ru/" style="color: '+
-                                           Vars.popupWindowColor+'">Ростелеком</a>'
+                                           Vars.purpleTextColor+'">Ростелеком</a>'
     readonly property string mapDataCopyright: ' Data © <a href="https://www.openstreetmap.org/'
-                                               +'copyright" style="color: '+Vars.popupWindowColor+'">'
+                                               +'copyright" style="color: '+Vars.purpleTextColor+'">'
                                                +'OpenStreetMap</a>'
     readonly property int markerSize: Vars.screenWidth*0.1
     readonly property int fromButtonZoomLevel: 16
@@ -290,7 +291,7 @@ Page
         {
             id: copyrightText
             anchors.centerIn: parent
-            color: Vars.backgroundBlack
+            color: Vars.blackColor
             textFormat: Text.RichText;
             text: mapCopyright+mapDataCopyright
             font.pixelSize: Helper.toDp(10, Vars.dpi)
@@ -303,11 +304,9 @@ Page
     {
         id: popupWindow
         visible: false
-        //opacity: 0.9
-        radius: Vars.defaultRadius*0.75
-        width: parent.width*0.9
+        width: parent.width
         height: popupWindowHeight
-        color: Vars.popupWindowColor
+        color: Vars.mapPromsPopupColor
         anchors.horizontalCenter: parent.horizontalCenter
 
         NumberAnimation
@@ -408,19 +407,20 @@ Page
             {
                 id: parentCategoryIcon
                 height: markerSize
-                width: parent.width*0.95
-                radius: height*0.5
-                color: Vars.subCatSelectedColor
+                width: parent.width
+                color: Vars.mapPromsPopupColor
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Image
                 {
                     id: icon
-                    source: "../icons/cat_"+cicon+".png"
-                    width: markerSize*0.8
-                    height: markerSize*0.8
+                    smooth: true
+                    antialiasing: true
+                    source: "../icons/cat_"+cicon+".svg"
+                    sourceSize.width: markerSize*0.8
+                    sourceSize.height: markerSize*0.8
                     anchors.left: parent.left
-                    anchors.leftMargin: width*0.5
+                    anchors.leftMargin: parent.width*0.09
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -428,7 +428,8 @@ Page
                 {
                     anchors.fill: icon
                     source: icon
-                    color: Vars.popupWindowColor
+                    color: Vars.whiteColor
+                    cached: true
                 }
 
                 Label
@@ -440,7 +441,7 @@ Page
                     text: ctitle
                     font.pixelSize: Helper.toDp(18, Vars.dpi)
                     font.family: boldText.name
-                    color: Vars.popupWindowColor
+                    color: Vars.whiteColor
                 }
 
                 MouseArea
@@ -479,6 +480,8 @@ Page
         enabled: Vars.isLocated
         width: Vars.footerButtonsHeight*0.9
         height: Vars.footerButtonsHeight*0.9
+        buttonIconAlias.sourceSize.width: Vars.footerButtonsHeight*0.9
+        buttonIconAlias.sourceSize.height: Vars.footerButtonsHeight*0.9
         buttonIconSource: "../icons/geo_location.svg"
         anchors.right: parent.right
         anchors.rightMargin: parent.width*0.02
@@ -516,7 +519,16 @@ Page
         source: "../backgrounds/map_f.png"
     }
 
-    FooterButtons { id: footerButton; pressedFromPageName: pressedFrom }
+    FooterButtons
+    {
+        id: footerButton
+        pressedFromPageName: pressedFrom
+        Component.onCompleted:
+        {
+            if(!requestFromCompany && !showingNearestStore)
+                showSubstrateForHomeButton();
+        }
+    }
 
     CppMethodCall { id: cppCall }
 
@@ -545,7 +557,9 @@ Page
         if(!requestFromCompany)
         {
             //exit app from map page
-            PageNameHolder.clear();
+            if(!showingNearestStore)
+                PageNameHolder.clear();
+
             //start capturing user location and getting all promotions
             mapPageLoader.source = "userLocation.qml";
         }

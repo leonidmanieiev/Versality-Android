@@ -34,21 +34,53 @@ RowLayout
     height: Vars.footerButtonsFieldHeight
     anchors.bottom: parent.bottom
 
+    function showSubstrateForSettingsButton()
+    {
+        settingsButtonSubstrate.visible = true;
+        homeButtonSubstrate.visible = false;
+        favouriteButtonSubstrate.visible = false;
+    }
+
+    function showSubstrateForHomeButton()
+    {
+        settingsButtonSubstrate.visible = false;
+        homeButtonSubstrate.visible = true;
+        favouriteButtonSubstrate.visible = false;
+    }
+
+    function showSubstrateForFavouriteButton()
+    {
+        settingsButtonSubstrate.visible = false;
+        homeButtonSubstrate.visible = false;
+        favouriteButtonSubstrate.visible = true;
+    }
+
+    function disableAllButtonsSubstrates()
+    {
+        settingsButtonSubstrate.visible = false;
+        homeButtonSubstrate.visible = false;
+        favouriteButtonSubstrate.visible = false;
+    }
+
     IconedButton
     {
         id: settingsButton
+        z: 1
         width: Vars.footerButtonsHeight
         height: Vars.footerButtonsHeight
         Layout.alignment: Qt.AlignHCenter
         buttonIconSource: "../icons/settings.png"
         clickArea.onClicked:
         {
+            showSubstrateForSettingsButton();
             PageNameHolder.push(pressedFromPageName);
             appWindowLoader.setSource("xmlHttpRequest.qml",
                                       { "api": Vars.userInfo,
                                         "functionalFlag": 'user'
                                       });
         }
+
+        FooterButtonSubstrate { id: settingsButtonSubstrate }
     }
 
     IconedButton
@@ -56,13 +88,19 @@ RowLayout
         id: homeButton
         /*workaround, for some reason size of this
         particular button is smaller than default*/
-        width: Vars.footerButtonsHeight*1.3
-        height: Vars.footerButtonsHeight*1.3
+        width: Vars.footerButtonsHeight
+        height: Vars.footerButtonsHeight
         Layout.alignment: Qt.AlignHCenter
         buttonIconSource: "../icons/home.png"
-        clickArea.onClicked: appWindowLoader.setSource("mapPage.qml");
+        clickArea.onClicked:
+        {
+            showSubstrateForHomeButton();
+            appWindowLoader.setSource("mapPage.qml");
+        }
         //need to clear data for getting fresh one
         Component.onCompleted: Vars.allPromsData = '';
+
+        FooterButtonSubstrate { id: homeButtonSubstrate }
     }
 
     IconedButton
@@ -82,5 +120,7 @@ RowLayout
                                          "functionalFlag": 'user/marked'
                                      });
         }
+
+        FooterButtonSubstrate { id: favouriteButtonSubstrate }
     }
 }//RowLayout

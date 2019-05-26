@@ -86,6 +86,32 @@ public:
     }
     Q_INVOKABLE int getCatsAmount() const
     { return selectedCats.size(); }
+    Q_INVOKABLE void setAllCatsUp()
+    {
+        quint32 catId;
+        for(catId = 101; catId <= 107; catId++)
+            this->insertCat(catId);
+        for(catId = 201; catId <= 205; catId++)
+            this->insertCat(catId);
+        for(catId = 301; catId <= 304; catId++)
+            this->insertCat(catId);
+        for(catId = 401; catId <= 410; catId++)
+            this->insertCat(catId);
+        for(catId = 501; catId <= 504; catId++)
+            this->insertCat(catId);
+        for(catId = 601; catId <= 604; catId++)
+            this->insertCat(catId);
+        for(catId = 701; catId <= 705; catId++)
+            this->insertCat(catId);
+        for(catId = 801; catId <= 802; catId++)
+            this->insertCat(catId);
+        for(catId = 901; catId <= 904; catId++)
+            this->insertCat(catId);
+        for(catId = 1001; catId <= 1005; catId++)
+            this->insertCat(catId);
+        for(catId = 1101; catId <= 1113; catId++)
+            this->insertCat(catId);
+    }
 private:
     QSet<quint32> selectedCats;
 };

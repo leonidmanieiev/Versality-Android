@@ -44,7 +44,7 @@ Page
     {
         id: backgroundColor
         anchors.fill: parent
-        color: Vars.backgroundWhite
+        color: Vars.whiteColor
     }
 
     Component.onCompleted:
@@ -139,7 +139,7 @@ Page
                     id: effect
                     z: -1
                     anchors.fill: promsItem
-                    color: "grey"
+                    color: Vars.glowColor
                     glowRadius: 40
                     cornerRadius: promsItem.radius
                 }
@@ -201,7 +201,11 @@ Page
         onClicked: favouritePageLoader.source = "mapPage.qml"
     }
 
-    FooterButtons { pressedFromPageName: 'favouritePage.qml' }
+    FooterButtons
+    {
+        pressedFromPageName: 'favouritePage.qml'
+        Component.onCompleted: showSubstrateForFavouriteButton();
+    }
 
     Keys.onReleased:
     {

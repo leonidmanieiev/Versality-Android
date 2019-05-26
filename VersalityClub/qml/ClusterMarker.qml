@@ -32,7 +32,7 @@ Rectangle
 
     id: promClusterIcon
     radius: height*0.5
-    color: Vars.popupWindowColor
+    color: Vars.mapPromsPopupColor
 
     FontLoader
     {
@@ -48,6 +48,6 @@ Rectangle
         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                     Vars.dpi)
         font.family: regulatText.name
-        color: Vars.backgroundWhite
+        color: Vars.whiteColor
     }
 }

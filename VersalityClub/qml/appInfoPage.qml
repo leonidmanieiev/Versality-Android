@@ -97,11 +97,11 @@ Page
                     width: parent.width
                     text: 'Узнайте больше о Versality:<br><br>'+
                           '<a href="'+Vars.appSiteLink+'"'
-                          +' style="color: '+Vars.popupWindowColor+'">'
+                          +' style="color: '+Vars.purpleTextColor+'">'
                           +Vars.appSiteName+'</a><br><br>' + appInfoText
                     font.pixelSize: Helper.toDp(13, Vars.dpi)
                     font.family: regularText.name
-                    color: Vars.backgroundBlack
+                    color: Vars.blackColor
                     wrapMode: Label.WordWrap
                     onLinkActivated: Qt.openUrlExternally(link)
                     textFormat: Text.RichText;

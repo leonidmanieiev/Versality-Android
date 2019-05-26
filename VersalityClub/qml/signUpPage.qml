@@ -67,7 +67,7 @@ Page
         {
             id: sexLabel
             labelText: Vars.sex
-            labelColor: Vars.popupWindowColor
+            labelColor: Vars.purpleTextColor
         }
 
         ControlButton
@@ -75,7 +75,7 @@ Page
             id: sexButton
             Layout.fillWidth: true
             labelText: Vars.m_f
-            labelColor: Vars.backgroundBlack
+            labelColor: Vars.purpleTextColor
             buttonClickableArea.onClicked:
                 labelText === "М" ? labelText = "Ж" : labelText = "М"
         }
@@ -84,16 +84,16 @@ Page
         {
             id: dateofbirthLabel
             labelText: Vars.birthday
-            labelColor: Vars.popupWindowColor
+            labelColor: Vars.purpleTextColor
         }
 
         CustomTextField
         {
             id: dateofbirthField
             Layout.fillWidth: true
-            setTextColor: Vars.backgroundBlack
-            setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.popupWindowColor
+            setTextColor: Vars.purpleTextColor
+            setFillColor: Vars.whiteColor
+            setBorderColor: Vars.purpleBorderColor
             inputMask: Vars.birthdayMask
             inputMethodHints: Qt.ImhDigitsOnly
 
@@ -110,17 +110,17 @@ Page
         {
             id: emailLabel
             labelText: Vars.email
-            labelColor: Vars.popupWindowColor
+            labelColor: Vars.purpleTextColor
         }
 
         CustomTextField
         {
             id: emailField
             Layout.fillWidth: true
-            setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.popupWindowColor
-            setTextColor: Vars.backgroundBlack
-            placeholderText: Vars.emailPlaceHolderStars
+            setFillColor: Vars.whiteColor
+            setBorderColor: Vars.purpleBorderColor
+            setTextColor: Vars.purpleTextColor
+            placeholderText: Vars.emailPlaceHolderEnter
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
             { regExp: Vars.emailRegEx }
@@ -130,7 +130,7 @@ Page
                 if(color === Vars.errorRed)
                 {
                     text = '';
-                    color = Vars.backgroundBlack;
+                    color = Vars.purpleTextColor;
                 }
             }
         }
@@ -164,7 +164,7 @@ Page
                 font.family: mediumText.name
                 font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                             Vars.dpi)
-                color: Vars.backgroundWhite
+                color: Vars.whiteColor
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
             }
@@ -209,7 +209,7 @@ Page
         {
             //show date
             dateofbirthField.text = selectedDay+selectedMonth+selectedYear;
-            dateofbirthField.color = Vars.backgroundBlack
+            dateofbirthField.color = Vars.purpleTextColor
 
             //save date fo futher usage
             AppSettings.beginGroup("user");

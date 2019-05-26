@@ -62,7 +62,7 @@ RoundButton
                 text: buttonText
                 font.pixelSize: Helper.toDp(13, Vars.dpi)
                 font.family: regularText.name
-                color: Vars.backgroundWhite
+                color: Vars.whiteColor
                 anchors.verticalCenter: parent.verticalCenter
             }
 

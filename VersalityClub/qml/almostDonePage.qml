@@ -29,32 +29,6 @@ import QtQuick.Layouts 1.3
 
 Page
 {
-    property string currComp: "firstComp"
-
-    function nextLeftHelp()
-    {
-        if(currComp === "secondComp")
-        {
-            currComp = "firstComp";
-            return firstComp
-        }
-
-        currComp = "secondComp";
-        return secondComp
-    }
-
-    function nextRightHelp()
-    {
-        if(currComp === "firstComp")
-        {
-            currComp = "secondComp";
-            return secondComp
-        }
-
-        currComp = "thirdComp";
-        return thirdComp
-    }
-
     id: almostDonePage
     enabled: Vars.isConnected
     height: Vars.screenHeight
@@ -88,89 +62,95 @@ Page
         anchors.centerIn: parent
         color: "transparent"
 
-        RowLayout
+        IconedButton
         {
-            id: btnViewBtn
-            width: parent.width*0.9
-            height: Vars.screenHeight*0.5
-            anchors.centerIn: parent
+            id: leftArrowButton
+            z: 1
+            width: parent.width*0.1
+            height: parent.width*0.1
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.05
+            anchors.verticalCenter: parent.verticalCenter
+            buttonIconSource: "../icons/left_arrow.png"
+            clickArea.onClicked: swipeView.decrementCurrentIndex()
+        }
 
-            IconedButton
+        SwipeView
+        {
+            id: swipeView
+            z: -1
+            currentIndex: 0
+            width: parent.width
+            height: parent.height
+            anchors.top: parent.top
+            anchors.topMargin: Vars.screenHeight * 0.1
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            HelpComponent
             {
-                id: leftArrowButton
-                width: parent.width*0.1
-                height: parent.width*0.1
-                Layout.alignment: Qt.AlignTop
-                Layout.topMargin: parent.height*0.22
-                buttonIconSource: "../icons/left_arrow.png"
-                clickArea.onClicked:
-                {
-                    if(currComp !== "firstComp")
-                        stackView.push(nextLeftHelp());
-                }
+                id: firstHelpPage
+                helpText: Vars.firstHelpText
+                helpImageSource: "../icons/settings_help.png"
             }
 
-            StackView
+            HelpComponent
             {
-                id: stackView
-                initialItem: firstComp
-                width: Vars.screenWidth*0.54
-                height: Vars.screenHeight*0.5
-                Layout.alignment: Qt.AlignHCenter
+                id: secondHelpPage
+                helpText: Vars.secondHelpText
+                helpImageSource: "../icons/logo_gradient.png"
+            }
 
-                Component
-                {
-                    id: firstComp
-
-                    HelpComponent
-                    {
-                        id: firstHelpComp
-                        helpText: Vars.firstHelpText
-                        helpImageSource: "../icons/settings_help.png"
-                    }
-                }
-
-                Component
-                {
-                    id: secondComp
-
-                    HelpComponent
-                    {
-                        id: secondHelpComp
-                        helpText: Vars.secondHelpText
-                        helpImageSource: "../icons/logo_gradient.png"
-                    }
-                }
-
-                Component
-                {
-                    id: thirdComp
-
-                    HelpComponent
-                    {
-                        id: thirdHelpComp
-                        helpText: Vars.thirdHelpText
-                        helpImageSource: "../icons/favourites_help.png"
-                    }
-                }
-            }//stackView
-
-            IconedButton
+            HelpComponent
             {
-                id: rightArrowButton
-                width: parent.width*0.1
-                height: parent.width*0.1
-                rotateAngle: 180
-                Layout.alignment: Qt.AlignTop
-                Layout.topMargin: parent.height*0.22
-                buttonIconSource: "../icons/left_arrow.png"
-                clickArea.onClicked:
+                id: thirdHelpPage
+                helpText: Vars.thirdHelpText
+                helpImageSource: "../icons/favourites_help.png"
+            }
+        }//swipeView
+
+        IconedButton
+        {
+            id: rightArrowButton
+            z: 1
+            rotateAngle: 180
+            width: parent.width*0.1
+            height: parent.width*0.1
+            anchors.right: parent.right
+            anchors.rightMargin: parent.width*0.05
+            anchors.verticalCenter: parent.verticalCenter
+            buttonIconSource: "../icons/left_arrow.png"
+            clickArea.onClicked: swipeView.incrementCurrentIndex()
+        }
+
+        PageIndicator
+        {
+            id: swipePageIndicator
+            count: swipeView.count
+            currentIndex: swipeView.currentIndex
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            delegate: Rectangle
+            {
+                id: dot
+                implicitWidth:  Vars.screenHeight*0.03
+                implicitHeight: Vars.screenHeight*0.03
+                radius: width*0.5
+                color: index === swipeView.currentIndex ?
+                           Vars.purpleTextColor : "transparent"
+
+                Rectangle
                 {
-                    if(currComp !== "thirdComp")
-                        stackView.push(nextRightHelp());
+                    id: subDot
+                    visible: index !== swipeView.currentIndex
+                    implicitWidth:  Vars.screenHeight*0.015
+                    implicitHeight: Vars.screenHeight*0.015
+                    radius: width*0.5
+                    color: Vars.whiteColor
+                    anchors.centerIn: parent
                 }
             }
-        }//btnViewBtn
+        }//swipePageIndicator
     }//middleItem
 
 
@@ -181,14 +161,15 @@ Page
         anchors.bottomMargin: Helper.toDp(parent.height/14, Vars.dpi)
         anchors.horizontalCenter: parent.horizontalCenter
         labelText: Vars.everythingIsClearStart
-        labelColor: Vars.backgroundWhite
+        labelColor: Vars.whiteColor
         backgroundColor: "transparent"
-        borderColor: Vars.backgroundWhite
+        borderColor: Vars.whiteColor
         buttonClickableArea.onClicked:
         {
             almostDonePageLoader.setSource("xmlHttpRequest.qml",
                                      { "api": Vars.userInfo,
-                                       "functionalFlag": 'user'
+                                       "functionalFlag": 'user',
+                                       "requestFromADP": true
                                      });
         }
     }

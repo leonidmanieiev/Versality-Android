@@ -48,6 +48,8 @@ Item
     //flags
     property string functionalFlag: ''
     property bool allGood: false
+    property bool newUser: false
+    property bool requestFromADP: false
     //beg and end possition of code of error from server
     readonly property int errorFlagBeg: 0
     readonly property int errorFlagEnd: 5
@@ -160,7 +162,8 @@ Item
                                                                { "strCatsJSON": request.responseText });
                                 break;
                             case 'register':
-                                xmlHttpRequestLoader.source = "passwordInputPage.qml";
+                                xmlHttpRequestLoader.setSource("passwordInputPage.qml",
+                                                               {"fromSignUpRequest": true });
                                 break;
                             case 'login':
                                 //saving hash(secret) for further auto authentication
@@ -171,13 +174,9 @@ Item
                                 //saving hash to file
                                 cppCall.saveHashToFile();
 
-                                //determine whether user seen app instructions
-                                if(AppSettings.value("user/seen_almost_done_page") === undefined)
+                                if(newUser)
                                 {
-                                    //setting key to 1, so user won't get app instructions anymore
-                                    AppSettings.beginGroup("user");
-                                    AppSettings.setValue("seen_almost_done_page", 1);
-                                    AppSettings.endGroup();
+                                    //if new user, show app tips
                                     xmlHttpRequestLoader.source = "almostDonePage.qml";
                                 }
                                 else xmlHttpRequestLoader.source = "mapPage.qml"; break;
@@ -191,9 +190,24 @@ Item
                                     AppSettings.setValue("birthday", uInfoRespJSON.birthday);
                                     AppSettings.setValue("name", uInfoRespJSON.name);
                                     AppSettings.endGroup();
-                                    for(var i in uInfoRespJSON.categories)
-                                        AppSettings.insertCat(uInfoRespJSON.categories[i]);
-                                    xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+
+                                    // if get here from almostDonePage
+                                    if(requestFromADP)
+                                    {
+                                        // set all categories - up
+                                        AppSettings.setAllCatsUp();
+                                        xmlHttpRequestLoader.setSource("xmlHttpRequest.qml",
+                                                                       { "api": Vars.userSelectCats,
+                                                                         "functionalFlag": 'user/refresh-cats'
+                                                                       });
+                                    }
+                                    else
+                                    {
+                                        // set only user selected categories - up
+                                        for(var i in uInfoRespJSON.categories)
+                                            AppSettings.insertCat(uInfoRespJSON.categories[i]);
+                                        xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+                                    }
                                 } catch (e) {
                                     toastMessage.setTextAndRun(Vars.smthWentWrong, true);
                                 }

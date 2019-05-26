@@ -80,7 +80,7 @@ Popup
         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                     Vars.dpi)
         font.family: regularText.name
-        color: Vars.backgroundWhite
+        color: Vars.whiteColor
         wrapMode: Text.WordWrap
         horizontalAlignment: Text.AlignHCenter
     }

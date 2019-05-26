@@ -48,7 +48,6 @@
         <file>icons/down_arrow.png</file>
         <file>icons/tick.png</file>
         <file>icons/favourites.png</file>
-        <file>icons/home.png</file>
         <file>icons/show_listview.png</file>
         <file>backgrounds/main_f.png</file>
         <file>qml/IconedButton.qml</file>
@@ -65,19 +64,8 @@
         <file>PromotionClusters.qml</file>
         <file>qml/ClusterMarker.qml</file>
         <file>qml/PromotionMarker.qml</file>
-        <file>icons/cat_2.png</file>
-        <file>icons/cat_3.png</file>
-        <file>icons/cat_4.png</file>
-        <file>icons/cat_5.png</file>
-        <file>icons/cat_6.png</file>
-        <file>icons/cat_7.png</file>
-        <file>icons/cat_8.png</file>
-        <file>icons/cat_9.png</file>
-        <file>icons/cat_10.png</file>
-        <file>icons/cat_11.png</file>
         <file>icons/promotion_marker.png</file>
         <file>icons/logo_gradient.png</file>
-        <file>icons/cat_1.png</file>
         <file>icons/add_to_favourites_on.png</file>
         <file>fonts/Roboto-Bold.ttf</file>
         <file>fonts/Roboto-Medium.ttf</file>
@@ -92,8 +80,6 @@
         <file>icons/comp_proms_map_off.png</file>
         <file>icons/comp_proms_map_on.png</file>
         <file>backgrounds/comp_pictures_fade_out.png</file>
-        <file>icons/app_info_on.png</file>
-        <file>icons/app_info_off.png</file>
         <file>qml/appInfoPage.qml</file>
         <file>backgrounds/app_info_h.png</file>
         <file>icons/favourites_help.png</file>
@@ -103,5 +89,21 @@
         <file>icons/geo_location.svg</file>
         <file>appInfoText.txt</file>
         <file>backgrounds/preview_bg.jpg</file>
+        <file>icons/cat_1.svg</file>
+        <file>icons/cat_2.svg</file>
+        <file>icons/cat_3.svg</file>
+        <file>icons/cat_4.svg</file>
+        <file>icons/cat_5.svg</file>
+        <file>icons/cat_6.svg</file>
+        <file>icons/cat_7.svg</file>
+        <file>icons/cat_8.svg</file>
+        <file>icons/cat_9.svg</file>
+        <file>icons/cat_10.svg</file>
+        <file>icons/cat_11.svg</file>
+        <file>icons/app_info_off.png</file>
+        <file>icons/app_info_on.png</file>
+        <file>icons/footer_button_substrate.png</file>
+        <file>icons/home.png</file>
+        <file>qml/FooterButtonSubstrate.qml</file>
     </qresource>
 </RCC>

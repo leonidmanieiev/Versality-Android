@@ -79,7 +79,7 @@ Page
     {
         id: backgroundColor
         anchors.fill: parent
-        color: Vars.backgroundWhite
+        color: Vars.whiteColor
     }
 
     Flickable
@@ -149,7 +149,7 @@ Page
                         id: compSite
                         textFormat: Text.RichText;
                         text: '<a href="http://'+comp_website+'"'
-                              +' style="color: '+Vars.popupWindowColor+'">'
+                              +' style="color: '+Vars.purpleTextColor+'">'
                               +comp_website+'</a>'
                         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
                         font.family: boldText.name
@@ -317,7 +317,7 @@ Page
                     text: comp_about
                     font.pixelSize: Helper.toDp(13, Vars.dpi)
                     font.family: regularText.name
-                    color: Vars.backgroundBlack
+                    color: Vars.blackColor
                     wrapMode: Label.WordWrap
                 }
             }
@@ -410,7 +410,11 @@ Page
         source: "../backgrounds/map_f.png"
     }
 
-    FooterButtons { pressedFromPageName: 'companyPage.qml' }
+    FooterButtons
+    {
+        pressedFromPageName: 'companyPage.qml'
+        Component.onCompleted: disableAllButtonsSubstrates()
+    }
 
     ToastMessage { id: toastMessage }
 

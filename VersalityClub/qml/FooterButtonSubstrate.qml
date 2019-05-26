@@ -20,33 +20,18 @@
 **
 ****************************************************************************/
 
-//Static notifier
+//template for FooterButtons substrate
 import "../"
-import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 
-Rectangle
+Image
 {
-    property string notifierText: ''
-
-    id: notifier
+    z: -1
+    clip: true
     visible: false
-    width: textContent.width*1.2
-    height: textContent.height*2
-    anchors.top: parent.top
-    anchors.topMargin: parent.height*0.3
-    anchors.horizontalCenter: parent.horizontalCenter
-    color: Vars.purpleBorderColor
-    radius: height*0.5
-    opacity: 0.9
-
-    Text
-    {
-        id: textContent
-        text: notifierText
-        anchors.centerIn: parent
-        color: Vars.whiteColor
-        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                    Vars.dpi)
-    }
+    anchors.centerIn: parent
+    width: Vars.footerButtonsHeight*1.3
+    height: Vars.footerButtonsHeight*1.3
+    fillMode: Image.PreserveAspectFit
+    source: "../icons/footer_button_substrate.png"
 }

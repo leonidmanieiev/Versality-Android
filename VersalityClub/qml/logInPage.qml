@@ -80,10 +80,10 @@ Page
             id: emailField
             Layout.fillWidth: true
             placeholderText: Vars.emailPlaceHolder
-            placeholderTextColor: Vars.popupWindowColor
-            setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.popupWindowColor
-            setTextColor: Vars.backgroundBlack
+            placeholderTextColor: Vars.purpleTextColor
+            setFillColor: Vars.whiteColor
+            setBorderColor: Vars.purpleBorderColor
+            setTextColor: Vars.purpleTextColor
             inputMethodHints: Qt.ImhEmailCharactersOnly
             validator: RegExpValidator
             { regExp: Vars.emailRegEx }
@@ -93,7 +93,7 @@ Page
                 if(color === Vars.errorRed)
                 {
                     text = '';
-                    color = Vars.backgroundBlack;
+                    color = Vars.purpleTextColor;
                 }
             }
         }
@@ -102,8 +102,8 @@ Page
         {
             id: enterButton
             Layout.fillWidth: true
-            labelColor: Vars.backgroundWhite
-            backgroundColor: Vars.popupWindowColor
+            labelColor: Vars.whiteColor
+            backgroundColor: Vars.purpleBorderColor
             labelText: Vars.login
             buttonClickableArea.onClicked:
             {

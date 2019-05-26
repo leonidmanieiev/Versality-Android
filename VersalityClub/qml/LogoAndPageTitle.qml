@@ -37,6 +37,7 @@ RowLayout
     anchors.top: parent.top
     height: Vars.screenHeight*0.15
     width: Vars.screenWidth
+    anchors.horizontalCenter: parent.horizontalCenter
 
     Image
     {
@@ -45,7 +46,7 @@ RowLayout
         source: "../icons/logo_white_fill.png"
         Layout.preferredWidth: Vars.screenHeight*0.1
         Layout.preferredHeight: Vars.screenHeight*0.1
-        Layout.alignment: Qt.AlignRight
+        Layout.alignment: Qt.AlignHCenter
     }
 
     FontLoader
@@ -58,12 +59,12 @@ RowLayout
     {
         id: pageTitle
         text: pageTitleText
-        color: Vars.backgroundWhite
+        color: Vars.whiteColor
         height: Vars.screenHeight*0.1
-        Layout.alignment: Qt.AlignHCenter
+        Layout.alignment: Qt.AlignLeft
         font.family: boldText.name
         font.bold: true
-        font.pixelSize: Helper.toDp(14, Vars.dpi)
+        font.pixelSize: Helper.toDp(18, Vars.dpi)
     }
 
     Rectangle
@@ -76,7 +77,7 @@ RowLayout
         Layout.topMargin: parent.height*0.25
         Layout.rightMargin: parent.height*0.25
         radius: height*0.5
-        color: infoClicked ? Vars.backgroundWhite : "transparent"
+        color: infoClicked ? Vars.whiteColor : "transparent"
 
         IconedButton
         {
@@ -84,8 +85,8 @@ RowLayout
             width: Vars.screenHeight*0.05
             height: Vars.screenHeight*0.05
             anchors.centerIn: parent
-            buttonIconSource: infoClicked ? "../icons/app_info_on.png" :
-                                            "../icons/app_info_off.png"
+            buttonIconSource: infoClicked ? "../icons/app_info_on.png"
+                                          : "../icons/app_info_off.png"
             clickArea.onClicked:
             {
                 if(infoClicked)

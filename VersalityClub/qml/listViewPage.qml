@@ -47,7 +47,7 @@ Page
     {
         id: backgroundColor
         anchors.fill: parent
-        color: Vars.backgroundWhite
+        color: Vars.whiteColor
     }
 
     Component.onCompleted:
@@ -166,14 +166,14 @@ Page
                 height: promItemHeight
                 width: Vars.screenWidth*0.8
                 radius: Vars.listItemRadius
-                color: "white"
+                color: Vars.whiteColor
 
                 RectangularGlow
                 {
                     id: effect
                     z: -1
                     anchors.fill: promsRect
-                    color: "grey"
+                    color: Vars.glowColor
                     glowRadius: 40
                     cornerRadius: promsRect.radius
                 }
@@ -239,7 +239,11 @@ Page
         onClicked: listViewPageLoader.source = "mapPage.qml"
     }
 
-    FooterButtons { pressedFromPageName: pressedfrom }
+    FooterButtons
+    {
+        pressedFromPageName: pressedfrom
+        Component.onCompleted: disableAllButtonsSubstrates()
+    }
 
     Keys.onReleased:
     {

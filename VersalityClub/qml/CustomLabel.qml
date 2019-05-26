@@ -30,7 +30,7 @@ import QtQuick.Layouts 1.3
 Label
 {
     property string labelText: ''
-    property color labelColor: Vars.backgroundWhite
+    property color labelColor: Vars.whiteColor
 
     FontLoader
     {

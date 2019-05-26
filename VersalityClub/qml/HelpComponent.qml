@@ -33,33 +33,34 @@ Item
     property string helpText
 
     id: helpCompItem
-    width: Vars.screenWidth*0.54
-    height: Vars.screenHeight*0.5
 
-    Image
+    Column
     {
-        id: helpImage
-        clip: true
-        width: parent.width*0.5
-        height: parent.width*0.5
-        source: helpImageSource
-        fillMode: Image.PreserveAspectFit
-        anchors.top: parent.top
-        anchors.topMargin: parent.height*0.1
+        id: column
+        spacing: Vars.screenHeight * 0.07
         anchors.horizontalCenter: parent.horizontalCenter
-    }
 
-    Label
-    {
-        id: helpLabel
-        anchors.top: helpImage.bottom
-        anchors.topMargin: parent.height*0.1
-        anchors.horizontalCenter: parent.horizontalCenter
-        horizontalAlignment: Label.AlignHCenter
-        text: helpText
-        font.family: regularText.name
-        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                    Vars.dpi)
-        color: Vars.backgroundWhite
+        Image
+        {
+            id: helpImage
+            clip: true
+            width: Vars.screenWidth*0.3
+            height: Vars.screenWidth*0.3
+            source: helpImageSource
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        Label
+        {
+            id: helpLabel
+            text: helpText
+            color: Vars.whiteColor
+            font.family: regularText.name
+            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
+                                        Vars.dpi)
+            horizontalAlignment: Label.AlignHCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
     }
 }//helpCompItem

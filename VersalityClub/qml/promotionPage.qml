@@ -96,7 +96,7 @@ Page
     {
         id: pageBackground
         anchors.fill: parent
-        color: Vars.backgroundWhite
+        color: Vars.whiteColor
     }
 
     Flickable
@@ -131,7 +131,7 @@ Page
                     id: effect
                     z: -1
                     anchors.fill: promsImage
-                    color: "grey"
+                    color: Vars.glowColor
                     glowRadius: 40
                     cornerRadius: promsImage.radius
                 }
@@ -151,7 +151,7 @@ Page
                 font.pixelSize: Helper.toDp(16, Vars.dpi)
                 font.family: boldText.name
                 font.weight: Font.Bold
-                color: Vars.backgroundBlack
+                color: Vars.blackColor
                 Layout.alignment: Qt.AlignLeft
                 Layout.leftMargin: parent.width*0.1
             }
@@ -161,7 +161,7 @@ Page
                 id: textArea
                 width: parent.width*0.9
                 height: promotionDescription.height
-                color: Vars.backgroundWhite
+                color: Vars.whiteColor
                 Layout.alignment: Qt.AlignLeft
                 Layout.leftMargin: parent.width*0.1
 
@@ -172,7 +172,7 @@ Page
                     text: p_desc
                     font.pixelSize: Helper.toDp(13, Vars.dpi)
                     font.family: regularText.name
-                    color: Vars.backgroundBlack
+                    color: Vars.blackColor
                     wrapMode: Label.WordWrap
                 }
             }
@@ -190,7 +190,7 @@ Page
                     id: activeCoupon
                     buttonWidth: Vars.screenWidth*0.7
                     labelText: Vars.activateCoupon
-                    labelColor: Vars.backgroundWhite
+                    labelColor: Vars.whiteColor
                     backgroundColor: Vars.activeCouponColor
                     borderColor: "transparent"
                     buttonClickableArea.onClicked:
@@ -366,7 +366,8 @@ Page
                     promotionPageLoader.setSource("mapPage.qml",
                                         { "defaultLat": nearestStoreLat,
                                           "defaultLon": nearestStoreLon,
-                                          "defaultZoomLevel": 16
+                                          "defaultZoomLevel": 16,
+                                          "showingNearestStore": true
                                         });
                 }
             }
@@ -378,9 +379,7 @@ Page
                 Layout.alignment: Qt.AlignLeft
                 Layout.leftMargin: parent.width*0.1
                 labelText: Vars.openCompanyCard
-                labelColor: Vars.backgroundBlack
                 backgroundColor: "transparent"
-                borderColor: Vars.backgroundBlack
                 buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("promotionPage.qml");
@@ -417,7 +416,7 @@ Page
     ToastMessage
     {
         id: promoCodePopup
-        backgroundColor: Vars.popupWindowColor
+        backgroundColor: Vars.birthdayPickerColor
         y: Vars.screenHeight*0.5
     }
 
@@ -435,7 +434,11 @@ Page
         onClicked: promotionPageLoader.source = "mapPage.qml"
     }
 
-    FooterButtons { pressedFromPageName: 'promotionPage.qml' }
+    FooterButtons
+    {
+        pressedFromPageName: 'promotionPage.qml'
+        Component.onCompleted: disableAllButtonsSubstrates()
+    }
 
     Component.onCompleted:
     {

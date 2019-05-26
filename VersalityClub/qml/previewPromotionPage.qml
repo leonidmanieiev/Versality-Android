@@ -160,7 +160,7 @@ Page
                 font.pixelSize: Helper.toDp(16, Vars.dpi)
                 font.family: boldText.name
                 font.weight: Font.Bold
-                color: Vars.popupWindowColor
+                color: Vars.purpleTextColor
                 Layout.alignment: Qt.AlignLeft
                 Layout.leftMargin: parent.width*0.1
             }
@@ -182,7 +182,7 @@ Page
                     maximumLineCount: maxLineCnt
                     font.family: regularText.name
                     font.pixelSize: Helper.toDp(13, Vars.dpi)
-                    color: Vars.backgroundBlack
+                    color: Vars.blackColor
                     elide: Text.ElideRight
                     wrapMode: Label.WordWrap
                 }
@@ -239,7 +239,11 @@ Page
         onClicked: previewPromotionPageLoader.source = "mapPage.qml"
     }
 
-    FooterButtons { pressedFromPageName: 'previewPromotionPage.qml' }
+    FooterButtons
+    {
+        pressedFromPageName: 'previewPromotionPage.qml'
+        Component.onCompleted: disableAllButtonsSubstrates()
+    }
 
     Component.onCompleted:
     {

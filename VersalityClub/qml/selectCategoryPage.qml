@@ -25,6 +25,7 @@ import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import QtGraphicalEffects 1.0
 
 Page
 {
@@ -80,19 +81,28 @@ Page
                     width: parent.width
                     radius: height*0.5
                     color: "transparent"
-                    border.color: Vars.backgroundWhite
+                    border.color: Vars.whiteColor
                     border.width: height*0.06
 
                     Image
                     {
                         id: catIcon
-                        width: parent.radius
-                        height: parent.radius
+                        smooth: true
+                        sourceSize.width: parent.radius
+                        sourceSize.height: parent.radius
                         anchors.left: parent.left
                         anchors.leftMargin: parent.radius*0.6
                         anchors.verticalCenter: parent.verticalCenter
+                        source: "../icons/cat_"+id+".svg"
                         fillMode: Image.PreserveAspectFit
-                        source: "../icons/cat_"+id+".png"
+                    }
+
+                    ColorOverlay
+                    {
+                        anchors.fill: catIcon
+                        source: catIcon
+                        color: Vars.whiteColor
+                        cached: true
                     }
 
                     Text
@@ -100,7 +110,7 @@ Page
                         id: catsItemText
                         x: parent.radius*2
                         anchors.verticalCenter: parent.verticalCenter
-                        color: Vars.backgroundWhite
+                        color: Vars.whiteColor
                         font.family: mediumText.name
                         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                                     Vars.dpi)
@@ -126,8 +136,8 @@ Page
                         onClicked:
                         {
                             downArrow.rotation = collapsed ? 180 : 0;
-                            catsItem.border.color = collapsed ? "transparent" : Vars.backgroundWhite
-                            catsItem.color = collapsed ? Vars.popupWindowColor : "transparent"
+                            catsItem.border.color = collapsed ? "transparent" : Vars.whiteColor
+                            catsItem.color = collapsed ? Vars.purpleTextColor : "transparent"
                             catsModel.setProperty(index, "collapsed", !collapsed);
                         }
                     }
@@ -180,7 +190,7 @@ Page
                         font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                                     Vars.dpi)
                         color: AppSettings.contains(subid) ? "transprent" :
-                                                             Vars.backgroundWhite
+                                                             Vars.whiteColor
                         wrapMode: Text.WordWrap
                         text: subtitle
                     }
@@ -207,7 +217,7 @@ Page
                             if(AppSettings.contains(subid))
                             {
                                 subCatsItem.color = "transparent";
-                                subCatsText.color = Vars.backgroundWhite
+                                subCatsText.color = Vars.whiteColor
                                 tickIcon.visible = false;
                                 AppSettings.removeCat(subid);
                             }
@@ -236,8 +246,8 @@ Page
 
     LogoAndPageTitle
     {
-        pageTitleText: Vars.profileSettings
         showInfoButton: true
+        pageTitleText: Vars.profileSettings
     }
 
     ControlButton

@@ -30,16 +30,21 @@ import "js/helpFunc.js" as Helper
 QtObject
 {
     //COLORS
-    readonly property color backgroundWhite: "#FFFFFF"
-    readonly property color backgroundBlack: "#000000"
+    readonly property color whiteColor: "#FFFFFF"
+    readonly property color blackColor: "#000000"
     readonly property color toastGrey: "#76797c"
     readonly property color forgetPassPurple: "#a03576"
     readonly property color dragerLineColor: "#ae4a8c"
-    readonly property color popupWindowColor: "#4e1563"
     readonly property color errorRed: "RED"
-    readonly property color activeCouponColor: "#ff3333"
+    readonly property color activeCouponColor: "#ff3c3c"
     readonly property color copyrightBackgroundColor: "#c4c5c6"
     readonly property color subCatSelectedColor: "#f0e4ff"
+    readonly property color mapPromsPopupColor: "#270f3b"
+    readonly property color birthdayPickerColor: "#4c1462"
+    readonly property color purpleTextColor: "#3a0d5e"
+    readonly property color purpleBorderColor: "#441161"
+    readonly property color chosenPurpleColor: "#631d68"
+    readonly property color glowColor: "grey"
 
     //OTHERS
     readonly property int defaultRadius: 20
@@ -136,8 +141,8 @@ QtObject
     readonly property string login: "ВОЙТИ"
     readonly property string email: "E-mail:"
     readonly property string emailPlaceHolder: "E-MAIL"
-    readonly property string emailPlaceHolderStars: "*****@****.**"
-    readonly property string incorrectEmail: "Некорректный e-mail"
+    readonly property string emailPlaceHolderEnter: "Введите Ваш E-mail"
+    readonly property string incorrectEmail: "Некорректный E-mail"
     readonly property string pass: "Пароль:"
     readonly property string more: "ПОДРОБНЕЕ"
     readonly property string backToPromsPicking: "Назад к выбору акций"
@@ -148,6 +153,8 @@ QtObject
     readonly property string enterNewPass: "ВВЕДИТЕ НОВЫЙ ПАРОЛЬ"
     readonly property string enterYourPass: "ВВЕДИТЕ ВАШ ПАРОЛЬ"
     readonly property string forgetPass: "ЗАБЫЛ ПАРОЛЬ"
+    readonly property string passReset: "ВОССТАНОВКА ПАРОЛЯ"
+    readonly property string checkYourEmail: "(ПРОВЕРЬТЕ ВАШУ ПОЧТУ)"
     readonly property string submit: "ПОДТВЕРДИТЬ"
     readonly property string enterCode: "ВВЕДИТЕ КОД"
     readonly property string nameNotNecessary: "Имя (не обязательно):"
@@ -164,9 +171,9 @@ QtObject
     readonly property string mapPageId: "mapPage"
     readonly property string promotionPageId: "promotionPage"
     readonly property string userLocationIsNAN: "user location is NaN"
-    readonly property string appSiteLink: "http://club.versality.ru:8082/"
+    readonly property string appSiteLink: "http://club.versality.ru"
     readonly property string appSiteName: "club.versality.ru"
-    readonly property string firstHelpText: "В самом начале рекомендуем\nперейти в настрочки\n"+
+    readonly property string firstHelpText: "В самом начале рекомендуем\nперейти в настройки\n"+
                                             "и выбрать интересные Вам акции"
     readonly property string secondHelpText: "Все акции Вы можете смотреть\nв виде списка или "+
                                              "на карте города"

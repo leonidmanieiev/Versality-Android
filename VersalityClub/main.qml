@@ -32,7 +32,7 @@ ApplicationWindow
     visible: true
     width: Vars.screenWidth
     height: Vars.screenHeight
-    color: Vars.backgroundWhite
+    color: Vars.whiteColor
 
     Loader
     {

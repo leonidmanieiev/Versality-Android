@@ -80,19 +80,19 @@ Page
         {
             id: codeField
             Layout.fillWidth: true
-            setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.popupWindowColor
-            setTextColor: Vars.backgroundBlack
+            setFillColor: Vars.whiteColor
+            setBorderColor: Vars.purpleBorderColor
+            setTextColor: Vars.purpleTextColor
             selectByMouse: false
             placeholderText: Vars.enterCode
-            placeholderTextColor: Vars.popupWindowColor
+            placeholderTextColor: Vars.purpleTextColor
 
             onPressed:
             {
                 if(color === Vars.errorRed)
                 {
                     text = '';
-                    color = Vars.backgroundBlack;
+                    color = Vars.purpleTextColor;
                 }
             }
         }
@@ -101,21 +101,21 @@ Page
         {
             id: newPassField
             Layout.fillWidth: true
-            setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.popupWindowColor
-            setTextColor: Vars.backgroundBlack
+            setFillColor: Vars.whiteColor
+            setBorderColor: Vars.purpleBorderColor
+            setTextColor: Vars.purpleTextColor
             echoMode: TextInput.Password
             inputMethodHints: Qt.ImhSensitiveData
             selectByMouse: false
             placeholderText: Vars.enterNewPass
-            placeholderTextColor: Vars.popupWindowColor
+            placeholderTextColor: Vars.purpleTextColor
 
             onPressed:
             {
                 if(color === Vars.errorRed)
                 {
                     text = '';
-                    color = Vars.backgroundBlack;
+                    color = Vars.purpleTextColor;
                 }
             }
         }
@@ -125,8 +125,8 @@ Page
             id: submitButton
             Layout.fillWidth: true
             labelText: Vars.submit
-            labelColor: Vars.backgroundWhite
-            backgroundColor: Vars.popupWindowColor
+            labelColor: Vars.whiteColor
+            backgroundColor: Vars.purpleBorderColor
             buttonClickableArea.onClicked:
             {
                 AppSettings.beginGroup("user");
@@ -138,6 +138,14 @@ Page
                                                     "code": codeField.text
                                                   });
             }
+        }
+
+        CustomLabel
+        {
+            id: checkEmailLabel
+            labelColor: "#ff3333"
+            labelText: Vars.checkYourEmail
+            Layout.topMargin: -parent.spacing*0.5
         }
     }//ColumnLayout
 

@@ -23,12 +23,14 @@
 //button with icon
 import "../"
 import QtQuick 2.11
+import QtGraphicalEffects 1.0
 
 Rectangle
 {
     property string buttonIconSource
     property int rotateAngle: 0
     property alias clickArea: clickableArea
+    property alias buttonIconAlias: buttonIcon
 
     id: buttonBackground
     color: "transparent"

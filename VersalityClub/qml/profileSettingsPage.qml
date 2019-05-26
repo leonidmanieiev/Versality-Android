@@ -70,9 +70,33 @@ Page
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: parent.width*0.8//Vars.screenWidth
+            width: parent.width*0.8
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: Vars.screenHeight*0.05
+
+            CustomLabel
+            {
+                id: selectCategoryLabel
+                labelText: Vars.chooseCats
+            }
+
+            ControlButton
+            {
+                id: selectCategoryButton
+                Layout.fillWidth: true
+                labelText: Vars.choose
+                labelColor: Vars.whiteColor
+                backgroundColor: "transparent"
+                borderColor: Vars.whiteColor
+                buttonClickableArea.onClicked:
+                {
+                    PageNameHolder.push("profileSettingsPage.qml");
+                    profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
+                                                        { "api": Vars.allCats,
+                                                          "functionalFlag": 'categories'
+                                                        });
+                }
+            }//ControlButton
 
             CustomLabel
             {
@@ -85,9 +109,9 @@ Page
                 id: sexButton
                 Layout.fillWidth: true
                 labelText: AppSettings.value("user/sex");
-                labelColor: Vars.backgroundWhite
+                labelColor: Vars.whiteColor
                 backgroundColor: "transparent"
-                borderColor: Vars.backgroundWhite
+                borderColor: Vars.whiteColor
                 buttonClickableArea.onClicked:
                 {
                     if(labelText === "M")
@@ -186,30 +210,6 @@ Page
                     AppSettings.endGroup();
                 }
             }
-
-            CustomLabel
-            {
-                id: selectCategoryLabel
-                labelText: Vars.chooseCats
-            }
-
-            ControlButton
-            {
-                id: selectCategoryButton
-                Layout.fillWidth: true
-                labelText: Vars.choose
-                labelColor: Vars.backgroundWhite
-                backgroundColor: "transparent"
-                borderColor: Vars.backgroundWhite
-                buttonClickableArea.onClicked:
-                {
-                    PageNameHolder.push("profileSettingsPage.qml");
-                    profileSettingsPageLoader.setSource("xmlHttpRequest.qml",
-                                                        { "api": Vars.allCats,
-                                                          "functionalFlag": 'categories'
-                                                        });
-                }
-            }//ControlButton
         }//ColumnLayout
     }//Flickable
 
@@ -252,6 +252,7 @@ Page
 
     RoundButton
     {
+        // TODO make gradient button
         id: saveButton
         height: Vars.screenHeight*0.09
         width: parent.width*0.8
@@ -283,7 +284,8 @@ Page
         contentItem: Text
         {
             text: Vars.save
-            color: Vars.popupWindowColor
+            // TODO make gradient button
+            color: Vars.purpleTextColor
             font.family: mediumText.name
             font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                         Vars.dpi)
@@ -295,7 +297,7 @@ Page
         {
             implicitWidth: parent.width
             implicitHeight: parent.height
-            border.color: Vars.popupWindowColor
+            border.color: Vars.purpleTextColor
             border.width: height*0.06
             radius: Vars.listItemRadius
             color: "transparent"

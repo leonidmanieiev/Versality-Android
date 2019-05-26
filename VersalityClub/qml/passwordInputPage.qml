@@ -28,6 +28,8 @@ import QtQuick.Layouts 1.3
 
 Page
 {
+    property bool fromSignUpRequest: false
+
     id: passInputPage
     enabled: Vars.isConnected
     height: Vars.screenHeight
@@ -80,21 +82,21 @@ Page
         {
             id: passField
             Layout.fillWidth: true
-            setFillColor: Vars.backgroundWhite
-            setBorderColor: Vars.popupWindowColor
-            setTextColor: Vars.backgroundBlack
+            setFillColor: Vars.whiteColor
+            setBorderColor: Vars.purpleBorderColor
+            setTextColor: Vars.purpleTextColor
             echoMode: TextInput.Password
             inputMethodHints: Qt.ImhSensitiveData
             selectByMouse: false
             placeholderText: Vars.enterYourPass
-            placeholderTextColor: Vars.popupWindowColor
+            placeholderTextColor: Vars.purpleTextColor
 
             onPressed:
             {
                 if(color === Vars.errorRed)
                 {
                     text = '';
-                    color = Vars.backgroundBlack;
+                    color = Vars.purpleTextColor;
                 }
             }
         }
@@ -105,8 +107,8 @@ Page
             //padding: middleLayout.spacing*2
             Layout.fillWidth: true
             labelText: Vars.login
-            labelColor: Vars.backgroundWhite
-            backgroundColor: Vars.popupWindowColor
+            labelColor: Vars.whiteColor
+            backgroundColor: Vars.purpleBorderColor
             buttonClickableArea.onClicked:
             {
                 // close keyboard
@@ -118,7 +120,8 @@ Page
                 AppSettings.endGroup();
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
                                                   { "api": Vars.userLogin,
-                                                    "functionalFlag": 'login'
+                                                    "functionalFlag": 'login',
+                                                    "newUser": fromSignUpRequest
                                                   });
             }
         }
@@ -128,7 +131,7 @@ Page
             id: forgerPassButton
             Layout.fillWidth: true
             labelText: Vars.forgetPass
-            labelColor: Vars.backgroundWhite
+            labelColor: Vars.whiteColor
             backgroundColor: Vars.forgetPassPurple
             borderColor: Vars.forgetPassPurple
             buttonClickableArea.onClicked:

@@ -37,8 +37,17 @@ Rectangle
     id: rootBackground
     width: Vars.screenWidth*0.8
     height: Vars.screenHeight*0.4
-    color: Vars.popupWindowColor
+    color: Vars.birthdayPickerColor
     radius: Vars.defaultRadius
+
+    Rectangle
+    {
+        id: chosenDateSubstrate
+        width: parent.width
+        height: Vars.screenHeight*0.07
+        color: Vars.chosenPurpleColor
+        anchors.centerIn: rowLayout
+    }
 
     function monthToNumber(month)
     {
@@ -63,7 +72,6 @@ Rectangle
     RowLayout
     {
         id: rowLayout
-        //spacing: width * 0.005
         width: parent.width
         anchors.top: parent.top
         anchors.topMargin: parent.height * 0.05
@@ -106,8 +114,8 @@ Rectangle
         width: parent.width * 0.65
         height: buttonText.height*2
         radius: Vars.defaultRadius
-        color: Vars.popupWindowColor
-        border.color: Vars.backgroundWhite
+        color: Vars.birthdayPickerColor
+        border.color: Vars.whiteColor
         border.width: Vars.defaultFontPixelSize*0.2
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height*0.05
@@ -126,7 +134,7 @@ Rectangle
             font.family: regularText.name
             font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
                                         Vars.dpi)
-            color: Vars.backgroundWhite
+            color: Vars.whiteColor
             anchors.centerIn: parent
         }
 

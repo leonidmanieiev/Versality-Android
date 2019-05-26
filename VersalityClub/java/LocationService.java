@@ -38,7 +38,7 @@ public class LocationService extends QtService
     }
 
     public static void startLocationService(Context ctx) {
-        Log.d(TAG, "from onClosing event: startLocationService");
+        Log.d(TAG, "from main.qml or mapPage.qml: startLocationService");
         ctx.startService(new Intent(ctx, LocationService.class));
     }
 
