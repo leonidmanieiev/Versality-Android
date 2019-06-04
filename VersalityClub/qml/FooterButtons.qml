@@ -62,21 +62,40 @@ RowLayout
         favouriteButtonSubstrate.visible = false;
     }
 
+    // instead of saveSelectedButton from selectCategoryPage
+    function saveSelectedCategory(nextPageName)
+    {
+        PageNameHolder.pop();
+        appWindowLoader.setSource("xmlHttpRequest.qml",
+                                  { "api": Vars.userSelectCats,
+                                    "functionalFlag": 'user/refresh-cats',
+                                    "nextPageAfterCatsSave": nextPageName
+                                  });
+    }
+
     IconedButton
     {
         id: settingsButton
         width: Vars.footerButtonsHeight
         height: Vars.footerButtonsHeight
         Layout.alignment: Qt.AlignHCenter
-        buttonIconSource: "../icons/settings.png"
+        buttonIconSource: "../icons/settings.svg"
         clickArea.onClicked:
         {
             showSubstrateForSettingsButton();
             PageNameHolder.push(pressedFromPageName);
-            appWindowLoader.setSource("xmlHttpRequest.qml",
-                                      { "api": Vars.userInfo,
-                                        "functionalFlag": 'user'
-                                      });
+
+            if(pressedFromPageName === 'selectCategoryPage.qml')
+            {
+                saveSelectedCategory('profileSettingsPage.qml');
+            }
+            else
+            {
+                appWindowLoader.setSource("xmlHttpRequest.qml",
+                                          { "api": Vars.userInfo,
+                                            "functionalFlag": 'user'
+                                          });
+            }
         }
 
         FooterButtonSubstrate { id: settingsButtonSubstrate }
@@ -85,14 +104,18 @@ RowLayout
     IconedButton
     {
         id: homeButton
-        width: Vars.footerButtonsHeight
-        height: Vars.footerButtonsHeight
+        width: Vars.footerButtonsHeight*1.1
+        height: Vars.footerButtonsHeight*1.1
         Layout.alignment: Qt.AlignHCenter
-        buttonIconSource: "../icons/home.png"
+        buttonIconSource: "../icons/logo_white_fill.svg"
         clickArea.onClicked:
         {
             showSubstrateForHomeButton();
-            appWindowLoader.setSource("mapPage.qml");
+
+            if(pressedFromPageName === 'selectCategoryPage.qml')
+                saveSelectedCategory('mapPage.qml');
+            else
+                appWindowLoader.setSource("mapPage.qml");
         }
         //need to clear data for getting fresh one
         Component.onCompleted: Vars.allPromsData = '';
@@ -106,16 +129,23 @@ RowLayout
         width: Vars.footerButtonsHeight
         height: Vars.footerButtonsHeight
         Layout.alignment: Qt.AlignHCenter
-        buttonIconSource: "../icons/favourites.png"
+        buttonIconSource: "../icons/favourites.svg"
         clickArea.onClicked:
         {
             if(pressedFromPageName !== "favouritePage.qml")
                 PageNameHolder.push(pressedFromPageName);
 
-            appWindowLoader.setSource("xmlHttpRequest.qml",
-                                       { "api": Vars.userMarkedProms,
-                                         "functionalFlag": 'user/marked'
-                                     });
+            if(pressedFromPageName === 'selectCategoryPage.qml')
+            {
+                saveSelectedCategory('favouritePage.qml');
+            }
+            else
+            {
+                appWindowLoader.setSource("xmlHttpRequest.qml",
+                                           { "api": Vars.userMarkedProms,
+                                             "functionalFlag": 'user/marked'
+                                         });
+            }
         }
 
         FooterButtonSubstrate { id: favouriteButtonSubstrate }

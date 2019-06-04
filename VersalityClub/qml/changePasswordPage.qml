@@ -49,11 +49,12 @@ Page
     {
         id: header_logo_full
         clip: true
-        source: "../icons/logo_full.png"
-        width: parent.width
-        height: parent.height*0.06
+        source: "../icons/logo_full.svg"
+        sourceSize.width: parent.width*0.40
+        sourceSize.height: parent.width*0.08
         anchors.top: parent.top
-        anchors.topMargin: parent.height*0.1
+        anchors.topMargin: parent.height*0.09
+        anchors.horizontalCenter: parent.horizontalCenter
         fillMode: Image.PreserveAspectFit
     }
 
@@ -61,11 +62,12 @@ Page
     {
         id: footer_logo
         clip: true
-        source: "../icons/logo.png"
-        width: parent.width
-        height: parent.height*0.15
+        source: "../icons/logo.svg"
+        sourceSize.width: parent.width*0.25
+        sourceSize.height: parent.width*0.25
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height*0.08
+        anchors.horizontalCenter: parent.horizontalCenter
         fillMode: Image.PreserveAspectFit
     }
 

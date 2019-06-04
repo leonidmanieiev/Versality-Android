@@ -91,8 +91,8 @@ Page
         switch(closestDistIndex)
         {
             case 0: return 9.5;
-            case 1: return 10.5;
-            case 2: return 11;
+            case 1: return 10;
+            case 2: return 10.5;
             case 3: return 12;
             case 4: return 13;
             case 5: return 13.5;
@@ -247,14 +247,14 @@ Page
                     height: Vars.screenHeight*0.08
                     Layout.alignment: Qt.AlignRight
                     buttonIconSource: p_is_marked ?
-                                      "../icons/add_to_favourites_on.png" :
-                                      "../icons/add_to_favourites_off.png"
+                                      "../icons/add_to_favourites_on.svg" :
+                                      "../icons/add_to_favourites_off.svg"
                     clickArea.onClicked:
                     {
                         if(!p_is_marked)
                         {
                             p_is_marked = true;
-                            buttonIconSource = "../icons/add_to_favourites_on.png";
+                            buttonIconSource = "../icons/add_to_favourites_on.svg";
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
                                                           {"api": Vars.userMarkProm,
                                                            "functionalFlag": "user/mark",
@@ -263,7 +263,7 @@ Page
                         else
                         {
                             p_is_marked = false;
-                            buttonIconSource = "../icons/add_to_favourites_off.png";
+                            buttonIconSource = "../icons/add_to_favourites_off.svg";
                             promotionPageLoader.setSource("xmlHttpRequest.qml",
                                                           {"api": Vars.userUnmarkProm,
                                                            "functionalFlag": "user/unmark",
@@ -289,7 +289,9 @@ Page
                                           "defaultLon": nearestStoreLon,
                                           "defaultZoomLevel": getZoomLevel(),
                                           "showingNearestStore": true,
-                                          "locButtClicked": true
+                                          "locButtClicked": true,
+                                          "nearestPromId": p_id,
+                                          "nearestPromIcon": c_icon
                                         });
                 }
             }
@@ -431,7 +433,7 @@ Page
         id: backButton
         visible: allGood
         buttonText: Vars.backToPromsPicking
-        buttonIconSource: "../icons/left_arrow.png"
+        buttonIconSource: "../icons/left_arrow.svg"
         iconAlias.width: height*0.5
         iconAlias.height: height*0.4
         onClicked: promotionPageLoader.source = "mapPage.qml"

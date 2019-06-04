@@ -100,14 +100,14 @@ Page
                 Layout.topMargin: parent.spacing*0.5
                 Layout.alignment: Qt.AlignHCenter
                 buttonIconSource: p_is_marked ?
-                                  "../icons/add_to_favourites_2_on.png" :
-                                  "../icons/add_to_favourites_2_off.png"
+                                  "../icons/add_to_favourites_2_on.svg" :
+                                  "../icons/add_to_favourites_2_off.svg"
                 clickArea.onClicked:
                 {
                     if(!p_is_marked)
                     {
                         p_is_marked = true;
-                        buttonIconSource = "../icons/add_to_favourites_2_on.png";
+                        buttonIconSource = "../icons/add_to_favourites_2_on.svg";
                         previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
                                                              {"api": Vars.userMarkProm,
                                                               "functionalFlag": "user/mark",
@@ -116,7 +116,7 @@ Page
                     else
                     {
                         p_is_marked = false;
-                        buttonIconSource = "../icons/add_to_favourites_2_off.png";
+                        buttonIconSource = "../icons/add_to_favourites_2_off.svg";
                         previewPromotionPageLoader.setSource("xmlHttpRequest.qml",
                                                              {"api": Vars.userUnmarkProm,
                                                               "functionalFlag": "user/unmark",
@@ -233,7 +233,7 @@ Page
         id: backButton
         anchors.topMargin: Vars.screenWidth*0.25
         buttonText: Vars.backToPromsPicking
-        buttonIconSource: "../icons/left_arrow.png"
+        buttonIconSource: "../icons/left_arrow.svg"
         iconAlias.width: height*0.5
         iconAlias.height: height*0.4
         onClicked: previewPromotionPageLoader.source = "mapPage.qml"

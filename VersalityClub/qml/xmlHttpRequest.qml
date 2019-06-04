@@ -34,6 +34,7 @@ Item
 
     //depend on request (functionalFlag)
     property string api: ''
+    property string nextPageAfterCatsSave: ''
     //user data
     property string sex: AppSettings.value("user/sex") === undefined ? "" : AppSettings.value("user/sex")
     property string birthday: AppSettings.value("user/birthday") === undefined ? "" : AppSettings.value("user/birthday")
@@ -213,7 +214,17 @@ Item
                                 }
                                 break;
                             case 'user/refresh-cats':
-                                xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+                                if(nextPageAfterCatsSave === 'favouritePage.qml')
+                                {
+                                    xmlHttpRequestLoader.setSource("xmlHttpRequest.qml",
+                                                                   { "api": Vars.userMarkedProms,
+                                                                     "functionalFlag": 'user/marked'
+                                                                   });
+                                }
+                                else
+                                {
+                                    xmlHttpRequestLoader.source = nextPageAfterCatsSave;
+                                }
                                 break;
                             case 'user/refresh-snbp':
                                 try {

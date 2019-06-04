@@ -44,8 +44,8 @@ Item
         {
             id: helpImage
             clip: true
-            width: Vars.screenWidth*0.3
-            height: Vars.screenWidth*0.3
+            sourceSize.width: Vars.screenWidth*0.3
+            sourceSize.height: Vars.screenWidth*0.3
             source: helpImageSource
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter

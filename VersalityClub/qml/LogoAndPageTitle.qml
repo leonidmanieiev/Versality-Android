@@ -32,6 +32,7 @@ RowLayout
     property bool showInfoButton: false
     property bool infoClicked: false
     property string pageTitleText
+    property string pressedFromPageName: ''
 
     id: logoAndPageTitle
     anchors.top: parent.top
@@ -43,7 +44,7 @@ RowLayout
     {
         id: logo
         clip: true
-        source: "../icons/logo_white_fill.png"
+        source: "../icons/logo_white_fill.svg"
         Layout.preferredWidth: Vars.screenHeight*0.1
         Layout.preferredHeight: Vars.screenHeight*0.1
         Layout.alignment: Qt.AlignHCenter
@@ -85,19 +86,31 @@ RowLayout
             width: Vars.screenHeight*0.05
             height: Vars.screenHeight*0.05
             anchors.centerIn: parent
-            buttonIconSource: infoClicked ? "../icons/app_info_on.png"
-                                          : "../icons/app_info_off.png"
+            buttonIconSource: infoClicked ? "../icons/app_info_on.svg"
+                                          : "../icons/app_info_off.svg"
             clickArea.onClicked:
             {
                 if(infoClicked)
                 {
-                    appWindowLoader.source = "profileSettingsPage.qml";
+                    appWindowLoader.source = 'profileSettingsPage.qml';
                     infoClicked = false;
                 }
                 else
                 {
-                    appWindowLoader.source = "appInfoPage.qml";
-                    PageNameHolder.push("profileSettingsPage.qml")
+                    if(pressedFromPageName === 'selectCategoryPage.qml')
+                    {
+                        appWindowLoader.setSource("xmlHttpRequest.qml",
+                                                  { "api": Vars.userSelectCats,
+                                                    "functionalFlag": 'user/refresh-cats',
+                                                    "nextPageAfterCatsSave": 'appInfoPage.qml'
+                                                  });
+                    }
+                    else
+                    {
+                        appWindowLoader.source = "appInfoPage.qml";
+                    }
+
+                    PageNameHolder.push('profileSettingsPage.qml')
                     infoClicked = true;
                 }
             }

@@ -37,6 +37,17 @@ Page
     height: Vars.pageHeight
     width: Vars.screenWidth
 
+    // instead of saveSelectedButton
+    function saveSelectedCategory()
+    {
+        PageNameHolder.pop();
+        chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
+                                          { "api": Vars.userSelectCats,
+                                            "functionalFlag": 'user/refresh-cats',
+                                            "nextPageAfterCatsSave": 'profileSettingsPage.qml'
+                                          });
+    }
+
     //checking internet connetion
     Network { toastMessage: toastMessage }
 
@@ -53,7 +64,7 @@ Page
         id: catsListView
         clip: true
         width: parent.width
-        height: parent.height
+        height: parent.height//parent.height-Vars.footerButtonsFieldHeight*2
         //contentHeight: middleFieldsColumn.height
         anchors.top: parent.top
         topMargin: Vars.pageHeight*0.25
@@ -104,27 +115,22 @@ Page
                         anchors.verticalCenter: parent.verticalCenter
                         source: "../icons/cat_"+id+".svg"
                         fillMode: Image.PreserveAspectFit
+                    }
 
-                        /*OpacityMask
+                    LinearGradient
+                    {
+                        id: catIconGradient
+                        visible: true
+                        source: catIcon
+                        anchors.fill: catIcon
+                        start: Qt.point(0, 0)
+                        end: Qt.point(width, height)
+                        gradient: Gradient
                         {
-                            source: catIconGradient
-                            maskSource: catIcon
+                            GradientStop { position: 0.0; color: "#431160" }
+                            GradientStop { position: 1.0; color: "#a33477" }
                         }
-
-                        LinearGradient
-                        {
-                            id: catIconGradient
-                            source: parent
-                            anchors.fill: parent
-                            start: Qt.point(0, 0)
-                            end: Qt.point(width, height)
-                            gradient: Gradient
-                            {
-                                GradientStop { position: 0.0; color: "#431160" }
-                                GradientStop { position: 1.0; color: "#a33477" }
-                            }
-                        }*/
-                    }                  
+                    }
 
                     ColorOverlay
                     {
@@ -152,13 +158,13 @@ Page
                     {
                         id: downArrow
                         visible: false
-                        width: parent.radius
-                        height: parent.radius
+                        sourceSize.width: parent.radius*0.8
+                        sourceSize.height: parent.radius*0.8
                         anchors.right: parent.right
                         anchors.rightMargin: Vars.screenHeight*0.045
                         anchors.verticalCenter: parent.verticalCenter
                         fillMode: Image.PreserveAspectFit
-                        source: "../icons/down_arrow.png"
+                        source: "../icons/down_arrow.svg"
                     }
 
                     ColorOverlay
@@ -184,11 +190,8 @@ Page
                                 downArrow.visible = true;
                                 downArrowColorOverlay.visible = false;
                                 downArrow.rotation = 180;
-                                //another workaround. when rotate icon it displaced left a bit
-                                downArrow.anchors.rightMargin = Vars.screenHeight*0.0425
 
                                 catsItemGradient.visible = true;
-                                //catIconGradient.visible = false;
                                 catIconColorOverlay.visible = true;
                                 catsItemText.color = Vars.whiteColor;
                             }
@@ -199,11 +202,8 @@ Page
                                 downArrow.visible = false;
                                 downArrowColorOverlay.visible = true;
                                 downArrow.rotation = 0;
-                                //reset margin
-                                downArrow.anchors.rightMargin = Vars.screenHeight*0.045
 
                                 catsItemGradient.visible = false;
-                                //catIconGradient.visible = true;
                                 catIconColorOverlay.visible = false;
                                 catsItemText.color = Vars.blackColor;
                             }
@@ -283,13 +283,13 @@ Page
                     {
                         id: tickIcon
                         visible: AppSettings.contains(subid)
-                        width: parent.radius*1.2
-                        height: parent.radius*1.2
+                        sourceSize.width: parent.radius*1.2
+                        sourceSize.height: parent.radius*1.2
                         anchors.left: parent.left
                         anchors.leftMargin: parent.radius*0.45
                         anchors.verticalCenter: parent.verticalCenter
                         fillMode: Image.PreserveAspectFit
-                        source: "../icons/tick.png"
+                        source: "../icons/tick.svg"
                     }
 
                     ColorOverlay
@@ -342,26 +342,8 @@ Page
     {
         showInfoButton: true
         pageTitleText: Vars.profileSettings
+        pressedFromPageName: 'selectCategoryPage.qml'
     }
-
-    /*ControlButton
-    {
-        id: saveSelectedButton
-        buttonWidth: parent.width*0.8
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: parent.height*0.05
-        anchors.horizontalCenter: parent.horizontalCenter
-        labelText: Vars.saveAndBackToSetting
-        labelAlias.horizontalAlignment: Text.AlignHCenter
-        buttonClickableArea.onClicked:
-        {
-            PageNameHolder.pop();
-            chooseCategoryPageLoader.setSource("xmlHttpRequest.qml",
-                                              { "api": Vars.userSelectCats,
-                                                "functionalFlag": 'user/refresh-cats'
-                                              });
-        }
-    }*/
 
     ToastMessage { id: toastMessage }
 
@@ -396,8 +378,7 @@ Page
         if (event.key === Qt.Key_Back || event.key === Qt.Key_B)
         {
             event.accepted = true;
-            var pageName = PageNameHolder.pop();
-            chooseCategoryPageLoader.source = pageName;
+            saveSelectedCategory();
 
             //to avoid not loading bug
             chooseCategoryPageLoader.reload();

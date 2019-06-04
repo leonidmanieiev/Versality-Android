@@ -303,6 +303,7 @@ Page
     {
         showInfoButton: true
         pageTitleText: Vars.profileSettings
+        pressedFromPageName: 'profileSettingsPage.qml'
     }
 
     ScrollDatePicker

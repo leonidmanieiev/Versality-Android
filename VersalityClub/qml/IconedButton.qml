@@ -41,9 +41,10 @@ Rectangle
     {
         id: buttonIcon
         clip: true
+        anchors.centerIn: parent
         source: buttonIconSource
-        width: parent.width
-        height: parent.height
+        sourceSize.width: parent.width
+        sourceSize.height: parent.height
         rotation: rotateAngle
         fillMode: Image.PreserveAspectFit
     }

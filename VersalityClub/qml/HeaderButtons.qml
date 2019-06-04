@@ -38,19 +38,19 @@ RowLayout
         switch(currPageName)
         {
             case "companyPage.qml":
-                compInfoButtonIcon = "../icons/comp_info_on";
-                compMapButtonIcon = "../icons/comp_proms_map_off";
-                compListButtonIcon = "../icons/comp_proms_list_off";
+                compInfoButtonIcon = "../icons/comp_info_on.svg";
+                compMapButtonIcon = "../icons/comp_proms_map_off.svg";
+                compListButtonIcon = "../icons/comp_proms_list_off.svg";
                 break;
             case "companyMapPage.qml":
-                compInfoButtonIcon = "../icons/comp_info_off";
-                compMapButtonIcon = "../icons/comp_proms_map_on";
-                compListButtonIcon = "../icons/comp_proms_list_off";
+                compInfoButtonIcon = "../icons/comp_info_off.svg";
+                compMapButtonIcon = "../icons/comp_proms_map_on.svg";
+                compListButtonIcon = "../icons/comp_proms_list_off.svg";
                 break;
             case "companyListPage.qml":
-                compInfoButtonIcon = "../icons/comp_info_off";
-                compMapButtonIcon = "../icons/comp_proms_map_off";
-                compListButtonIcon = "../icons/comp_proms_list_on";
+                compInfoButtonIcon = "../icons/comp_info_off.svg";
+                compMapButtonIcon = "../icons/comp_proms_map_off.svg";
+                compListButtonIcon = "../icons/comp_proms_list_on.svg";
                 break;
         }
     }
@@ -66,7 +66,7 @@ RowLayout
         width: Vars.headerButtonsHeight
         height: Vars.headerButtonsHeight
         Layout.alignment: Qt.AlignHCenter
-        buttonIconSource: "../icons/comp_back.png"
+        buttonIconSource: "../icons/comp_back.svg"
         clickArea.onClicked:
         {
             PageNameHolder.pop();

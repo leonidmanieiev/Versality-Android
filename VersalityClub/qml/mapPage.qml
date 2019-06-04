@@ -37,14 +37,13 @@ import CppCall 0.8
 Page
 {
     property bool locButtClicked: false
-    property int defaultZoomLevel: 11
+    property real defaultZoomLevel: 11
     readonly property int minZoomLevel: 8
     readonly property int maxZoomLevel: 19
     property real defaultLat: 59.933284
     property real defaultLon: 30.343614
     property bool allGood: false
     property bool requestFromCompany: false
-    property bool showingNearestStore: false
     property string pressedFrom: requestFromCompany ? 'companyPage.qml' : 'mapPage.qml'
     readonly property string tilesHost: "http://tiles.maps.sputnik.ru/"
     readonly property string mapCopyright: 'Tiles style by <a href="http://corp.sputnik.ru/maps"'
@@ -57,7 +56,8 @@ Page
     readonly property int markerSize: Vars.screenWidth*0.1
     readonly property int fromButtonZoomLevel: 16
     readonly property int promsTilesItemHeight: popupWindow.height/3
-    //enter window vars
+
+    //popup window vars
     property bool isPopupOpened: false
     readonly property int popupWindowHeight: height*0.3
     readonly property int popupWindowDurat: 400
@@ -65,6 +65,11 @@ Page
     readonly property int popupShowTo: height-Vars.footerButtonsFieldHeight-popupWindowHeight*0.9
     readonly property int yToHide: height-Vars.footerButtonsFieldHeight-popupWindowHeight/2
     readonly property int yToInvisible: height-Vars.footerButtonsFieldHeight
+
+    //nearest store vars
+    property bool showingNearestStore: false
+    property string nearestPromId: ''
+    property string nearestPromIcon: ''
 
     function setUserLocationMarker(lat, lon, _zoomLevel, follow)
     {
@@ -114,6 +119,20 @@ Page
             notifier.visible = true;
             console.log("Parsing response error");
         }
+    }
+
+    //apply only nearest promotion to model
+    function applyNearestPromOnly()
+    {
+        allGood = true;
+        promsMarkersModel.append({
+                                    "id": nearestPromId,
+                                    "icon": nearestPromIcon,
+                                    "lat": defaultLat,
+                                    "lon": defaultLon,
+                                    "childs": [],
+                                    "cntOfChilds": 0
+                                });
     }
 
     id: mapPage
@@ -199,7 +218,7 @@ Page
             {
                 id: promMarkersDelegate
                 //wait until get coords
-                visible: allGood && lat ? true : false
+                visible: allGood && lat
                 anchorPoint.x: markerSize*0.5
                 anchorPoint.y: markerSize
                 coordinate: QtPositioning.coordinate(lat, lon)
@@ -224,8 +243,8 @@ Page
                     PromotionMarker
                     {
                         iconId: icon
-                        height: markerSize
-                        width: markerSize*0.8
+                        sourceSize.height: markerSize
+                        sourceSize.width: markerSize*0.8
                     }
                 }
 
@@ -244,9 +263,11 @@ Page
                         else
                         {
                             PageNameHolder.push("mapPage.qml");
+
                             AppSettings.beginGroup("promo");
                             AppSettings.setValue("id", id);
                             AppSettings.endGroup();
+
                             if(requestFromCompany)
                             {
                                 appWindowLoader.setSource("xmlHttpRequest.qml",
@@ -269,11 +290,14 @@ Page
 
         onZoomLevelChanged:
         {
-            //check if server responded
-            if(Vars.allPromsData.length > 0)
-                clusterizeAndApply()
-            else if(requestFromCompany)
-                clusterizeAndApply()
+            if(!showingNearestStore)
+            {
+                //check if server responded
+                if(Vars.allPromsData.length > 0)
+                    clusterizeAndApply()
+                else if(requestFromCompany)
+                    clusterizeAndApply()
+            }
         }
     }//mainMap
 
@@ -502,7 +526,7 @@ Page
         id: showInListViewButton
         visible: (requestFromCompany || showingNearestStore) ? false : true
         buttonText: Vars.showListView
-        buttonIconSource: "../icons/show_listview.png"
+        buttonIconSource: "../icons/show_listview.svg"
         onClicked:
         {
             PageNameHolder.push("mapPage.qml");
@@ -517,7 +541,7 @@ Page
         id: showPromotionButton
         visible: showingNearestStore ? true : false
         buttonText: Vars.backToPromotion
-        buttonIconSource: "../icons/left_arrow.png"
+        buttonIconSource: "../icons/left_arrow.svg"
         iconAlias.width: height*0.5
         iconAlias.height: height*0.4
         onClicked:
@@ -583,10 +607,11 @@ Page
         {
             //exit app from map page
             if(!showingNearestStore)
+            {
                 PageNameHolder.clear();
+            }
             else
             {
-                setUserLocationMarker(defaultLat, defaultLon, defaultZoomLevel, false);
                 mainMap.center = QtPositioning.coordinate(defaultLat, defaultLon);
             }
 
@@ -597,9 +622,13 @@ Page
 
     function runParsing()
     {
-        if((Vars.allPromsData.substring(0, 6) !== 'PROM-1'
-           && Vars.allPromsData.substring(0, 6) !== '[]')
-           || requestFromCompany)
+        if(showingNearestStore)
+        {
+            applyNearestPromOnly();
+        }
+        else if((Vars.allPromsData.substring(0, 6) !== 'PROM-1'
+                 && Vars.allPromsData.substring(0, 6) !== '[]')
+                 || requestFromCompany)
         {      
             clusterizeAndApply();
         }
@@ -620,7 +649,7 @@ Page
         id: waitForResponse
         running:
         {
-            if(requestFromCompany)
+            if(requestFromCompany || showingNearestStore)
                 true;
             else Vars.allPromsData === '' ? false : true
         }

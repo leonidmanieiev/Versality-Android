@@ -30,8 +30,8 @@ Image
     clip: true
     visible: false
     anchors.centerIn: parent
-    width: Vars.footerButtonsHeight*1.3
-    height: Vars.footerButtonsHeight*1.3
+    sourceSize.width: Vars.footerButtonsHeight*1.3
+    sourceSize.height: Vars.footerButtonsHeight*1.3
     fillMode: Image.PreserveAspectFit
-    source: "../icons/footer_button_substrate.png"
+    source: "../icons/footer_button_substrate.svg"
 }

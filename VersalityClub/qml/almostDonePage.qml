@@ -66,12 +66,12 @@ Page
         {
             id: leftArrowButton
             z: 1
-            width: parent.width*0.1
-            height: parent.width*0.1
+            width: parent.width*0.08
+            height: parent.width*0.08
             anchors.left: parent.left
             anchors.leftMargin: parent.width*0.05
             anchors.verticalCenter: parent.verticalCenter
-            buttonIconSource: "../icons/left_arrow.png"
+            buttonIconSource: "../icons/left_arrow.svg"
             clickArea.onClicked: swipeView.decrementCurrentIndex()
         }
 
@@ -90,21 +90,21 @@ Page
             {
                 id: firstHelpPage
                 helpText: Vars.firstHelpText
-                helpImageSource: "../icons/settings_help.png"
+                helpImageSource: "../icons/settings_help.svg"
             }
 
             HelpComponent
             {
                 id: secondHelpPage
                 helpText: Vars.secondHelpText
-                helpImageSource: "../icons/logo_gradient.png"
+                helpImageSource: "../icons/logo_gradient.svg"
             }
 
             HelpComponent
             {
                 id: thirdHelpPage
                 helpText: Vars.thirdHelpText
-                helpImageSource: "../icons/favourites_help.png"
+                helpImageSource: "../icons/favourites_help.svg"
             }
         }//swipeView
 
@@ -113,12 +113,12 @@ Page
             id: rightArrowButton
             z: 1
             rotateAngle: 180
-            width: parent.width*0.1
-            height: parent.width*0.1
+            width: parent.width*0.08
+            height: parent.width*0.08
             anchors.right: parent.right
             anchors.rightMargin: parent.width*0.05
             anchors.verticalCenter: parent.verticalCenter
-            buttonIconSource: "../icons/left_arrow.png"
+            buttonIconSource: "../icons/left_arrow.svg"
             clickArea.onClicked: swipeView.incrementCurrentIndex()
         }
 

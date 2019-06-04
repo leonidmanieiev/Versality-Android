@@ -70,8 +70,8 @@ RoundButton
             {
                 id: topControlButtonIcon
                 source: buttonIconSource
-                width: topControlButton.radius
-                height: topControlButton.radius
+                sourceSize.width: topControlButton.radius
+                sourceSize.height: topControlButton.radius
                 anchors.verticalCenter: parent.verticalCenter
             }
         }

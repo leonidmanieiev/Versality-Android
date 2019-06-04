@@ -33,7 +33,7 @@ Image
 
     id: promMarker
     clip: true
-    source: "../icons/promotion_marker.png"
+    source: "../icons/promotion_marker.svg"
 
     Image
     {
