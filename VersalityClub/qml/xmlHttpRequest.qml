@@ -34,7 +34,7 @@ Item
 
     //depend on request (functionalFlag)
     property string api: ''
-    property string nextPageAfterCatsSave: ''
+    property string nextPageAfterCatsSave: 'profileSettingsPage.qml'
     //user data
     property string sex: AppSettings.value("user/sex") === undefined ? "" : AppSettings.value("user/sex")
     property string birthday: AppSettings.value("user/birthday") === undefined ? "" : AppSettings.value("user/birthday")
@@ -199,7 +199,8 @@ Item
                                         AppSettings.setAllCatsUp();
                                         xmlHttpRequestLoader.setSource("xmlHttpRequest.qml",
                                                                        { "api": Vars.userSelectCats,
-                                                                         "functionalFlag": 'user/refresh-cats'
+                                                                         "functionalFlag": 'user/refresh-cats',
+                                                                         "nextPageAfterCatsSave": 'profileSettingsPage.qml'
                                                                        });
                                     }
                                     else
