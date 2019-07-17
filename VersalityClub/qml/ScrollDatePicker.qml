@@ -113,10 +113,10 @@ Rectangle
         opacity: clickableArea.pressed ? 0.8 : 1
         width: parent.width * 0.65
         height: buttonText.height*2
-        radius: Vars.defaultRadius
+        radius: height*0.5
         color: Vars.birthdayPickerColor
         border.color: Vars.whiteColor
-        border.width: Vars.defaultFontPixelSize*0.2
+        border.width: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)*0.2
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height*0.05
         anchors.horizontalCenter: parent.horizontalCenter
@@ -132,8 +132,7 @@ Rectangle
             id: buttonText
             text: Vars.proceed
             font.family: regularText.name
-            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                        Vars.dpi)
+            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
             color: Vars.whiteColor
             anchors.centerIn: parent
         }

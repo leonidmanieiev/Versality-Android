@@ -234,8 +234,8 @@ Page
         visible: requestFromCompany ? false : true
         buttonText: Vars.showOnMap
         buttonIconSource: "../icons/on_map.svg"
-        iconAlias.width: height*0.56
-        iconAlias.height: height*0.7
+        iconAlias.sourceSize.width: height*0.56
+        iconAlias.sourceSize.height: height*0.7
         onClicked: listViewPageLoader.source = "mapPage.qml"
     }
 

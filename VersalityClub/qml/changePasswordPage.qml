@@ -34,7 +34,7 @@ Page
     width: Vars.screenWidth
 
     //checking internet connetion
-    Network { toastMessage: toastMessage }
+    Network { toastMessage: networkToastMessage }
 
     Image
     {
@@ -91,6 +91,8 @@ Page
 
             onPressed:
             {
+                toastMessage.close();
+
                 if(color === Vars.errorRed)
                 {
                     text = '';
@@ -131,6 +133,9 @@ Page
             backgroundColor: Vars.purpleBorderColor
             buttonClickableArea.onClicked:
             {
+                // close keyboard
+                Qt.inputMethod.hide();
+
                 AppSettings.beginGroup("user");
                 AppSettings.setValue("password", newPassField.text);
                 AppSettings.endGroup();
@@ -141,17 +146,17 @@ Page
                                                   });
             }
         }
-
-        CustomLabel
-        {
-            id: checkEmailLabel
-            labelColor: "#ff3333"
-            labelText: Vars.checkYourEmail
-            Layout.topMargin: -parent.spacing*0.5
-        }
     }//middleLayout
 
-    ToastMessage { id: toastMessage }
+    ToastMessage
+    {
+        id: toastMessage
+        closePolicy: Popup.NoAutoClose
+    }
+
+    ToastMessage { id: networkToastMessage }
+
+    Component.onCompleted: toastMessage.setText("Проверьте e-mail");
 
     Loader
     {

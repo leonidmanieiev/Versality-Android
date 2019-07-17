@@ -88,23 +88,26 @@ Page
         visible: allGood
         clip: true
         width: parent.width
-        height: Vars.screenHeight
-        contentHeight: middleFieldsColumns.height*1.1
+        height: parent.height
+        contentHeight: middleFieldsColumns.height
+        anchors.top: parent.top
+        bottomMargin: Vars.footerButtonsFieldHeight*1.05
+        anchors.horizontalCenter: parent.horizontalCenter
         boundsBehavior: Flickable.DragOverBounds
 
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: parent.width
+            width: parent.width*0.9
             spacing: Vars.screenHeight*0.05
+            anchors.horizontalCenter: parent.horizontalCenter
 
             RowLayout
             {
                 id: logoContactInfo
-                width: Vars.screenWidth
+                width: parent.width
                 height: Vars.footerButtonsFieldHeight
-                anchors.left: parent.left
-                anchors.leftMargin: parent.width*0.05
+                Layout.alignment: Qt.AlignLeft
                 spacing: parent.width*0.0625
 
                 Rectangle
@@ -163,11 +166,9 @@ Page
             {
                 id: flicker_image_field
                 clip: true
-                width: parent.width
+                width: Vars.screenWidth
                 height: parent.width*0.4
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.leftMargin: parent.width*0.05
+                Layout.alignment: Qt.AlignLeft | Qt.AlignRight
 
                 Flickable
                 {
@@ -288,6 +289,14 @@ Page
                                 }
                             }
                         }
+
+                        Rectangle
+                        {
+                            id: dummy
+                            width: parent.spacing
+                            height: parent.height
+                            color: Vars.whiteColor
+                        }
                     }//picturesRow
                 }//picFlickableArea
 
@@ -304,15 +313,15 @@ Page
 
             Rectangle
             {
-                id: textArea
-                width: parent.width*0.9
-                color: "transparent"
-                anchors.left: parent.left
-                anchors.leftMargin: parent.width*0.05
+                id: textAreaRect
+                width: parent.width
+                height: textArea.height
+                color: Vars.whiteColor
+                Layout.alignment: Qt.AlignLeft
 
                 Label
                 {
-                    id: companyDescription
+                    id: textArea
                     width: parent.width
                     text: comp_about
                     font.pixelSize: Helper.toDp(13, Vars.dpi)

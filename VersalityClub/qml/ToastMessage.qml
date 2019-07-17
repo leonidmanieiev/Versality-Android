@@ -75,10 +75,9 @@ Popup
         id: popupContent
         clip: true
         anchors.centerIn: popupBackground
-        height: Helper.toDp(15, Vars.dpi)
-        width: Helper.toDp(text.length, Vars.dpi)
-        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                    Vars.dpi)
+        height: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+        width: text.length
+        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
         font.family: regularText.name
         color: Vars.whiteColor
         wrapMode: Text.WordWrap

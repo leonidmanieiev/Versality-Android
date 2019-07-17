@@ -32,15 +32,13 @@
 #include <QFile>
 #include <QTextStream>
 #include <QStandardPaths>
-#ifdef __ANDROID__
 #include <QtAndroid>
-#endif
 
 class CppMethodCall : public QObject
 {
     Q_OBJECT
 public:
-    explicit CppMethodCall(QObject *parent = nullptr) { }
+    explicit CppMethodCall([[maybe_unused]] QObject *parent = nullptr) { }
 
     static bool locationServiceStarted;
 

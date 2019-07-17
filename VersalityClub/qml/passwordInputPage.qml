@@ -28,8 +28,6 @@ import QtQuick.Layouts 1.3
 
 Page
 {
-    property bool fromSignUpRequest: false
-
     id: passInputPage
     enabled: Vars.isConnected
     height: Vars.screenHeight
@@ -78,7 +76,7 @@ Page
         id: middleLayout
         width: parent.width*0.8
         anchors.centerIn: parent
-        spacing: parent.height*0.05
+        spacing: parent.height*0.03
 
         CustomTextField
         {
@@ -106,7 +104,6 @@ Page
         ControlButton
         {
             id: enterButton
-            //padding: middleLayout.spacing*2
             Layout.fillWidth: true
             labelText: Vars.login
             labelColor: Vars.whiteColor
@@ -115,16 +112,20 @@ Page
             {
                 // close keyboard
                 Qt.inputMethod.hide();
-                passField.selectByMouse = false;
-                passField.readOnly = true;
+
+                // if true -> we are on almostDonePage
+                if(PageNameHolder.empty())
+                {
+                    passField.selectByMouse = false;
+                    passField.readOnly = true;
+                }
+
                 AppSettings.beginGroup("user");
                 AppSettings.setValue("password", passField.text);
                 AppSettings.endGroup();
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
                                                   { "api": Vars.userLogin,
-                                                    "functionalFlag": 'login',
-                                                    "newUser": fromSignUpRequest
-                                                  });
+                                                    "functionalFlag": 'login'});
             }
         }
 
@@ -138,6 +139,9 @@ Page
             borderColor: Vars.forgetPassPurple
             buttonClickableArea.onClicked:
             {
+                // close keyboard
+                Qt.inputMethod.hide();
+
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
                                                   { "api": Vars.userResetPass,
                                                     "functionalFlag": 'user/reset-pass'

@@ -76,19 +76,19 @@ Page
     Flickable
     {
         id: flickableArea
-        interactive: false
         clip: true
         width: parent.width
-        height: Vars.screenHeight
+        height: parent.height
         contentHeight: middleFieldsColumns.height
         anchors.top: parent.top
+        bottomMargin: Vars.footerButtonsFieldHeight*1.05
         anchors.horizontalCenter: parent.horizontalCenter
         boundsBehavior: Flickable.DragOverBounds
 
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: parent.width
+            width: Vars.screenWidth*0.9
             spacing: Vars.screenHeight*0.05
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -97,7 +97,7 @@ Page
                 id: addToFavourite
                 width: Vars.footerButtonsHeight*1.3
                 height: Vars.footerButtonsHeight*1.3
-                Layout.topMargin: parent.spacing*0.5
+                Layout.topMargin: parent.spacing*0.2
                 Layout.alignment: Qt.AlignHCenter
                 buttonIconSource: p_is_marked ?
                                   "../icons/add_to_favourites_2_on.svg" :
@@ -162,7 +162,6 @@ Page
                 font.weight: Font.Bold
                 color: Vars.purpleTextColor
                 Layout.alignment: Qt.AlignLeft
-                Layout.leftMargin: parent.width*0.1
             }
 
             Rectangle
@@ -171,7 +170,6 @@ Page
                 width: promsImage.width
                 height: childrenRect.height
                 Layout.alignment: Qt.AlignLeft
-                Layout.leftMargin: parent.width*0.1
                 color: "transparent"
 
                 Label
@@ -202,9 +200,8 @@ Page
             ControlButton
             {
                 id: moreButton
-                buttonWidth: parent.width*0.9
+                buttonWidth: Vars.screenWidth*0.9
                 Layout.alignment: Qt.AlignLeft
-                Layout.leftMargin: parent.width*0.1
                 labelText: Vars.more
                 buttonClickableArea.onClicked:
                 {
@@ -234,8 +231,8 @@ Page
         anchors.topMargin: Vars.screenWidth*0.25
         buttonText: Vars.backToPromsPicking
         buttonIconSource: "../icons/left_arrow.svg"
-        iconAlias.width: height*0.5
-        iconAlias.height: height*0.4
+        iconAlias.sourceSize.width: height*0.5
+        iconAlias.sourceSize.height: height*0.4
         onClicked: previewPromotionPageLoader.source = "mapPage.qml"
     }
 

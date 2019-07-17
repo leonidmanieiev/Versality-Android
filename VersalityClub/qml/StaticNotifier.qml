@@ -46,7 +46,6 @@ Rectangle
         text: notifierText
         anchors.centerIn: parent
         color: Vars.whiteColor
-        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                    Vars.dpi)
+        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
     }
 }

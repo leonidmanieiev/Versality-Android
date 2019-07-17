@@ -20,7 +20,6 @@
         <file>qml/CustomTextField.qml</file>
         <file>qml/selectCategoryPage.qml</file>
         <file>qml/userLocation.qml</file>
-        <file>output_new.nmea</file>
         <file>PageNameHolder.qml</file>
         <file>qml/listViewPage.qml</file>
         <file>qml/FooterButtons.qml</file>
@@ -56,7 +55,6 @@
         <file>qml/HelpComponent.qml</file>
         <file>icons/user_location_marker_icon.svg</file>
         <file>icons/geo_location.svg</file>
-        <file>appInfoText.txt</file>
         <file>backgrounds/preview_bg.jpg</file>
         <file>icons/cat_1.svg</file>
         <file>icons/cat_2.svg</file>
@@ -99,5 +97,6 @@
         <file>icons/settings.svg</file>
         <file>icons/promotion_marker.svg</file>
         <file>icons/tick.svg</file>
+        <file>text/appInfoText.txt</file>
     </qresource>
 </RCC>

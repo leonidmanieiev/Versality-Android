@@ -29,7 +29,6 @@ import QtQuick.Controls 2.4
 RoundButton
 {
     property string buttonText: ''
-    property real buttonWidth: 0.0
     property string buttonIconSource
     property alias iconAlias: topControlButtonIcon
 
@@ -45,7 +44,7 @@ RoundButton
     height: Vars.screenHeight*0.05
     opacity: pressed ? Vars.defaultOpacity : 1
     anchors.top: parent.top
-    anchors.topMargin: Helper.toDp(parent.height*0.05, Vars.dpi)
+    anchors.topMargin: parent.height*0.05
     anchors.horizontalCenter: parent.horizontalCenter
     contentItem: Item
     {

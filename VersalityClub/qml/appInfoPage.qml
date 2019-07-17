@@ -26,7 +26,6 @@ import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
-//import QtQuick.Controls.Styles 1.4
 
 Page
 {
@@ -36,7 +35,7 @@ Page
     function getAppInfoText()
     {
         var request = new XMLHttpRequest()
-        request.open('GET', '../appInfoText.txt')
+        request.open('GET', '../text/appInfoText.txt')
         request.onreadystatechange = function(event) {
             if (request.readyState === XMLHttpRequest.DONE)
                 appInfoText = request.responseText;
@@ -69,49 +68,29 @@ Page
     Flickable
     {
         id: flickableArea
-        interactive: false
         clip: true
-        width: parent.width
+        width: parent.width*0.9
         height: parent.height
-        contentHeight: middleFieldsColumns.height
         anchors.top: parent.top
         topMargin: Vars.pageHeight*0.25
         bottomMargin: Vars.footerButtonsFieldHeight*1.05
         anchors.horizontalCenter: parent.horizontalCenter
         boundsBehavior: Flickable.DragOverBounds
+        flickableDirection: Flickable.VerticalFlick
 
-        ColumnLayout
-        {
-            id: middleFieldsColumns
-            width: parent.width
-            anchors.horizontalCenter: parent.horizontalCenter
-            spacing: Vars.screenHeight*0.05
-
-            Rectangle
-            {
-                id: textArea
-                width: parent.width*0.9
-                color: "transparent"
-                Layout.alignment: Qt.AlignHCenter
-                //Layout.topMargin: Vars.screenHeight*0.25
-
-                Label
-                {
-                    id: appInfo
-                    width: parent.width
-                    text: 'Узнайте больше о Versality:<br><br>'+
-                          '<a href="'+Vars.appSiteLink+'"'
-                          +' style="color: '+Vars.purpleTextColor+'">'
-                          +Vars.appSiteName+'</a><br><br>' + appInfoText
-                    font.pixelSize: Helper.toDp(13, Vars.dpi)
-                    font.family: regularText.name
-                    color: Vars.blackColor
-                    wrapMode: Label.WordWrap
-                    onLinkActivated: Qt.openUrlExternally(link)
-                    textFormat: Text.RichText;
-                }
-            }
-        }//middleFieldsColumns
+        TextArea.flickable: TextArea {
+            readOnly: true
+            text: 'Узнайте больше о Versality:<br><br>'+
+                  '<a href="'+Vars.appSiteLink+'"'
+                  +' style="color: '+Vars.purpleTextColor+'">'
+                  +Vars.appSiteName+'</a><br><br>' + appInfoText
+            font.pixelSize: Helper.toDp(13, Vars.dpi)
+            font.family: regularText.name
+            color: Vars.blackColor
+            wrapMode: Label.WordWrap
+            onLinkActivated: Qt.openUrlExternally(link)
+            textFormat: Text.RichText;
+        }
     }//flickableArea
 
     Image

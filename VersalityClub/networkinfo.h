@@ -43,7 +43,7 @@ public:
                                                 QNetworkAccessManager::Accessible;
         startTimer(1000);
     }
-    void timerEvent(QTimerEvent *e)
+    void timerEvent([[maybe_unused]] QTimerEvent *e)
     {
         QNetworkAccessManager::NetworkAccessibility currNetworkStatus =
             QNetworkAccessManager::networkAccessible();

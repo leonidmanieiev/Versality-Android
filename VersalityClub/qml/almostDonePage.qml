@@ -158,7 +158,7 @@ Page
     {
         id: startUsingAppButton
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: Helper.toDp(parent.height/14, Vars.dpi)
+        anchors.bottomMargin: parent.height/14
         anchors.horizontalCenter: parent.horizontalCenter
         labelText: Vars.everythingIsClearStart
         labelColor: Vars.whiteColor
@@ -166,6 +166,8 @@ Page
         borderColor: Vars.whiteColor
         buttonClickableArea.onClicked:
         {
+            // to do not show user some help info about app (he already saw it)
+            Vars.fromSignUp = false;
             almostDonePageLoader.setSource("xmlHttpRequest.qml",
                                      { "api": Vars.userInfo,
                                        "functionalFlag": 'user',

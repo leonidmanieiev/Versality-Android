@@ -37,6 +37,9 @@ TextField
     id: customTextFiled
     cursorVisible: false
     horizontalAlignment: Text.AlignHCenter
+    color: setTextColor
+    font.family: mediumText.name
+    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
     background: ControlBackground
     {
         anchors.centerIn: parent
@@ -44,9 +47,6 @@ TextField
         rectFillColor: setFillColor
         rectBorderColor: setBorderColor
     }
-    color: setTextColor
-    font.family: mediumText.name
-    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
 
     FontLoader
     {

@@ -57,8 +57,7 @@ Item
             text: helpText
             color: Vars.whiteColor
             font.family: regularText.name
-            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                        Vars.dpi)
+            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
             horizontalAlignment: Label.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
         }

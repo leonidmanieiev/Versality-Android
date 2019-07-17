@@ -45,8 +45,7 @@ Rectangle
         id: cntOfChildProms
         anchors.centerIn: parent
         text: amountOfChilds
-        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                    Vars.dpi)
+        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
         font.family: regulatText.name
         color: Vars.whiteColor
     }

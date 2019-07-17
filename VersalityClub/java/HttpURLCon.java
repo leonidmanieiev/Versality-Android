@@ -39,9 +39,9 @@ import android.content.Context;
 public class HttpURLCon {
     private static final String TAG = "HttpURLCon";
     private static final String sendCoordsApi =
-        "http://club.versality.ru:8080/api/check?secret=";
+        "https://club.versality.ru:8080/api/check?secret=";
     private static final String sendLogsApi =
-        "http://club.versality.ru:8082/api/logs?secret=";
+        "https://club.versality.ru/api/logs?secret=";
 
     static String getUserHash(Context context) {
         String userHash = null;

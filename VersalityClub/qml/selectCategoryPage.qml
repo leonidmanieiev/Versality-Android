@@ -149,8 +149,7 @@ Page
                         x: parent.radius*2
                         color: Vars.blackColor
                         font.family: mediumText.name
-                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                                    Vars.dpi)
+                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
@@ -271,8 +270,7 @@ Page
                         width: parent.width*0.7
                         anchors.verticalCenter: parent.verticalCenter
                         font.family: mediumText.name
-                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize,
-                                                    Vars.dpi)
+                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
                         color: AppSettings.contains(subid) ? Vars.whiteColor :
                                                              Vars.blackColor
                         wrapMode: Text.WordWrap

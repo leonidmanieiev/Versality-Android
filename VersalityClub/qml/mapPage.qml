@@ -28,10 +28,10 @@ import QtQml 2.11
 import QtWebView 1.1
 import QtQuick.Controls 2.4
 import QtLocation 5.9
-import QtPositioning 5.8
+import QtPositioning 5.12
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-import OneSignal 1.0 // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
+import OneSignal 1.0
 import CppCall 0.8
 
 Page
@@ -97,8 +97,8 @@ Page
         var clustersTextJson =
                 PromotionClusters.clustering(jsonFromServer, mainMap.zoomLevel);
 
-        /*clusterization was unsuccessful
-          check console log*/
+        // clusterization was unsuccessful
+        // check console log
         if(clustersTextJson.substring(0, 5) === "Error")
         {
             allGood = false;
@@ -504,8 +504,6 @@ Page
         enabled: Vars.isLocated
         width: Vars.footerButtonsHeight*0.9
         height: Vars.footerButtonsHeight*0.9
-        buttonIconAlias.sourceSize.width: Vars.footerButtonsHeight*0.9
-        buttonIconAlias.sourceSize.height: Vars.footerButtonsHeight*0.9
         buttonIconSource: "../icons/geo_location.svg"
         anchors.right: parent.right
         anchors.rightMargin: parent.width*0.02
@@ -542,8 +540,8 @@ Page
         visible: showingNearestStore ? true : false
         buttonText: Vars.backToPromotion
         buttonIconSource: "../icons/left_arrow.svg"
-        iconAlias.width: height*0.5
-        iconAlias.height: height*0.4
+        iconAlias.sourceSize.width: height*0.5
+        iconAlias.sourceSize.height: height*0.4
         onClicked:
         {
             var pageName = PageNameHolder.pop();
@@ -582,8 +580,7 @@ Page
     CppMethodCall { id: cppCall }
 
     Component.onCompleted:
-    {        
-        //TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
+    {
         if(AppSettings.value("user/hash") !== undefined)
         {
             //sending user hash for identification for notifs.

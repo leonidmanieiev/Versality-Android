@@ -25,7 +25,7 @@ import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQml 2.2
-import QtPositioning 5.8
+import QtPositioning 5.12
 import QtLocation 5.9
 import GeoLocation 0.8
 
@@ -34,10 +34,11 @@ Item
     property bool isGpsOff: false
     readonly property int posTimeOut: 30*60000//minutes to milliseconds
     readonly property int posGetFar: 1000//200//in meters
-    //default is proms for map api
     property string callFromPageName: 'mapPage'
+    //default is proms for map api
     property string api: Vars.allPromsTilesModel
     property bool isTilesApi: true
+    property bool isPromRequestInitiated: false
 
     id: userLocationItem
     enabled: true
@@ -45,6 +46,7 @@ Item
     function disableUsability()
     {
         isGpsOff = true;
+        //disactivating user location button
         Vars.isLocated = false;
         //disable parent of userLocationItem which is mapPage or listViewPage
         userLocationItem.parent.parent.enabled = false;
@@ -53,11 +55,20 @@ Item
     function enableUsability()
     {
         isGpsOff = false;
+        //activating user location button
         Vars.isLocated = true;
+        //enable parent of userLocationItem which is mapPage or listViewPage
         userLocationItem.parent.parent.enabled = true;
     }
 
-    // TODO REMOVE COMMENTS BEFORE BUILD FOR ANDROID
+    StaticNotifier
+    {
+        id: notifier
+        notifierText: Vars.smthWentWrong
+    }
+
+    ToastMessage { id: toastMessage }
+
     GeoLocationInfo
     {
         onPositionUpdated:
@@ -79,16 +90,13 @@ Item
     PositionSource
     {
         property bool initialCoordSet: false
-        property bool posMethodSet: false
         property string secret: AppSettings.value("user/hash")
         property real lat: position.coordinate.latitude
         property real lon: position.coordinate.longitude
 
         id: userLocation
         active: true
-        updateInterval: 1000
-        //using .nmea if OS is win, because win does not have GPS module
-        nmeaSource: Qt.platform.os === "windows" ? "../output_new.nmea" : ""
+        updateInterval: 1
 
         //handling errors
         function sourceErrorMessage(sourceError)
@@ -109,23 +117,6 @@ Item
             }
 
             return sem;
-        }
-
-        //setting positioning method or return false if no methods allow
-        function isPositioningMethodSet(supportedPositioningMethods)
-        {
-            switch(supportedPositioningMethods)
-            {
-                case PositionSource.AllPositioningMethods:
-                    preferredPositioningMethods=PositionSource.AllPositioningMethods; break;
-                case PositionSource.SatellitePositioningMethods :
-                    preferredPositioningMethods=PositionSource.SatellitePositioningMethods; break;
-                case PositionSource.NonSatellitePositioningMethods:
-                    preferredPositioningMethods=PositionSource.NonSatellitePositioningMethods; break;
-                default: return false;
-            }
-
-            return true;
         }
 
         //check if user gets further than posGetFar(500) meters from initial position
@@ -164,6 +155,10 @@ Item
         //so onPositionChanged won't emit
         function initialPromRequest()
         {
+            //activating user location button
+            Vars.isLocated = true;
+            //set flag to avoid multiple initiations
+            isPromRequestInitiated = true;
             //saving initial position and timeCheckPoint of user
             saveUserPositionInfo();
             //making request for promotions which depend on position
@@ -223,56 +218,28 @@ Item
             stop();
         }
 
-        onUpdateTimeout: toastMessage.setText(Vars.unableToGetLocation)
-
         onPositionChanged:
         {
-            if(posMethodSet)
-            {
-                if(Qt.platform.os === "windows" && !initialCoordSet)
-                {
-                    initialCoordSet = true;
-                    initialPromRequest();
-                }
-                //update user coordinates
-                else
-                {
-                    updateUserMarker();
+            if(!isPromRequestInitiated && !isNaN(position.coordinate.latitude))
+                initialPromRequest();
+            else updateUserMarker();
 
-                    if((isGetFar(position.coordinate) || isTimePassed()))
-                    {
-                        console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
-                                    " | isTimePassed: " + isTimePassed() + ")");
-                        //out of date, saving timeCheckPoint and making request for promotions
-                        saveUserPositionInfo();
-                        requestForPromotions();
-                    }
-                }
+            if((isGetFar(position.coordinate) || isTimePassed()))
+            {
+                console.log("onPositionChanged (isGetFar: " + isGetFar(position.coordinate) +
+                            " | isTimePassed: " + isTimePassed() + ")");
+                //out of date, saving timeCheckPoint and making request for promotions
+                saveUserPositionInfo();
+                requestForPromotions();
             }
         }//onPositionChanged
 
         Component.onCompleted:
         {
-            if(isPositioningMethodSet(supportedPositioningMethods))
-            {
-                if(Qt.platform.os !== "windows")
-                    initialPromRequest();
-
-                posMethodSet = true;
-                //activating user location button
-                Vars.isLocated = true;
-            }
-            else toastMessage.setText(Vars.estabLocationMethodErr)
+            if(!isNaN(position.coordinate.latitude))
+                initialPromRequest();
         }
     }//PositionSource
-
-    StaticNotifier
-    {
-        id: notifier
-        notifierText: Vars.smthWentWrong
-    }
-
-    ToastMessage { id: toastMessage }
 
     Loader
     {

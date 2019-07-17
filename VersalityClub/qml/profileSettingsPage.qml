@@ -26,7 +26,6 @@ import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
-import QtQuick.Controls.Styles 1.4
 
 Page
 {
@@ -66,6 +65,7 @@ Page
         topMargin: Vars.pageHeight*0.25
         bottomMargin: Vars.footerButtonsFieldHeight*1.05
         anchors.horizontalCenter: parent.horizontalCenter
+        boundsBehavior: Flickable.DragOverBounds
 
         ColumnLayout
         {
@@ -241,7 +241,6 @@ Page
                 Layout.topMargin: Vars.pageHeight*0.03
                 borderColor: "transparent"
                 buttonRadius: 25
-                buttonHeight: Vars.screenHeight*0.13
                 buttonWidth: Vars.screenWidth*0.9
                 showGradient2: true
 
@@ -275,7 +274,6 @@ Page
                 labelAlias.font.family: boldText.name
                 labelAlias.font.bold: true
                 fontPixelSize: Helper.toDp(20, Vars.dpi)
-                buttonHeight: Vars.screenHeight*0.13
                 Layout.topMargin: -Vars.pageHeight*0.03
                 Layout.fillWidth: true
                 backgroundColor: Vars.blackColor
