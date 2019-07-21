@@ -33,7 +33,6 @@ Rectangle
     property color rectFillColor: Vars.whiteColor
     property color rectBorderColor: Vars.purpleBorderColor
     property int rectBorderWidth: rectHeight*0.06
-    property bool showGradient: false
 
     id: controlBackground
     clip: true
@@ -43,18 +42,4 @@ Rectangle
     color: rectFillColor
     border.color: rectBorderColor
     border.width: rectBorderWidth
-
-    LinearGradient
-    {
-        visible: showGradient
-        anchors.fill: parent
-        source: parent
-        start: Qt.point(0, height*0.5)
-        end: Qt.point(width, height*0.5)
-        gradient: Gradient
-        {
-            GradientStop { position: 0.0; color: "#471261" }
-            GradientStop { position: 1.0; color: "#9e3276" }
-        }
-    }
 }

@@ -46,23 +46,6 @@ function httpErrorDecoder(statusCode)
     return decodedError + ". Попробуйте позже";
 }
 
-//get store hours depend on day
-function currStoreHours(p_store_hours)
-{
-    if(p_store_hours !== '')
-    {
-        //deserialize work hours
-        var hours = p_store_hours.split(' ');
-        var currDate = new Date();
-        //adjust for russian locale
-        var currDay = currDate.getDay()-1 == -1 ? 6 : currDate.getDay()-1;
-
-        return hours[currDay];
-    }
-
-    return 'Not set';
-}
-
 function isStringAnUrl(str) {
   var res = str.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
   return (res !== null)

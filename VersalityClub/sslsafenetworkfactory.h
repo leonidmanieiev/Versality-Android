@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-//Wrapper, so I can use functionality of QQmlNetworkAccessManagerFactory
+// Wrapper, so I can use functionality of QQmlNetworkAccessManagerFactory
 #ifndef SSLSAFENETWORKFACTORY_H
 #define SSLSAFENETWORKFACTORY_H
 

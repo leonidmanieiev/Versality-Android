@@ -19,8 +19,9 @@
 ** along with Versality. If not, see <https://www.gnu.org/licenses/>.
 **
 ****************************************************************************/
-//Wrapper, so I can use functionality of QSettings in QML
-//Stores user sensetive data and app states for recreation
+
+// Wrapper, so I can use functionality of QSettings in QML
+// Stores user sensetive data and app states for recreation
 #ifndef APPSETTINGS_H
 #define APPSETTINGS_H
 

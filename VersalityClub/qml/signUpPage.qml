@@ -139,10 +139,10 @@ Page
         ControlButton
         {
             id: signUpButton
-            showGradient2: true
             Layout.fillWidth: true
             labelText: Vars.signup
             labelColor: Vars.whiteColor
+            backgroundColor: Vars.purpleBorderColor
             Layout.topMargin: middleFieldsColumns.spacing
             buttonClickableArea.onClicked:
             {

@@ -89,7 +89,7 @@ Page
                 labelText: Vars.choose
                 labelColor: Vars.blackColor
                 backgroundColor: "transparent"
-                borderColor: Vars.settingspurpleBorderColor
+                borderColor: Vars.settingsPurpleBorderColor
                 buttonClickableArea.onClicked:
                 {
                     PageNameHolder.push("profileSettingsPage.qml");
@@ -116,7 +116,7 @@ Page
                 labelText: AppSettings.value("user/sex");
                 labelColor: Vars.blackColor
                 backgroundColor: "transparent"
-                borderColor: Vars.settingspurpleBorderColor
+                borderColor: Vars.settingsPurpleBorderColor
                 buttonClickableArea.onClicked:
                 {
                     if(labelText === "M")
@@ -143,7 +143,7 @@ Page
                 Layout.fillWidth: true
                 setFillColor: "transparent"
                 setTextColor: Vars.blackColor
-                setBorderColor: Vars.settingspurpleBorderColor
+                setBorderColor: Vars.settingsPurpleBorderColor
                 text: AppSettings.value("user/birthday");
                 inputMask: Vars.birthdayMask
                 inputMethodHints: Qt.ImhDigitsOnly
@@ -181,7 +181,7 @@ Page
                 Layout.fillWidth: true
                 setFillColor: "transparent"
                 setTextColor: Vars.blackColor
-                setBorderColor: Vars.settingspurpleBorderColor
+                setBorderColor: Vars.settingsPurpleBorderColor
                 text: AppSettings.value("user/email");
             }
 
@@ -198,7 +198,7 @@ Page
                 Layout.fillWidth: true
                 setFillColor: "transparent"
                 setTextColor: Vars.blackColor
-                setBorderColor: Vars.settingspurpleBorderColor
+                setBorderColor: Vars.settingsPurpleBorderColor
                 echoMode: TextInput.Password
                 inputMethodHints: Qt.ImhSensitiveData
                 selectByMouse: false
@@ -218,7 +218,7 @@ Page
                 Layout.fillWidth: true
                 setFillColor: "transparent"
                 setTextColor: Vars.blackColor
-                setBorderColor: Vars.settingspurpleBorderColor
+                setBorderColor: Vars.settingsPurpleBorderColor
                 text: AppSettings.value("user/name");
                 placeholderText: Vars.enterName
                 onTextChanged:
@@ -239,10 +239,10 @@ Page
                 fontPixelSize: Helper.toDp(20, Vars.dpi)
                 Layout.fillWidth: true
                 Layout.topMargin: Vars.pageHeight*0.03
-                borderColor: "transparent"
+                backgroundColor: Vars.insteadOfGradientColor
+                borderColor: Vars.insteadOfGradientColor
                 buttonRadius: 25
                 buttonWidth: Vars.screenWidth*0.9
-                showGradient2: true
 
                 buttonClickableArea.onClicked:
                 {
@@ -297,8 +297,26 @@ Page
         source: "../backgrounds/profile_settings_h.png"
     }
 
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the header
+    Rectangle
+    {
+        id: headerStoper
+        width: parent.width
+        height: logoAndPageTitle.height*1.2
+        anchors.top: parent.top
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: headerStoper.forceActiveFocus()
+        }
+    }
+
     LogoAndPageTitle
     {
+        id: logoAndPageTitle
         showInfoButton: true
         pageTitleText: Vars.profileSettings
         pressedFromPageName: 'profileSettingsPage.qml'
@@ -338,6 +356,23 @@ Page
         height: Vars.footerButtonsFieldHeight
         anchors.bottom: parent.bottom
         source: "../backgrounds/map_f.png"
+    }
+
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the footer
+    Rectangle
+    {
+        id: footerStopper
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: footerStopper.forceActiveFocus()
+        }
     }
 
     FooterButtons

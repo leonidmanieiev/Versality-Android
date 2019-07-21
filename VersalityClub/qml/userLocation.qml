@@ -96,7 +96,7 @@ Item
 
         id: userLocation
         active: true
-        updateInterval: 1
+        updateInterval: 1000
 
         //handling errors
         function sourceErrorMessage(sourceError)

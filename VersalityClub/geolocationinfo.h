@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-//Wrapper, so I can use functionality of QGeoPositionInfo in QML
+// Wrapper, so I can use functionality of QGeoPositionInfo in QML
 #ifndef GEOLOCATIONINFO_H
 #define GEOLOCATIONINFO_H
 

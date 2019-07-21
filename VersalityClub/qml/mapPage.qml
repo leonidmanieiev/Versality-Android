@@ -30,7 +30,6 @@ import QtQuick.Controls 2.4
 import QtLocation 5.9
 import QtPositioning 5.12
 import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.0
 import OneSignal 1.0
 import CppCall 0.8
 
@@ -448,14 +447,6 @@ Page
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
-                ColorOverlay
-                {
-                    anchors.fill: icon
-                    source: icon
-                    color: Vars.whiteColor
-                    cached: true
-                }
-
                 Label
                 {
                     id: promotionTitle
@@ -586,15 +577,8 @@ Page
             //sending user hash for identification for notifs.
             QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
 
-            // start location service if user has secret and this is app first lauch
-            if(AppSettings.value("user/first_launch") === undefined)
-            {
-                AppSettings.beginGroup("user");
-                AppSettings.setValue("first_launch", 1);
-                AppSettings.endGroup();
-                //if mapPage loaded -> user chosen cats -> we can start service
-                cppCall.startLocationService();
-            }
+            //if mapPage loaded -> user chosen cats -> we can start service
+            cppCall.startLocationService();
         }
 
         //setting active focus for key capturing

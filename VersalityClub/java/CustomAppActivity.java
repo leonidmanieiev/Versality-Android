@@ -78,6 +78,9 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                                   LOCATION_PERMISSIONS_REQUEST_CODE);
             }
+            else {
+                QOneSignalBinding.onCreate(this);
+            }
         }
     }
 
@@ -91,11 +94,11 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                                                   PackageManager.PERMISSION_GRANTED) {
-                // user granted permission then installed app
+                // user granted permission when installed app
                 Log.d(TAG, "onCreate: API LEVEL < 23. permission GRANTED");;
                 QOneSignalBinding.onCreate(this);
             } else {
-                // user did not grant permission then installed app
+                // user did not grant permission when installed app
                 Log.d(TAG, "onCreate: API LEVEL < 23. permission DENIED");
                 HttpURLCon.sendLog(TAG+"::onCreate: API LEVEL < 23. permission DENIED", this);
                 showEnablePermissionToastAndExit();

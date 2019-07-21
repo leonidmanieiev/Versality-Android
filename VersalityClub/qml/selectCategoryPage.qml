@@ -31,6 +31,8 @@ Page
 {
     property string strCatsJSON: ''
     property string pressedFrom: 'selectCategoryPage.qml'
+    readonly property double catsItemHeight: Vars.screenHeight*0.09
+    readonly property double subCatsItemHeight: Vars.screenHeight*0.07
 
     id: selectCategoryPage
     enabled: Vars.isConnected
@@ -64,8 +66,7 @@ Page
         id: catsListView
         clip: true
         width: parent.width
-        height: parent.height//parent.height-Vars.footerButtonsFieldHeight*2
-        //contentHeight: middleFieldsColumn.height
+        height: parent.height
         anchors.top: parent.top
         topMargin: Vars.pageHeight*0.25
         bottomMargin: Vars.footerButtonsFieldHeight*1.05
@@ -83,27 +84,12 @@ Page
                 Rectangle
                 {
                     id: catsItem
-                    height: Vars.screenHeight*0.09
+                    height: catsItemHeight
                     width: parent.width
                     radius: height*0.5
                     color: Vars.whiteColor
                     border.width: height*0.06
-                    border.color: Vars.settingspurpleBorderColor
-
-                    LinearGradient
-                    {
-                        id: catsItemGradient
-                        visible: false
-                        anchors.fill: parent
-                        source: parent
-                        start: Qt.point(0, height*0.5)
-                        end: Qt.point(width, height*0.5)
-                        gradient: Gradient
-                        {
-                            GradientStop { position: 0.0; color: "#862b71" }
-                            GradientStop { position: 1.0; color: "#5b1a5c" }
-                        }
-                    }
+                    border.color: Vars.insteadOfGradientColor
 
                     Image
                     {
@@ -117,28 +103,13 @@ Page
                         fillMode: Image.PreserveAspectFit
                     }
 
-                    LinearGradient
-                    {
-                        id: catIconGradient
-                        visible: true
-                        source: catIcon
-                        anchors.fill: catIcon
-                        start: Qt.point(0, 0)
-                        end: Qt.point(width, height)
-                        gradient: Gradient
-                        {
-                            GradientStop { position: 0.0; color: "#431160" }
-                            GradientStop { position: 1.0; color: "#a33477" }
-                        }
-                    }
-
                     ColorOverlay
                     {
                         id: catIconColorOverlay
-                        visible: false
+                        visible: true
                         anchors.fill: catIcon
                         source: catIcon
-                        color: Vars.whiteColor
+                        color: Vars.insteadOfGradientColor
                         cached: true
                     }
 
@@ -190,8 +161,8 @@ Page
                                 downArrowColorOverlay.visible = false;
                                 downArrow.rotation = 180;
 
-                                catsItemGradient.visible = true;
-                                catIconColorOverlay.visible = true;
+                                catsItem.color = Vars.insteadOfGradientColor;
+                                catIconColorOverlay.visible = false;
                                 catsItemText.color = Vars.whiteColor;
                             }
                             else
@@ -202,13 +173,13 @@ Page
                                 downArrowColorOverlay.visible = true;
                                 downArrow.rotation = 0;
 
-                                catsItemGradient.visible = false;
-                                catIconColorOverlay.visible = false;
+                                catsItem.color = Vars.whiteColor;
+                                catIconColorOverlay.visible = true;
                                 catsItemText.color = Vars.blackColor;
                             }
 
                             catsModel.setProperty(index, "collapsed", !collapsed);
-                        }
+                        }//onClicked
                     }
                 }//catsItem
 
@@ -244,24 +215,9 @@ Page
                 {
                     id: subCatsItem
                     radius: height*0.5
-                    height: Vars.screenHeight*0.07
+                    height: subCatsItemHeight
                     width: parent.width
-                    color: Vars.whiteColor
-
-                    LinearGradient
-                    {
-                        id: subCatsItemGradient
-                        visible: AppSettings.contains(subid)
-                        anchors.fill: parent
-                        source: parent
-                        start: Qt.point(0, height*0.5)
-                        end: Qt.point(width, height*0.5)
-                        gradient: Gradient
-                        {
-                            GradientStop { position: 0.0; color: "#862b71" }
-                            GradientStop { position: 1.0; color: "#5b1a5c" }
-                        }
-                    }
+                    color: AppSettings.contains(subid) ? Vars.insteadOfGradientColor : Vars.whiteColor
 
                     Text
                     {
@@ -290,16 +246,6 @@ Page
                         source: "../icons/tick.svg"
                     }
 
-                    ColorOverlay
-                    {
-                        id: tickIconColorOverlay
-                        visible: tickIcon.visible
-                        anchors.fill: tickIcon
-                        source: tickIcon
-                        color: Vars.whiteColor
-                        cached: true
-                    }
-
                     MouseArea
                     {
                         id: subCatsClickableArea
@@ -308,14 +254,14 @@ Page
                         {
                             if(AppSettings.contains(subid))
                             {
-                                subCatsItemGradient.visible = false;
+                                subCatsItem.color = Vars.whiteColor;
                                 subCatsText.color = Vars.blackColor;
                                 tickIcon.visible = false;
                                 AppSettings.removeCat(subid);
                             }
                             else
                             {
-                                subCatsItemGradient.visible = true;
+                                subCatsItem.color = Vars.insteadOfGradientColor;
                                 subCatsText.color = Vars.whiteColor;
                                 tickIcon.visible = true;
                                 AppSettings.insertCat(subid);
@@ -336,8 +282,26 @@ Page
         source: "../backgrounds/profile_settings_h.png"
     }
 
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the header
+    Rectangle
+    {
+        id: headerStoper
+        width: parent.width
+        height: logoAndPageTitle.height*1.2
+        anchors.top: parent.top
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: headerStoper.forceActiveFocus()
+        }
+    }
+
     LogoAndPageTitle
     {
+        id: logoAndPageTitle
         showInfoButton: true
         pageTitleText: Vars.profileSettings
         pressedFromPageName: 'selectCategoryPage.qml'
@@ -362,6 +326,23 @@ Page
         height: Vars.footerButtonsFieldHeight
         anchors.bottom: parent.bottom
         source: "../backgrounds/map_f.png"
+    }
+
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the footer
+    Rectangle
+    {
+        id: footerStopper
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: footerStopper.forceActiveFocus()
+        }
     }
 
     FooterButtons

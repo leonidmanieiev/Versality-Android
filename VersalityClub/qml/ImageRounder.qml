@@ -21,6 +21,7 @@
 ****************************************************************************/
 
 //Rounding image
+import "../"
 import QtQuick 2.11
 import QtGraphicalEffects 1.0
 
@@ -36,7 +37,7 @@ Item
     Image
     {
         id: image
-        source: imageSource
+        source: imageSource.charAt(0) === '/' ? Vars.domen + imageSource : imageSource
         width: parent.width
         height: parent.height
         anchors.fill: parent

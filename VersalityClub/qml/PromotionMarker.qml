@@ -25,7 +25,6 @@ import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
 
 Image
 {
@@ -45,13 +44,5 @@ Image
         anchors.topMargin: parent.width*0.1
         anchors.horizontalCenter: parent.horizontalCenter
         source: "../icons/cat_"+iconId+".svg"
-    }
-
-    ColorOverlay
-    {
-        anchors.fill: promMarkerIcon
-        source: promMarkerIcon
-        color: Vars.whiteColor
-        cached: true
     }
 }

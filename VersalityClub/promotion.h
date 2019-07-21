@@ -20,8 +20,7 @@
 **
 ****************************************************************************/
 
-/*using this object to implement clustering of promotions*/
-
+// using this object to implement clustering of promotions
 #ifndef PROMOTION_H
 #define PROMOTION_H
 

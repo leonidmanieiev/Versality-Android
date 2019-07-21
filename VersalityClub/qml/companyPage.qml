@@ -26,7 +26,7 @@ import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.0
+import QtQuick.Window 2.11
 
 Page
 {
@@ -403,6 +403,7 @@ Page
     {
         id: compDescFadeOut
         clip: true
+        visible: !compPicPopup.visible
         anchors.bottom: background.top
         width: parent.width
         height: Vars.footerButtonsFieldHeight

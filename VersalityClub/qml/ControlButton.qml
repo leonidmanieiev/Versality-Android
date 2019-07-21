@@ -39,7 +39,6 @@ ControlBackground
     property int fontPixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
     property alias buttonClickableArea: clickableArea
     property alias labelAlias: label
-    property bool showGradient2: false
 
     id: controlButton
     opacity: clickableArea.pressed ? Vars.defaultOpacity : 1
@@ -48,7 +47,6 @@ ControlBackground
     rectHeight: buttonHeight
     rectWidth: buttonWidth
     rectRadius: buttonRadius
-    showGradient: showGradient2
 
     Text
     {

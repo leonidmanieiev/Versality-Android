@@ -20,8 +20,8 @@
 **
 ****************************************************************************/
 
-/*Wrapper, so I can use functionality of QStack in QML
-  For back button navigation*/
+// Wrapper, so I can use functionality of QStack in QML
+// For back button navigation
 #ifndef PAGENAMEHOLDER_H
 #define PAGENAMEHOLDER_H
 

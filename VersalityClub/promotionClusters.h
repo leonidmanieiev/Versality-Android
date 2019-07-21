@@ -20,8 +20,7 @@
 **
 ****************************************************************************/
 
-/*object represent cluster of promotions*/
-
+// object represent cluster of promotions
 #ifndef PROMOTIONCLUSTERS_H
 #define PROMOTIONCLUSTERS_H
 

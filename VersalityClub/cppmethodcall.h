@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-//Wrapper, so I can call cpp methods from QML
+// Wrapper, so I can call cpp methods from QML
 #ifndef CPPMETHODCALL_H
 #define CPPMETHODCALL_H
 

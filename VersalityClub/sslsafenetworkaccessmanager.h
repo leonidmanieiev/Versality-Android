@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-//Wrapper, so I can use functionality of QNetworkAccessManager
+// Wrapper, so I can use functionality of QNetworkAccessManager
 #ifndef SSLSAFENETWORKACCESSMANAGER_H
 #define SSLSAFENETWORKACCESSMANAGER_H
 
