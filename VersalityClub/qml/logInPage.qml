@@ -98,6 +98,8 @@ Page
                     color = Vars.purpleTextColor;
                 }
             }
+
+            Keys.onReturnPressed: Qt.inputMethod.hide();
         }
 
         ControlButton
@@ -109,7 +111,11 @@ Page
             labelText: Vars.login
             buttonClickableArea.onClicked:
             {
-                //check for input corresponds to regex
+                // get rid of bug when text is empty but displayText is not
+                emailField.text = emailField.displayText;
+                // close keyboard
+                Qt.inputMethod.hide();
+
                 if(emailField.acceptableInput === false)
                 {
                     emailField.color = Vars.errorRed;

@@ -165,6 +165,7 @@ QtObject
     readonly property string openCompanyCard: "ОТКРЫТЬ КАРТОЧКУ КОМПАНИИ"
     readonly property string pass: "Пароль:"
     readonly property string passReset: "ВОССТАНОВКА ПАРОЛЯ"
+    readonly property string privacyPolicyLink: "https://club.versality.ru/license"
     readonly property string proceed: "Готово"
     readonly property string profileSettings: "Настройки\nпрофиля"
     readonly property string promotionPageId: "promotionPage"

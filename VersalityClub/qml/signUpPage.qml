@@ -77,7 +77,10 @@ Page
             labelText: Vars.m_f
             labelColor: Vars.purpleTextColor
             buttonClickableArea.onClicked:
+            {
                 labelText === "М" ? labelText = "Ж" : labelText = "М"
+                if(labelColor === Vars.errorRed) labelAlias.color = Vars.purpleTextColor;
+            }
         }
 
         CustomLabel
@@ -134,6 +137,8 @@ Page
                     color = Vars.purpleTextColor;
                 }
             }
+
+            Keys.onReturnPressed: Qt.inputMethod.hide();
         }
 
         ControlButton
@@ -146,6 +151,11 @@ Page
             Layout.topMargin: middleFieldsColumns.spacing
             buttonClickableArea.onClicked:
             {
+                // get rid of bug when text is empty but displayText is not
+                emailField.text = emailField.displayText;
+                // close keyboard
+                Qt.inputMethod.hide();
+
                 //check for valid inputs
                 if(sexButton.labelText === Vars.m_f)
                     sexButton.labelColor = Vars.errorRed;
@@ -158,9 +168,6 @@ Page
                 }
                 else
                 {
-                    // close keyboard
-                    Qt.inputMethod.hide();
-
                     //block button to avoid multiple clicks
                     signUpButton.enabled = false;
 
