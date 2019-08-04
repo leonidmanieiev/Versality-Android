@@ -26,7 +26,7 @@
 #include <QSslSocket>
 #include <QDebug>
 #include <QFile>
-#include <QSysInfo>
+#include <QOperatingSystemVersion>
 #include <QGuiApplication>
 #include <QtAndroid>
 
@@ -59,8 +59,8 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    //workaround of "SSL handshake failed" issue on 4.4 KitKat
-    if(QSysInfo::productVersion() == "4.4")
+    //workaround of "SSL handshake failed" issue on API LEVEL < 23
+    if(QOperatingSystemVersion::current() < QOperatingSystemVersion::AndroidMarshmallow)
         engine.setNetworkAccessManagerFactory(new SSLSafeNetworkFactory);
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

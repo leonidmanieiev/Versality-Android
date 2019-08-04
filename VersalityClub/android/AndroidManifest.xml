@@ -115,6 +115,21 @@
 
         <receiver android:name="com.onesignal.NotificationOpenedReceiver"/>
             <service android:name="com.onesignal.GcmIntentService"/>
+
+            <!-- For Android O -->
+            <service android:name="com.onesignal.GcmIntentJobService" 
+                     android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+            <service android:name="com.onesignal.SyncJobService" 
+                     android:permission="android.permission.BIND_JOB_SERVICE"/>
+            
+            <service android:name="com.onesignal.RestoreJobService" 
+                     android:permission="android.permission.BIND_JOB_SERVICE"/>
+            
+            <service android:name="com.onesignal.RestoreKickoffJobService" 
+                     android:permission="android.permission.BIND_JOB_SERVICE"/>
+            <!-- End: For Android O -->
+
             <service android:name="com.onesignal.SyncService" android:stopWithTask="true"/>
             <activity android:name="com.onesignal.PermissionsActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" android:label="Versality">
                 <meta-data android:name="android.app.lib_name" android:value="-- %%INSERT_APP_LIB_NAME%% --"/>
@@ -123,6 +138,7 @@
             <service android:name="com.onesignal.NotificationRestoreService"/>
             <receiver android:name="com.onesignal.BootUpReceiver">
                 <intent-filter>
+                    <action android:name="android.intent.action.ACTION_BOOT_COMPLETED"/>
                     <action android:name="android.intent.action.BOOT_COMPLETED"/>
                     <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
                 </intent-filter>
@@ -149,9 +165,47 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="org.versalityclub.permission.C2D_MESSAGE"/>
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <!-- START: ShortcutBadger -->
+    <!-- Samsung -->
+    <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
+    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
+
+    <!-- HTC -->
+    <uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.htc.launcher.permission.UPDATE_SHORTCUT"/>
+
+    <!-- Sony -->
+    <uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE"/>
+    <uses-permission android:name="com.sonymobile.home.permission.PROVIDER_INSERT_BADGE"/>
+
+    <!-- Apex -->
+    <uses-permission android:name="com.anddoes.launcher.permission.UPDATE_COUNT"/>
+
+    <!-- Solid -->
+    <uses-permission android:name="com.majeur.launcher.permission.UPDATE_BADGE"/>
+
+    <!-- Huawei -->
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE"/>
+    <uses-permission android:name="com.huawei.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.huawei.android.launcher.permission.WRITE_SETTINGS"/>
+
+    <!-- ZUK -->
+    <uses-permission android:name="android.permission.READ_APP_BADGE"/>
+
+    <!-- OPPO -->
+    <uses-permission android:name="com.oppo.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.oppo.launcher.permission.WRITE_SETTINGS"/>
+
+    <!-- EvMe -->
+    <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_READ"/>
+    <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_WRITE"/>
+
+    <!-- End: ShortcutBadger -->
 </manifest>
