@@ -24,7 +24,7 @@ import '.' //QTBUG-34418, singletons require explicit import to load qmldir file
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Window 2.11
-//import CppCall 0.8
+import CppCall 0.8
 
 ApplicationWindow
 {
@@ -45,11 +45,11 @@ ApplicationWindow
                      "qml/initialPage.qml" : "qml/mapPage.qml"
     }
 
-    /*CppMethodCall { id: cppCall }
+    CppMethodCall { id: cppCall }
 
     onClosing:
     {
         // relaunch location service on each closing
         cppCall.startLocationService();
-    }*/
+    }
 }

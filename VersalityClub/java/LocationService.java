@@ -22,8 +22,8 @@ public class LocationService extends QtService
 {
     private LocationManager _locationManager = null;
     private static final String TAG = "LocationService";
-    private static final long LOCATION_INTERVAL = 3600000L; //60 minutes
-    private static final float LOCATION_DISTANCE = 200.0f; //200 meters
+    private static final long LOCATION_INTERVAL = 1L;//3600000L; //60 minutes
+    private static final float LOCATION_DISTANCE = 1.0f;//200.0f; //200 meters
 
     public static String LocationToString(final Location location) {
         String lat = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES);

@@ -69,16 +69,16 @@ public:
         //if user has an account so do hash
         if(!AppSettings().value("user/hash").toString().isEmpty())
         {
-            if(!locationServiceStarted)
+            /*if(!locationServiceStarted)
             {
-                locationServiceStarted = true;
+                locationServiceStarted = true;*/
 
                 // starting location service
                 QAndroidJniObject::callStaticMethod<void>(
                 "org.versalityclub.LocationService", "startLocationService",
                 "(Landroid/content/Context;)V", QtAndroid::androidActivity().object());
-            }
-            else qDebug() << "CppMethodCall::startLocationService: locationServiceStarted is TRUE";
+            /*}
+            /else qDebug() << "CppMethodCall::startLocationService: locationServiceStarted is TRUE";*/
         }
         else qDebug() << "CppMethodCall::startLocationService: No user hash yet";
     }
