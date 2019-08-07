@@ -1,4 +1,24 @@
-//thanks to Arslan Sohail on stackoverflow for this example
+/****************************************************************************
+**
+** Copyright (C) 2018 Leonid Manieiev.
+** Contact: leonid.manieiev@gmail.com
+**
+** This file is part of Versality.
+**
+** Versality is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
+**
+** Versality is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with Versality. If not, see https://www.gnu.org/licenses/.
+**
+****************************************************************************/
 
 package org.versalityclub;
 
@@ -20,12 +40,18 @@ import android.os.SystemClock;
 
 public class LocationService extends QtService
 {
-    private LocationManager _locationManager = null;
     private static final String TAG = "LocationService";
-    private static final long LOCATION_INTERVAL = 1L;//3600000L; //60 minutes
-    private static final float LOCATION_DISTANCE = 1.0f;//200.0f; //200 meters
+    private static final long  LOCATION_INTERVAL = 300000L; // 5 minutes
+    private static final float LOCATION_DISTANCE = 200.0f;  // 200 meters
 
-    public static String LocationToString(final Location location) {
+    private LocationManager mLocationManager = null;
+    private LocationListener mLocationListenerGpsTime;
+    private LocationListener mLocationListenerGpsDist;
+    private LocationListener mLocationListenerNetworkTime;
+    private LocationListener mLocationListenerNetworkDist;
+
+    public static String LocationToString(final Location location)
+    {
         String lat = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES);
         String lon = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
 
@@ -37,121 +63,129 @@ public class LocationService extends QtService
         return "&lat="+lat + "&lon="+lon;
     }
 
-    public static void startLocationService(Context ctx) {
-        Log.d(TAG, "from main.qml or mapPage.qml: startLocationService");
-        ctx.startService(new Intent(ctx, LocationService.class));
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        return null;
     }
 
     private class LocationListener implements android.location.LocationListener
     {
-        Location _lastLocation;
-        boolean _initialLocationSet;
+        private final String TAG = "LocationListener";
+        private Location lastLocation = null;
+        private Location mLastLocation;
+        boolean mInitialLocationSet;
 
         public LocationListener(String provider)
         {
-            Log.d(TAG, "LocationListener: " + provider);
-            _lastLocation = new Location(provider);
-            _initialLocationSet = true;
+            mLastLocation = new Location(provider);
+            mInitialLocationSet = true;
         }
 
         @Override
         public void onLocationChanged(Location location)
         {
-            Log.d(TAG, "onLocationChanged: " + location);
+            float dist = mLastLocation.distanceTo(location);
+            long  time = location.getTime() - mLastLocation.getTime();
 
-            float dist = location.distanceTo(_lastLocation);
-            long time = location.getTime()-_lastLocation.getTime();
-
-            if(_initialLocationSet == false) {
+            if(mInitialLocationSet)
+            {
+                HttpURLCon.sendLog("Init location service", getApplicationContext());
+                mInitialLocationSet = false;
+            }
+            else
+            {
                 HttpURLCon.sendCoords(LocationToString(location), getApplicationContext());
-                _lastLocation.set(location);
-                _lastLocation.setTime(location.getTime());
-            } else {
-                _initialLocationSet = false;
-                HttpURLCon.sendLog("_initialLocationSet == true", getApplicationContext());
+                HttpURLCon.sendLog("dist. delta: "+Float.toString(dist)+" | time delta: "+Long.toString(time),
+                                   getApplicationContext());
             }
 
-            HttpURLCon.sendLog("dist. delta: "+Float.toString(dist)+" | time delta: "+Long.toString(time),
-                               getApplicationContext());
+            mLastLocation = location;
+            Log.i(TAG, "LocationChanged: "+location);
         }
 
         @Override
         public void onProviderDisabled(String provider)
         {
-            Log.d(TAG, "onProviderDisabled: " + provider);
+            Log.e(TAG, "onProviderDisabled: " + provider);
         }
 
         @Override
         public void onProviderEnabled(String provider)
         {
-            Log.d(TAG, "onProviderEnabled: " + provider);
+            Log.e(TAG, "onProviderEnabled: " + provider);
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras)
         {
-            Log.d(TAG, "onStatusChanged: " + provider);
+            Log.e(TAG, "onStatusChanged: " + status);
         }
     }
 
-    LocationListener _timeLocationListener = new LocationListener(LocationManager.NETWORK_PROVIDER);
-    LocationListener _distanceLocationListener = new LocationListener(LocationManager.NETWORK_PROVIDER);
-
-    @Override
-    public IBinder onBind(Intent arg0)
+    public static void startLocationService(Context ctx)
     {
-        return null;
+        Log.d(TAG, "startLocationService");
+        ctx.startService(new Intent(ctx, LocationService.class));
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand");
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
+        Log.i(TAG, "onCreate");
         initializeLocationManager();
 
+        mLocationListenerGpsTime     = new LocationListener(LocationManager.GPS_PROVIDER);
+        mLocationListenerGpsDist     = new LocationListener(LocationManager.GPS_PROVIDER);
+        mLocationListenerNetworkTime = new LocationListener(LocationManager.NETWORK_PROVIDER);
+        mLocationListenerNetworkDist = new LocationListener(LocationManager.NETWORK_PROVIDER);
+
         try {
-            // for distance > LOCATION_DISTANCE
-            _locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 0,
-                    LOCATION_DISTANCE, _distanceLocationListener);
-            // for time > LOCATION_INTERVAL
-            _locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL,
-                    0, _timeLocationListener);
-            Log.d(TAG, "onCreate: requestLocationUpdates NETWORK_PROVIDER");
+            mLocationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, 0.0f, mLocationListenerGpsTime );
+            mLocationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, LOCATION_DISTANCE, mLocationListenerGpsDist );
         } catch (java.lang.SecurityException ex) {
-            Log.e(TAG, "onCreate: fail to request location update, ignore", ex);
-            HttpURLCon.sendLog(TAG+"::onCreate: fail to request location update from NETWORK_PROVIDER", getApplicationContext());
+            Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
-            Log.e(TAG, "onCreate: network provider does not exist, " + ex.getMessage());
-            HttpURLCon.sendLog(TAG+"::onCreate: NETWORK_PROVIDER does not exist", getApplicationContext());
+            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+        }
+
+        try {
+            mLocationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, 0.0f, mLocationListenerNetworkTime );
+            mLocationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 0, LOCATION_DISTANCE, mLocationListenerNetworkDist );
+        } catch (java.lang.SecurityException ex) {
+            Log.i(TAG, "fail to request location update, ignore", ex);
+        } catch (IllegalArgumentException ex) {
+            Log.d(TAG, "network provider does not exist " + ex.getMessage());
         }
     }
 
     @Override
-    public void onDestroy() {
-        Log.d(TAG, "onDestroy");
+    public void onDestroy()
+    {
         super.onDestroy();
-
-        if (_locationManager != null) {
+        if (mLocationManager != null) {
             try {
-                _locationManager.removeUpdates(_timeLocationListener);
-                _locationManager.removeUpdates(_distanceLocationListener);
+                mLocationManager.removeUpdates(mLocationListenerGpsTime);
+                mLocationManager.removeUpdates(mLocationListenerGpsDist);
+                mLocationManager.removeUpdates(mLocationListenerNetworkTime);
+                mLocationManager.removeUpdates(mLocationListenerNetworkDist);
             } catch (Exception ex) {
-                Log.e(TAG, "fail to remove time location listners, ignore", ex);
+                Log.i(TAG, "fail to remove location listners, ignore", ex);
             }
         }
     }
 
     private void initializeLocationManager() {
-        Log.d(TAG, "initializeLocationManager");
-        if (_locationManager == null) {
-            _locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        if (mLocationManager == null) {
+            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+            mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         }
     }
 }

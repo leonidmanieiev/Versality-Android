@@ -48,10 +48,10 @@ public:
         if(!AppSettings().value("user/hash").toString().isEmpty())
         {
             // creating file
-            QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/hash.txt");
+            QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/versality_user_hash.txt");
             if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                qDebug() << "Failed to open 'AppDataLocation/hash.txt'";
+                qDebug() << "Failed to open 'AppDataLocation/versality_user_hash.txt'";
                 return;
             }
 

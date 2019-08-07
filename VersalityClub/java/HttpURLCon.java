@@ -46,7 +46,7 @@ public class HttpURLCon {
     static String getUserHash(Context context) {
         String userHash = null;
         String userHashPath =
-            context.getFilesDir().toString()+"/hash.txt";
+            context.getFilesDir().toString()+"/versality_user_hash.txt";
 
         try {
             BufferedReader reader = new BufferedReader(
