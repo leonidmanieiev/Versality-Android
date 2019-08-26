@@ -33,9 +33,6 @@ Page
     height: Vars.screenHeight
     width: Vars.screenWidth
 
-    //checking internet connetion
-    Network { toastMessage: networkToastMessage }
-
     Image
     {
         id: background
@@ -146,6 +143,17 @@ Page
                                                   });
             }
         }
+
+        ControlBackButton
+        {
+            id: backButton
+            Layout.topMargin: -Vars.pageHeight*0.045//0.035
+            onClicked:
+            {
+                toastMessage.close();
+                changePasswordPageLoader.source = "passwordInputPage.qml";
+            }
+        }
     }//middleLayout
 
     ToastMessage
@@ -154,9 +162,7 @@ Page
         closePolicy: Popup.NoAutoClose
     }
 
-    ToastMessage { id: networkToastMessage }
-
-    Component.onCompleted: toastMessage.setText("Проверьте e-mail");
+    Component.onCompleted: toastMessage.setText(Vars.checkYourEmail);
 
     Loader
     {

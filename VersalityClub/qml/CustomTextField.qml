@@ -39,11 +39,12 @@ TextField
     horizontalAlignment: Text.AlignHCenter
     color: setTextColor
     font.family: mediumText.name
-    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+    font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
     background: ControlBackground
     {
         anchors.centerIn: parent
         rectWidth: parent.width
+        rectHeight: parent.font.pixelSize*Vars.controlHeightFactor
         rectFillColor: setFillColor
         rectBorderColor: setBorderColor
     }

@@ -29,7 +29,6 @@
         <file>qml/TopControlButton.qml</file>
         <file>qml/companyPage.qml</file>
         <file>qml/previewPromotionPage.qml</file>
-        <file>qml/Network.qml</file>
         <file>qml/StaticNotifier.qml</file>
         <file>qml/ScrollDatePicker.qml</file>
         <file>qml/ScrollNumberPicker.qml</file>
@@ -98,5 +97,10 @@
         <file>icons/promotion_marker.svg</file>
         <file>icons/tick.svg</file>
         <file>text/appInfoText.txt</file>
+        <file>qml/ControlBackButton.qml</file>
+        <file>qml/GuestToastMessage.qml</file>
+        <file>qml/SettingsHelperPopup.qml</file>
+        <file>icons/dummy_footer_button_substrate.svg</file>
+        <file>icons/left_arrow_2.svg</file>
     </qresource>
 </RCC>

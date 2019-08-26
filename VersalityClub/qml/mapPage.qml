@@ -30,8 +30,10 @@ import QtQuick.Controls 2.4
 import QtLocation 5.9
 import QtPositioning 5.12
 import QtQuick.Layouts 1.3
-import OneSignal 1.0
-import CppCall 0.8
+//import OneSignal 1.0
+import CppMethodCall 0.9
+import Network 0.9
+import EnableLocation 0.9
 
 Page
 {
@@ -41,6 +43,8 @@ Page
     readonly property int maxZoomLevel: 19
     property real defaultLat: 59.933284
     property real defaultLon: 30.343614
+    property real userLat: AppSettings.value("user/lat") === undefined ? 0.0 : AppSettings.value("user/lat")
+    property real userLon: AppSettings.value("user/lon") === undefined ? 0.0 : AppSettings.value("user/lon")
     property bool allGood: false
     property bool requestFromCompany: false
     property string pressedFrom: requestFromCompany ? 'companyPage.qml' : 'mapPage.qml'
@@ -52,7 +56,7 @@ Page
     readonly property string mapDataCopyright: ' Data © <a href="https://www.openstreetmap.org/'
                                                +'copyright" style="color: '+Vars.purpleTextColor+'">'
                                                +'OpenStreetMap</a>'
-    readonly property int markerSize: Vars.screenWidth*0.1
+    readonly property int markerSize: Vars.screenWidth*0.15
     readonly property int fromButtonZoomLevel: 16
     readonly property int promsTilesItemHeight: popupWindow.height/3
 
@@ -70,19 +74,21 @@ Page
     property string nearestPromId: ''
     property string nearestPromIcon: ''
 
+    //alias
+    property alias shp: settingsHelperPopup
+    property alias fb: footerButton
+
     function setUserLocationMarker(lat, lon, _zoomLevel, follow)
     {
         if(locButtClicked)
         {
-            userLocationMarker.coordinate =
-                    QtPositioning.coordinate(lat, lon);
+            console.log("setUserLocationMarker");
+            userLocationMarker.coordinate = QtPositioning.coordinate(lat, lon);
             userLocationMarker.visible = true;
 
-            if(follow)
-                mainMap.center = userLocationMarker.coordinate;
+            if(follow) mainMap.center = userLocationMarker.coordinate;
 
-            if(_zoomLevel !== 0)
-                mainMap.zoomLevel = _zoomLevel;
+            if(_zoomLevel !== 0) mainMap.zoomLevel = _zoomLevel;
         }
     }
 
@@ -139,8 +145,11 @@ Page
     height: requestFromCompany ? Vars.companyPageHeight : Vars.pageHeight
     width: Vars.screenWidth
 
-    //checking internet connetion
-    Network { toastMessage: toastMessage }
+    StaticNotifier { id: notifier }
+
+    ToastMessage { id: toastMessage }
+
+    Network { id: network }
 
     FontLoader
     {
@@ -203,8 +212,8 @@ Page
             {
                 id: userMarkerIcon
                 source: "../icons/user_location_marker_icon.svg"
-                sourceSize.width: markerSize*0.7
-                sourceSize.height: markerSize*1.2
+                sourceSize.width: markerSize*0.6
+                sourceSize.height: markerSize*1.05
             }
         }
 
@@ -243,7 +252,7 @@ Page
                     {
                         iconId: icon
                         sourceSize.height: markerSize
-                        sourceSize.width: markerSize*0.8
+                        sourceSize.width: markerSize
                     }
                 }
 
@@ -261,7 +270,7 @@ Page
                         }
                         else
                         {
-                            PageNameHolder.push("mapPage.qml");
+                            PageNameHolder.push(pressedFrom);
 
                             AppSettings.beginGroup("promo");
                             AppSettings.setValue("id", id);
@@ -317,7 +326,7 @@ Page
             color: Vars.blackColor
             textFormat: Text.RichText;
             text: mapCopyright+mapDataCopyright
-            font.pixelSize: Helper.toDp(10, Vars.dpi)
+            font.pixelSize: Helper.applyDpr(5, Vars.dpr)
             font.family: regulatText.name
             onLinkActivated: Qt.openUrlExternally(link)
         }
@@ -383,12 +392,16 @@ Page
         {
             //set flag if entire popup shows
             if(y === popupShowTo)
+            {
                 isPopupOpened = true;
+            }
             else if(isPopupOpened === true)
             {
                 //if user swipes popup down enought to automaticly hide it
                 if(y > yToHide)
+                {
                     hide();
+                }
                 //if popup hides enought to make it invisible
                 if(y > yToInvisible)
                 {
@@ -397,9 +410,13 @@ Page
                 }
             }
             else if(isPopupOpened === false)
+            {
                 //if popup shows enought to make it visible
                 if(y <= yToInvisible)
+                {
                     popupWindow.visible = true;
+                }
+            }
         }
 
         ListView
@@ -440,8 +457,8 @@ Page
                     smooth: true
                     antialiasing: true
                     source: "../icons/cat_"+cicon+".svg"
-                    sourceSize.width: markerSize*0.8
-                    sourceSize.height: markerSize*0.8
+                    sourceSize.width: markerSize*0.6
+                    sourceSize.height: markerSize*0.6
                     anchors.left: parent.left
                     anchors.leftMargin: parent.width*0.09
                     anchors.verticalCenter: parent.verticalCenter
@@ -454,7 +471,7 @@ Page
                     anchors.leftMargin: icon.width*0.5
                     anchors.verticalCenter: parent.verticalCenter
                     text: ctitle
-                    font.pixelSize: Helper.toDp(18, Vars.dpi)
+                    font.pixelSize: Helper.applyDpr(9, Vars.dpr)
                     font.family: boldText.name
                     color: Vars.whiteColor
                 }
@@ -465,7 +482,7 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
-                        PageNameHolder.push("mapPage.qml");
+                        PageNameHolder.push(pressedFrom);
                         AppSettings.beginGroup("promo");
                         AppSettings.setValue("id", cid);
                         AppSettings.endGroup();
@@ -489,10 +506,77 @@ Page
         }//column
     }//promsTilesDelegate
 
+    // to show user location when asked
+    PositionSource
+    {
+        id: mapPositionSource
+        active: false
+        updateInterval: 1
+
+        onSourceErrorChanged:
+        {
+            switch(sourceError)
+            {
+                case PositionSource.AccessError:
+                    // hz kogda eto emititsja
+                    locButtClicked = false;
+                    mapPositionSource.stop();
+                    console.log(Vars.noLocationPrivileges); break;
+                case PositionSource.ClosedError:
+                    // lication is off
+                    locButtClicked = false;
+                    mapPositionSource.stop();
+                    console.log(Vars.turnOnLocationAndWait); break;
+                case PositionSource.UnknownSourceError:
+                    // no permission
+                    locButtClicked = false;
+                    mapPositionSource.stop();
+                    console.log(Vars.unknownPosSrcErr); break;
+                default: break;
+            }
+        }
+    }
+
+    //wait for user location to trigger
+    Timer
+    {
+        id: waitForUserLocation
+        running: !showingNearestStore &&
+                 (!isNaN(mapPositionSource.position.coordinate.latitude) ||
+                  AppSettings.value("user/lat") !== undefined)
+        interval: 1
+        onTriggered: saveUserLocationAndShowIcon()
+    }
+
+    function saveUserLocationAndShowIcon()
+    {
+        console.log("saveUserLocationAndShowIcon");
+        var userLat = AppSettings.value("user/lat");
+        var userLon = AppSettings.value("user/lon");
+
+        if(!isNaN(mapPositionSource.position.coordinate.latitude)) {
+            userLat = mapPositionSource.position.coordinate.latitude;
+            userLon = mapPositionSource.position.coordinate.longitude;
+
+            AppSettings.beginGroup("user");
+            AppSettings.setValue("lat", userLat);
+            AppSettings.setValue("lon", userLon);
+            AppSettings.endGroup();
+        }
+
+        if(locButtClicked)
+        {
+            setUserLocationMarker(userLat, userLon, fromButtonZoomLevel, true)
+            // user has seen his location, know we can stop getting updates
+            mapPositionSource.stop();
+            waitForUserLocation.running = false;
+        }
+    }
+
     IconedButton
     {
         id: geoLocationButton
-        enabled: Vars.isLocated
+        enabled: true
         width: Vars.footerButtonsHeight*0.9
         height: Vars.footerButtonsHeight*0.9
         buttonIconSource: "../icons/geo_location.svg"
@@ -501,11 +585,50 @@ Page
         anchors.verticalCenter: parent.verticalCenter
         clickArea.onClicked:
         {
-            locButtClicked = true;
-            setUserLocationMarker(AppSettings.value("user/lat"),
-                                  AppSettings.value("user/lon"),
-                                  fromButtonZoomLevel, true)
+            if(EnableLocation.askEnableLocation())
+            {
+                console.log("askEnableLocation === true");
+                locButtClicked = true;
+                mapPositionSource.start();
+
+                // force saveUserLocationAndShowIcon
+                // because positionUpdate can be waited for too long
+                if(!isNaN(mapPositionSource.position.coordinate.latitude) ||
+                   AppSettings.value("user/lat") !== undefined) {
+                    saveUserLocationAndShowIcon();
+                }
+            }
+            else
+            {
+                console.log("askEnableLocation === false");
+                mapPositionSource.stop();
+            }
         }
+    }
+
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the settingsHelperPopup
+    Rectangle
+    {
+        id: settingsHelperPopupStopper
+        enabled: settingsHelperPopup.isPopupOpened
+        width: parent.width
+        height: settingsHelperPopup.height
+        anchors.bottom: footerButton.top
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: settingsHelperPopupStopper.forceActiveFocus()
+        }
+    }
+
+    SettingsHelperPopup
+    {
+        id: settingsHelperPopup
+        currentPage: pressedFrom
+        parentHeight: parent.height
     }
 
     //switch to listViewPage (proms as list) if does not came
@@ -518,8 +641,16 @@ Page
         buttonIconSource: "../icons/show_listview.svg"
         onClicked:
         {
-            PageNameHolder.push("mapPage.qml");
-            mapPageLoader.source = "listViewPage.qml";
+            if(network.hasConnection())
+            {
+                toastMessage.close();
+                PageNameHolder.push(pressedFrom);
+                mapPageLoader.source = "listViewPage.qml";
+            }
+            else
+            {
+                toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+            }
         }
     }
 
@@ -535,15 +666,23 @@ Page
         iconAlias.sourceSize.height: height*0.4
         onClicked:
         {
-            var pageName = PageNameHolder.pop();
+            if(network.hasConnection())
+            {
+                toastMessage.close();
+                var pageName = PageNameHolder.pop();
 
-            //if no pages in sequence
-            if(pageName === "")
-                appWindow.close();
-            else mapPageLoader.source = pageName;
+                //if no pages in sequence
+                if(pageName === "")
+                    appWindow.close();
+                else mapPageLoader.source = pageName;
 
-            //to avoid not loading bug
-            //mapPageLoader.reload();
+                //to avoid not loading bug
+                //mapPageLoader.reload();
+            }
+            else
+            {
+                toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+            }
         }
     }
 
@@ -561,32 +700,16 @@ Page
     {
         id: footerButton
         pressedFromPageName: pressedFrom
-        Component.onCompleted:
-        {
-            if(!requestFromCompany && !showingNearestStore)
-                showSubstrateForHomeButton();
-        }
+        Component.onCompleted: showSubstrateForHomeButton()
     }
-
-    CppMethodCall { id: cppCall }
 
     Component.onCompleted:
     {
-        if(AppSettings.value("user/hash") !== undefined)
-        {
-            //sending user hash for identification for notifs.
-            QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
-
-            //if mapPage loaded -> user chosen cats -> we can start service
-            cppCall.startLocationService();
-        }
-
         //setting active focus for key capturing
         mapPage.forceActiveFocus();
 
         if(!requestFromCompany)
         {
-            //exit app from map page
             if(!showingNearestStore)
             {
                 PageNameHolder.clear();
@@ -594,6 +717,7 @@ Page
             else
             {
                 mainMap.center = QtPositioning.coordinate(defaultLat, defaultLon);
+                setUserLocationMarker(userLat, userLon, defaultZoomLevel, false);
             }
 
             //start capturing user location and getting all promotions
@@ -603,6 +727,9 @@ Page
 
     function runParsing()
     {
+        //QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+        CppMethodCall.saveHashToFile();
+
         if(showingNearestStore)
         {
             applyNearestPromOnly();
@@ -610,7 +737,7 @@ Page
         else if((Vars.allPromsData.substring(0, 6) !== 'PROM-1'
                  && Vars.allPromsData.substring(0, 6) !== '[]')
                  || requestFromCompany)
-        {      
+        {
             clusterizeAndApply();
         }
         else
@@ -619,10 +746,6 @@ Page
             notifier.visible = true;
         }
     }
-
-    StaticNotifier { id: notifier }
-
-    ToastMessage { id: toastMessage }
 
     //workaround to wait until server sends pasponse
     Timer

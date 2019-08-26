@@ -28,13 +28,12 @@ import QtQuick.Layouts 1.3
 
 Page
 {
+    property bool fromRegistration: false
+
     id: passInputPage
     enabled: Vars.isConnected
     height: Vars.screenHeight
     width: Vars.screenWidth
-
-    //checking internet connetion
-    Network { toastMessage: toastMessage }
 
     Image
     {
@@ -93,6 +92,8 @@ Page
 
             onPressed:
             {
+                noAutoCloseToastMessage.close();
+
                 if(color === Vars.errorRed)
                 {
                     text = '';
@@ -142,15 +143,34 @@ Page
                 // close keyboard
                 Qt.inputMethod.hide();
 
+                noAutoCloseToastMessage.close();
+
                 passwordInputPageLoader.setSource("xmlHttpRequest.qml",
                                                   { "api": Vars.userResetPass,
                                                     "functionalFlag": 'user/reset-pass'
                                                   });
             }
         }
+
+        ControlBackButton
+        {
+            id: backButton
+            Layout.topMargin: -Vars.pageHeight*0.03//0.02
+            onClicked:
+            {
+                noAutoCloseToastMessage.close();
+                passwordInputPageLoader.source = "logInPage.qml";
+            }
+        }
     }//middleLayout
 
-    ToastMessage { id: toastMessage }
+    ToastMessage
+    {
+        id: noAutoCloseToastMessage
+        closePolicy: Popup.NoAutoClose
+    }
+
+    Component.onCompleted: if(fromRegistration) noAutoCloseToastMessage.setText(Vars.checkYourEmail);
 
     Loader
     {

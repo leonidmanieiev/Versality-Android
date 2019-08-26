@@ -64,6 +64,10 @@ android {
         abortOnError false
     }
 	
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
     defaultConfig {
         applicationId "org.versalityclub"
         manifestPlaceholders = [

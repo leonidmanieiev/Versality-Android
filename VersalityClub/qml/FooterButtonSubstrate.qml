@@ -24,14 +24,19 @@
 import "../"
 import QtQuick 2.11
 
-Image
+Rectangle
 {
-    z: -1
-    clip: true
-    visible: false
-    anchors.centerIn: parent
-    sourceSize.width: Vars.footerButtonsHeight*1.3
-    sourceSize.height: Vars.footerButtonsHeight*1.3
-    fillMode: Image.PreserveAspectFit
-    source: "../icons/footer_button_substrate.svg"
+    property string substrateSource: "../icons/footer_button_substrate.svg"
+
+    color: "transparent"
+
+    Image
+    {
+        clip: true
+        anchors.centerIn: parent
+        source: substrateSource
+        sourceSize.width: parent.width*Vars.iconHeightFactor
+        sourceSize.height: parent.height*Vars.iconHeightFactor
+        fillMode: Image.PreserveAspectFit
+    }
 }

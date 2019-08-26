@@ -42,8 +42,8 @@ Rectangle
         clip: true
         anchors.centerIn: parent
         source: buttonIconSource
-        sourceSize.width: parent.width
-        sourceSize.height: parent.height
+        sourceSize.width: parent.width*Vars.iconHeightFactor
+        sourceSize.height: parent.height*Vars.iconHeightFactor
         rotation: rotateAngle
         fillMode: Image.PreserveAspectFit
     }

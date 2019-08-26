@@ -24,6 +24,7 @@ import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
+import Network 0.9
 
 Page
 {
@@ -32,8 +33,10 @@ Page
     height: Vars.screenHeight
     width: Vars.screenWidth
 
+    ToastMessage { id: toastMessage }
+
     //checking internet connetion
-    Network { toastMessage: toastMessage }
+    Network { id: netowrk }
 
     Image
     {
@@ -111,30 +114,42 @@ Page
             labelText: Vars.login
             buttonClickableArea.onClicked:
             {
-                // get rid of bug when text is empty but displayText is not
-                emailField.text = emailField.displayText;
-                // close keyboard
-                Qt.inputMethod.hide();
-
-                if(emailField.acceptableInput === false)
+                if(netowrk.hasConnection())
                 {
-                    emailField.color = Vars.errorRed;
-                    emailField.text = Vars.incorrectEmail;
+                    toastMessage.close();
+                    // get rid of bug when text is empty but displayText is not
+                    emailField.text = emailField.displayText;
+                    // close keyboard
+                    Qt.inputMethod.hide();
+
+                    if(emailField.acceptableInput === false)
+                    {
+                        emailField.color = Vars.errorRed;
+                        emailField.text = Vars.incorrectEmail;
+                    }
+                    else
+                    {
+                        AppSettings.beginGroup("user");
+                        AppSettings.setValue("email", emailField.text.toLowerCase());
+                        AppSettings.endGroup();
+
+                        PageNameHolder.push("logInPage.qml");
+                        logInPageLoader.source = "passwordInputPage.qml";
+                    }
                 }
                 else
                 {
-                    AppSettings.beginGroup("user");
-                    AppSettings.setValue("email", emailField.text.toLowerCase());
-                    AppSettings.endGroup();
-
-                    PageNameHolder.push("logInPage.qml");
-                    logInPageLoader.source = "passwordInputPage.qml";
+                    toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
                 }
             }
         }
-    }//middleLayout
 
-    ToastMessage { id: toastMessage }
+        ControlBackButton
+        {
+            id: backButton
+            onClicked: logInPageLoader.source = "initialPage.qml";
+        }
+    }//middleLayout
 
     Loader
     {

@@ -20,7 +20,7 @@
 **
 ****************************************************************************/
 
-//temaplte popup - toast message
+//shows guest info about impossibility to use this functionality
 import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
@@ -28,34 +28,11 @@ import "../js/helpFunc.js" as Helper
 
 Popup
 {
-    property color backgroundColor: Vars.toastGrey
-    property bool needRedirect: false
-
-    function setTextNoAutoClose(messageText)
+    function setGuestText(message)
     {
-        toastMessage.closePolicy = Popup.NoAutoClose;
-        popupContent.text = messageText;
+        popupContent.text = message;
         open();
-    }
-
-    function setText(messageText)
-    {
-        if(popupContent.text === '')
-        {
-            popupContent.text = messageText;
-            open();
-        }
-    }
-
-    function setTextAndRun(messageText, redirect)
-    {
-        if(popupContent.text === '')
-        {
-            needRedirect = redirect;
-            popupContent.text = messageText;
-            open();
-            toastMessageTimer.running = true;
-        }
+        guestToastMessageTimer.running = true;
     }
 
     FontLoader
@@ -64,16 +41,16 @@ Popup
         source: Vars.regularFont
     }
 
-    id: toastMessage
+    id: guestToastMessage
     x: (Vars.screenWidth - popupBackground.width) * 0.5
-    y: Vars.pageHeight*0.8
+    y: Vars.pageHeight*0.2
     contentItem: Text
     {
         id: popupContent
         clip: true
         anchors.centerIn: popupBackground
         height: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
-        width: text.length
+        width: Vars.screenWidth*0.7
         font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
         font.family: regularText.name
         color: Vars.whiteColor
@@ -83,35 +60,24 @@ Popup
     background: Rectangle
     {
         id: popupBackground
-        width: popupContent.width*1.2 < Vars.screenWidth*0.8
-               ? popupContent.width*1.2 : Vars.screenWidth*0.8
-        height: popupContent.height*2
-        radius: parent.height*0.5
-        color: backgroundColor
-    }
-    //Smoothed show up animation
-    enter: Transition
-    {
-        NumberAnimation { property: "opacity"; from: 0.0; to: 1.0 }
-    }
-    //Smoothed hide out animation
-    exit: Transition
-    {
-        NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }
+        width: Vars.screenWidth*0.9
+        height: popupContent.height*1.4
+        radius: Vars.defaultRadius
+        color: Vars.toastGrey
     }
 
-    onClosed:
-    {
-        popupContent.text = ''
-        if(needRedirect)
-            appWindowLoader.source = "mapPage.qml";
-    }
+    //Smoothed show up animation
+    enter: Transition { NumberAnimation { property: "opacity"; from: 0.0; to: 1.0 } }
+    //Smoothed hide out animation
+    exit: Transition { NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 } }
+
+    onClosed: popupContent.text = '';
 
     //defines period of time that popup is visiable
     Timer
     {
-        id: toastMessageTimer
-        interval: 3000
-        onTriggered: toastMessage.close()
+        id: guestToastMessageTimer
+        interval: 5000 // 5 sec
+        onTriggered: guestToastMessage.close()
     }
 }

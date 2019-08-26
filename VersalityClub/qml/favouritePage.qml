@@ -30,15 +30,20 @@ import QtGraphicalEffects 1.0
 Page
 {
     property bool allGood: false
-    readonly property int promItemHeight: Vars.screenHeight*0.25
+    property string pressedFrom: 'favouritePage.qml'
+    readonly property int promItemHeight: Vars.screenHeight*0.25*Vars.footerHeightFactor
+    //alias
+    property alias shp: settingsHelperPopup
+    property alias fb: footerButton
 
     id: favouritePage
     enabled: Vars.isConnected
     height: Vars.pageHeight
     width: Vars.screenWidth
 
-    //checking internet connetion
-    Network { toastMessage: toastMessage }
+    GuestToastMessage { id: guestToastMessage }
+
+    StaticNotifier { id: notifier }
 
     background: Rectangle
     {
@@ -49,41 +54,45 @@ Page
 
     Component.onCompleted:
     {
-        favouritePage.forceActiveFocus();
-
-        //making request for favourites when getting to this page by pressing back button
-        if(Vars.markedPromsData === '')
+        // functionality is disable if guest loged in
+        if(Vars.isGuest || AppSettings.value("user/hash") === Vars.guestHash)
         {
-            notifier.visible = false;
-            favouritePageLoader.setSource("xmlHttpRequest.qml",
-                                          { "api": Vars.userMarkedProms,
-                                            "functionalFlag": 'user/marked',
-                                            "isTilesApi": false});
-        }
-        else if(Vars.markedPromsData !== '[]')
-        {
-            try {
-                var promsJSON = JSON.parse(Vars.markedPromsData);
-                allGood = true;
-                notifier.visible = false;
-                //applying promotions at list model
-                Helper.promsJsonToListModel(promsJSON);
-            } catch (e) {
-                allGood = false;
-                notifier.notifierText = Vars.smthWentWrong;
-                notifier.visible = true;
-            }
+            guestToastMessage.setGuestText(Vars.functionalityIsNotAvailable);
         }
         else
         {
-            notifier.notifierText = Vars.noFavouriteProms;
-            notifier.visible = true;
+            favouritePage.forceActiveFocus();
+
+            //making request for favourites when getting to this page by pressing back button
+            if(Vars.markedPromsData === '')
+            {
+                notifier.visible = false;
+                favouritePageLoader.setSource("xmlHttpRequest.qml",
+                                              { "api": Vars.userMarkedProms,
+                                                "functionalFlag": 'user/marked',
+                                                "isTilesApi": false});
+            }
+            else if(Vars.markedPromsData !== '[]')
+            {
+                try {
+                    var promsJSON = JSON.parse(Vars.markedPromsData);
+                    allGood = true;
+                    notifier.visible = false;
+                    //applying promotions at list model
+                    Helper.promsJsonToListModel(promsJSON);
+                } catch (e) {
+                    allGood = false;
+                    notifier.notifierText = Vars.smthWentWrong;
+                    notifier.visible = true;
+                }
+            }
+            else
+            {
+                notifier.notifierText = Vars.noFavouriteProms;
+                notifier.visible = true;
+            }
         }
     }
-
-    StaticNotifier { id: notifier }
-
-    ToastMessage { id: toastMessage }
 
     ListView
     {
@@ -99,24 +108,6 @@ Page
     }
 
     ListModel { id: promsModel }
-
-    Image
-    {
-        id: background
-        clip: true
-        width: parent.width
-        height: Vars.footerButtonsFieldHeight
-        anchors.bottom: parent.bottom
-        source: "../backgrounds/map_f.png"
-    }
-
-    Image
-    {
-        id: background2
-        clip: true
-        anchors.fill: parent
-        source: "../backgrounds/listview_hf.png"
-    }
 
     Component
     {
@@ -190,6 +181,49 @@ Page
         }//Column
     }//promsDelegate
 
+    Image
+    {
+        id: background2
+        clip: true
+        anchors.fill: parent
+        source: "../backgrounds/listview_hf.png"
+    }
+
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the settingsHelperPopup
+    Rectangle
+    {
+        id: settingsHelperPopupStopper
+        enabled: settingsHelperPopup.isPopupOpened
+        width: parent.width
+        height: settingsHelperPopup.height
+        anchors.bottom: footerButton.top
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: settingsHelperPopupStopper.forceActiveFocus()
+        }
+    }
+
+    SettingsHelperPopup
+    {
+        id: settingsHelperPopup
+        currentPage: pressedFrom
+        parentHeight: parent.height
+    }
+
+    Image
+    {
+        id: background
+        clip: true
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        source: "../backgrounds/map_f.png"
+    }
+
     //switch to mapPage (proms on map view)
     /*TopControlButton
     {
@@ -203,7 +237,8 @@ Page
 
     FooterButtons
     {
-        pressedFromPageName: 'favouritePage.qml'
+        id: footerButton
+        pressedFromPageName: pressedFrom
         Component.onCompleted: showSubstrateForFavouriteButton();
     }
 

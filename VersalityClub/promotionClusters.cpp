@@ -106,7 +106,8 @@ QString PromotionClusters::clustering(const QString& jsonText,
     /*converts zoom level (zoomLevel-8) to min distance
       between to promotions in meters*/
     static constexpr std::array<unsigned short, 12> zoomLevelToDist =
-        {{ 6400, 3200, 1600, 800, 400, 200, 100, 50, 24, 12, 6, 3 }}; // {{ }} because of clang bug
+        {{ 10240, 5120, 2560, 1280, 640, 320, 160, 80, 40, 20, 10, 5 }}; // {{ }} because of clang bug
+        //{{ 6400, 3200, 1600, 800, 400, 200, 100, 50, 24, 12, 6, 3 }}; // {{ }} because of clang bug
     /*if dist (in meters) between two proms are less than this
       value, they should be clusterized*/
     const unsigned short currMinDist{zoomLevelToDist.at(zoomLevel-8)};

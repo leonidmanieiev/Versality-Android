@@ -31,8 +31,11 @@ Page
 {
     property string strCatsJSON: ''
     property string pressedFrom: 'selectCategoryPage.qml'
-    readonly property double catsItemHeight: Vars.screenHeight*0.09
-    readonly property double subCatsItemHeight: Vars.screenHeight*0.07
+    readonly property double catsItemHeight: Vars.screenHeight*0.07*Vars.iconHeightFactor
+    readonly property double subCatsItemHeight: Vars.screenHeight*0.06*Vars.iconHeightFactor
+    //alias
+    property alias shp: settingsHelperPopup
+    property alias fb: footerButton
 
     id: selectCategoryPage
     enabled: Vars.isConnected
@@ -49,9 +52,6 @@ Page
                                             "nextPageAfterCatsSave": 'profileSettingsPage.qml'
                                           });
     }
-
-    //checking internet connetion
-    Network { toastMessage: toastMessage }
 
     FontLoader
     {
@@ -120,7 +120,7 @@ Page
                         x: parent.radius*2
                         color: Vars.blackColor
                         font.family: mediumText.name
-                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+                        font.pixelSize: Helper.applyDpr(6, Vars.dpr)
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
@@ -226,7 +226,7 @@ Page
                         width: parent.width*0.7
                         anchors.verticalCenter: parent.verticalCenter
                         font.family: mediumText.name
-                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+                        font.pixelSize: Helper.applyDpr(6, Vars.dpr)
                         color: AppSettings.contains(subid) ? Vars.whiteColor :
                                                              Vars.blackColor
                         wrapMode: Text.WordWrap
@@ -302,12 +302,10 @@ Page
     LogoAndPageTitle
     {
         id: logoAndPageTitle
-        showInfoButton: true
+        //showInfoButton: true
         pageTitleText: Vars.profileSettings
-        pressedFromPageName: 'selectCategoryPage.qml'
+        pressedFromPageName: pressedFrom
     }
-
-    ToastMessage { id: toastMessage }
 
     Component.onCompleted:
     {
@@ -316,6 +314,31 @@ Page
 
         var catsJSON = JSON.parse(strCatsJSON);
         Helper.catsJsonToListModel(catsJSON);
+    }
+
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the settingsHelperPopup
+    Rectangle
+    {
+        id: settingsHelperPopupStopper
+        enabled: settingsHelperPopup.isPopupOpened
+        width: parent.width
+        height: settingsHelperPopup.height
+        anchors.bottom: footerButton.top
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: settingsHelperPopupStopper.forceActiveFocus()
+        }
+    }
+
+    SettingsHelperPopup
+    {
+        id: settingsHelperPopup
+        currentPage: pressedFrom
+        parentHeight: parent.height
     }
 
     Image
@@ -347,6 +370,7 @@ Page
 
     FooterButtons
     {
+        id: footerButton
         pressedFromPageName: pressedFrom
         Component.onCompleted: showSubstrateForSettingsButton()
     }

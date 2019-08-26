@@ -25,33 +25,32 @@
 #define CPPMETHODCALL_H
 
 #include "appsettings.h"
-#include "jni.h"
 
-#include <QObject>
 #include <QDebug>
 #include <QFile>
-#include <QTextStream>
+#include <QObject>
+#include <QQmlEngine>
 #include <QStandardPaths>
-#include <QtAndroid>
+#include <QTextStream>
 
 class CppMethodCall : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(CppMethodCall)
 public:
     explicit CppMethodCall([[maybe_unused]] QObject *parent = nullptr) { }
+    ~CppMethodCall() = default;
 
-    static bool locationServiceStarted;
-
-    Q_INVOKABLE void saveHashToFile()
+    Q_INVOKABLE static void saveHashToFile()
     {
         //if user has an account so do hash
         if(!AppSettings().value("user/hash").toString().isEmpty())
         {
             // creating file
-            QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/versality_user_hash.txt");
+            QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/hash.txt");
             if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                qDebug() << "Failed to open 'AppDataLocation/versality_user_hash.txt'";
+                qDebug() << "CppMethodCall::saveHashToFile: failed to open 'hash.txt'";
                 return;
             }
 
@@ -60,27 +59,19 @@ public:
             out << AppSettings().value("user/hash").toString();
             out.flush();
             file.close();
+
+            qDebug() << "CppMethodCall::saveHashToFile: user hash has been saved to the file";
         }
         else qDebug() << "CppMethodCall::saveHashToFile: No user hash yet";
     }
 
-    Q_INVOKABLE void startLocationService()
+    static QObject* singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
     {
-        //if user has an account so do hash
-        if(!AppSettings().value("user/hash").toString().isEmpty())
-        {
-            /*if(!locationServiceStarted)
-            {
-                locationServiceStarted = true;*/
+        Q_UNUSED(engine);
+        Q_UNUSED(scriptEngine);
 
-                // starting location service
-                QAndroidJniObject::callStaticMethod<void>(
-                "org.versalityclub.LocationService", "startLocationService",
-                "(Landroid/content/Context;)V", QtAndroid::androidActivity().object());
-            /*}
-            /else qDebug() << "CppMethodCall::startLocationService: locationServiceStarted is TRUE";*/
-        }
-        else qDebug() << "CppMethodCall::startLocationService: No user hash yet";
+        CppMethodCall* intance = new CppMethodCall();
+        return intance;
     }
 };
 

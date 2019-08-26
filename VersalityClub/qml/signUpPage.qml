@@ -44,9 +44,6 @@ Page
 
     LogoAndPageTitle { pageTitleText: Vars.signupNoun }
 
-    //checking internet connetion
-    Network { toastMessage: toastMessage }
-
     ColumnLayout
     {
         id: middleFieldsColumns
@@ -156,10 +153,10 @@ Page
                 // close keyboard
                 Qt.inputMethod.hide();
 
-                //check for valid inputs
-                if(sexButton.labelText === Vars.m_f)
-                    sexButton.labelColor = Vars.errorRed;
-                else if(dateofbirthField.text === '..')
+                //check for valid inputs (but not sex field, because apple said so)
+                //if(sexButton.labelText === Vars.m_f)
+                //    sexButton.labelColor = Vars.errorRed;
+                if(dateofbirthField.text === '..')
                     dateofbirthField.color = Vars.errorRed;
                 else if(emailField.acceptableInput === false)
                 {
@@ -187,6 +184,12 @@ Page
                 }
             }
         }
+
+        ControlBackButton
+        {
+            id: backButton
+            onClicked: signUpPageLoader.source = "initialPage.qml";
+        }
     }//middleFieldsColumns
 
     ScrollDatePicker
@@ -209,8 +212,6 @@ Page
             birthdayPicker.visible = false;
         }
     }
-
-    ToastMessage { id: toastMessage }
 
     Loader
     {

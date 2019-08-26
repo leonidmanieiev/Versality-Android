@@ -33,10 +33,10 @@ ControlBackground
     property color labelColor: Vars.purpleTextColor
     property color backgroundColor: Vars.whiteColor
     property color borderColor: Vars.purpleBorderColor
-    property real buttonHeight: Vars.screenHeight*0.09
+    property real buttonHeight: fontPixelSize*Vars.controlHeightFactor
     property real buttonWidth: Vars.screenWidth*0.8
     property real buttonRadius: buttonHeight*0.5
-    property int fontPixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+    property int fontPixelSize: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
     property alias buttonClickableArea: clickableArea
     property alias labelAlias: label
 

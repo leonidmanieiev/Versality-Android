@@ -36,9 +36,9 @@ class AppSettings : public QSettings
 public:
     explicit AppSettings(QObject *parent = nullptr) :
         QSettings(QSettings::IniFormat, QSettings::UserScope,
-                  QCoreApplication::instance()->organizationName(),
-                  QCoreApplication::instance()->applicationName(),
-                  parent)
+        QCoreApplication::instance()->organizationName(),
+        QCoreApplication::instance()->applicationName(),
+        parent)
     {
 
         //clears promotions and company cache on each app launch

@@ -36,7 +36,7 @@ Rectangle
 
     id: rootBackground
     width: Vars.screenWidth*0.8
-    height: Vars.screenHeight*0.4
+    height: Vars.screenHeight*0.4*Vars.iconHeightFactor
     color: Vars.birthdayPickerColor
     radius: Vars.defaultRadius
 
@@ -44,7 +44,7 @@ Rectangle
     {
         id: chosenDateSubstrate
         width: parent.width
-        height: Vars.screenHeight*0.07
+        height: Vars.screenHeight*0.07*Vars.iconHeightFactor
         color: Vars.chosenPurpleColor
         anchors.centerIn: rowLayout
     }
@@ -116,7 +116,7 @@ Rectangle
         radius: height*0.5
         color: Vars.birthdayPickerColor
         border.color: Vars.whiteColor
-        border.width: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)*0.2
+        border.width: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)*0.2
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height*0.05
         anchors.horizontalCenter: parent.horizontalCenter
@@ -132,7 +132,7 @@ Rectangle
             id: buttonText
             text: Vars.proceed
             font.family: regularText.name
-            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+            font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
             color: Vars.whiteColor
             anchors.centerIn: parent
         }

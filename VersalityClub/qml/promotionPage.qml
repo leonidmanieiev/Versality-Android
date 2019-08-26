@@ -28,6 +28,8 @@ import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 import QtPositioning 5.8
 import QtGraphicalEffects 1.0
+import Network 0.9
+import EnableLocation 0.9
 
 Page
 {
@@ -40,35 +42,46 @@ Page
     property string c_icon: AppSettings.value("promo/icon")
     property string comp_id: AppSettings.value("promo/comp_id")
     property bool p_is_marked: AppSettings.value("promo/is_marked")
+    property string pressedFrom: 'promotionPage.qml'
+    property int btnLabelSize: Helper.applyDpr(7, Vars.dpr)
     //all good flag
     property bool allGood: true
     //dist (in meters) to be able to active coupon
     readonly property int promCloseDist: 250
     //other
+    property bool parsed: false
     property real nearestStoreLat
     property real nearestStoreLon
     property real minDistToStore: 5000000
-    //readonly property int storeInfoItemHeight: Vars.screenHeight*0.06
     //alias
     property alias prom_loader: promotionPageLoader
+    property alias shp: settingsHelperPopup
+    property alias fb: footerButton
+    //user coords
+    property real _userLat
+    property real _userLon
 
     //setting lat and lon of the nearest to user store
     function setNearestStoreCoords(promJSON)
     {
-        var userPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
-                                               AppSettings.value("user/lon"));
-        for(var i in promJSON.stores)
+        if(!parsed)
         {
-            var storePos = QtPositioning.coordinate(promJSON.stores[i].lat,
-                                                    promJSON.stores[i].lon);
-            var distToStore = Math.round(storePos.distanceTo(userPos));
-
-            if(minDistToStore > distToStore)
+            var userPos = QtPositioning.coordinate(AppSettings.value("user/lat"),
+                                                   AppSettings.value("user/lon"));
+            for(var i in promJSON.stores)
             {
-                minDistToStore = distToStore;
-                nearestStoreLat = promJSON.stores[i].lat;
-                nearestStoreLon = promJSON.stores[i].lon;
+                var storePos = QtPositioning.coordinate(promJSON.stores[i].lat,
+                                                        promJSON.stores[i].lon);
+                var distToStore = Math.round(storePos.distanceTo(userPos));
+
+                if(minDistToStore > distToStore)
+                {
+                    minDistToStore = distToStore;
+                    nearestStoreLat = promJSON.stores[i].lat;
+                    nearestStoreLon = promJSON.stores[i].lon;
+                }
             }
+            parsed = true;
         }
     }
 
@@ -90,16 +103,16 @@ Page
 
         switch(closestDistIndex)
         {
-            case 0: return 9.5;
-            case 1: return 10;
-            case 2: return 10.5;
-            case 3: return 12;
-            case 4: return 13;
-            case 5: return 13.5;
-            case 6: return 14;
-            case 7: return 15.5;
-            case 8: return 16.5;
-            case 9: return 18;
+            case 0: return 9;
+            case 1: return 9.5;
+            case 2: return 10;
+            case 3: return 11;
+            case 4: return 12;
+            case 5: return 12.5;
+            case 6: return 13;
+            case 7: return 14.5;
+            case 8: return 15.5;
+            case 9: return 17;
         }
     }
 
@@ -125,14 +138,80 @@ Page
         source: Vars.boldFont
     }
 
+    GuestToastMessage { id: guestToastMessage }
+
+    ToastMessage { id: toastMessage }
+
     //checking internet connetion
-    Network { toastMessage: toastMessage }
+    Network { id: network }
 
     background: Rectangle
     {
         id: pageBackground
         anchors.fill: parent
         color: Vars.whiteColor
+    }
+
+    // get user location for couponActivation and nearestStore
+    PositionSource
+    {
+        id: positionSource
+        active: false
+        updateInterval: 1
+
+        onSourceErrorChanged:
+        {
+            switch(sourceError)
+            {
+                case PositionSource.AccessError:
+                    // hz kogda eto emititsja
+                    positionSource.stop();
+                    console.log(Vars.noLocationPrivileges); break;
+                case PositionSource.ClosedError:
+                    // lication is off
+                    positionSource.stop();
+                    console.log(Vars.turnOnLocationAndWait); break;
+                case PositionSource.UnknownSourceError:
+                    // no permission
+                    positionSource.stop();
+                    console.log(Vars.unknownPosSrcErr); break;
+                default: break;
+            }
+        }
+    }
+
+    //wait for user location to trigger
+    Timer
+    {
+        id: waitForUserLocation
+        running: !isNaN(positionSource.position.coordinate.latitude) ||
+                 AppSettings.value("user/lat") !== undefined
+        interval: 1
+        onTriggered: saveUserLocationAndParse()
+    }
+
+    function saveUserLocationAndParse()
+    {
+        var userLat = AppSettings.value("user/lat");
+        var userLon = AppSettings.value("user/lon");
+
+        if(!isNaN(positionSource.position.coordinate.latitude)) {
+            userLat = positionSource.position.coordinate.latitude;
+            userLon = positionSource.position.coordinate.longitude;
+
+            AppSettings.beginGroup("user");
+            AppSettings.setValue("lat", userLat);
+            AppSettings.setValue("lon", userLon);
+            AppSettings.endGroup();
+        }
+
+        _userLat = userLat;
+        _userLon = userLon;
+
+        setNearestStoreCoords(JSON.parse(Vars.fullPromData));
+        // got user location, know we can stop getting updates
+        positionSource.stop();
+        waitForUserLocation.running = false;
     }
 
     Flickable
@@ -151,15 +230,15 @@ Page
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: Vars.screenWidth*0.9
+            width: Vars.screenWidth*0.8
             spacing: Vars.screenHeight*0.045
             anchors.horizontalCenter: parent.horizontalCenter
 
             Rectangle
             {
                 id: promsImage
-                Layout.alignment: Qt.AlignHCenter
-                height: Vars.screenHeight*0.25
+                Layout.alignment: Qt.AlignLeft
+                height: Vars.screenHeight*0.25*Vars.footerHeightFactor
                 width: parent.width
                 radius: Vars.listItemRadius
                 color: "transparent"
@@ -186,7 +265,7 @@ Page
             {
                 id: promotionTitle
                 text: p_title
-                font.pixelSize: Helper.toDp(16, Vars.dpi)
+                font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
                 font.family: boldText.name
                 font.weight: Font.Bold
                 color: Vars.blackColor
@@ -206,7 +285,7 @@ Page
                     id: promotionDescription
                     width: parent.width
                     text: p_desc
-                    font.pixelSize: Helper.toDp(13, Vars.dpi)
+                    font.pixelSize: Helper.applyDpr(7, Vars.dpr)
                     font.family: regularText.name
                     color: Vars.blackColor
                     wrapMode: Label.WordWrap
@@ -218,6 +297,7 @@ Page
                 id: rowLayout1
                 width: promsImage.width
                 Layout.alignment: Qt.AlignLeft
+                Layout.topMargin: -Vars.pageHeight*0.03
                 spacing: parent.width*0.055
 
                 ControlButton
@@ -228,50 +308,94 @@ Page
                     labelColor: Vars.whiteColor
                     backgroundColor: Vars.activeCouponColor
                     borderColor: "transparent"
+                    fontPixelSize: btnLabelSize
                     buttonClickableArea.onClicked:
                     {
-                        if(minDistToStore < promCloseDist)
+                        // functionality is disable if guest loged in
+                        if(Vars.isGuest || AppSettings.value("user/hash") === Vars.guestHash)
                         {
-                            promoCodePopup.visible = true;
-                            flickableArea.enabled = false;
-                            //inform server about coupon was activated
-                            promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                          {"api": Vars.userActivateProm,
-                                                           "functionalFlag": "user/activate",
-                                                           "promo_id": p_id});
+                            guestToastMessage.setGuestText(Vars.functionalityIsNotAvailable);
                         }
-                        else toastMessage.setTextAndRun(Vars.getCloserToProm, false);
+                        else
+                        {
+                            if(EnableLocation.askEnableLocation())
+                            {
+                                console.log("askEnableLocation === true");
+                                positionSource.start();
+
+                                if(network.hasConnection())
+                                {
+                                    toastMessage.close();
+                                    if(minDistToStore < promCloseDist)
+                                    {
+                                        promoCodePopup.visible = true;
+                                        flickableArea.enabled = false;
+                                        //inform server about coupon was activated
+                                        promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                                      {"api": Vars.userActivateProm,
+                                                                       "functionalFlag": "user/activate",
+                                                                       "promo_id": p_id});
+                                    }
+                                    else toastMessage.setTextAndRun(Vars.getCloserToProm, false);
+                                }
+                                else
+                                {
+                                    toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+                                }
+                            }
+                            else
+                            {
+                                console.log("askEnableLocation === false");
+                                positionSource.stop();
+                            }
+                        }
                     }
                 }
 
                 IconedButton
                 {
                     id: addToFavourite
-                    width: Vars.screenHeight  * 0.08
-                    height: Vars.screenHeight * 0.08
+                    width: Vars.screenHeight  * 0.05 * Vars.iconHeightFactor
+                    height: Vars.screenHeight * 0.05 * Vars.iconHeightFactor
                     Layout.alignment: Qt.AlignRight
                     buttonIconSource: p_is_marked ?
                                       "../icons/add_to_favourites_on.svg" :
                                       "../icons/add_to_favourites_off.svg"
                     clickArea.onClicked:
                     {
-                        if(!p_is_marked)
+                        // functionality is disable if guest loged in
+                        if(Vars.isGuest || AppSettings.value("user/hash") === Vars.guestHash)
                         {
-                            p_is_marked = true;
-                            buttonIconSource = "../icons/add_to_favourites_on.svg";
-                            promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                          {"api": Vars.userMarkProm,
-                                                           "functionalFlag": "user/mark",
-                                                           "promo_id": p_id});
+                            guestToastMessage.setGuestText(Vars.functionalityIsNotAvailable);
                         }
                         else
                         {
-                            p_is_marked = false;
-                            buttonIconSource = "../icons/add_to_favourites_off.svg";
-                            promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                          {"api": Vars.userUnmarkProm,
-                                                           "functionalFlag": "user/unmark",
-                                                           "promo_id": p_id});
+                            if(network.hasConnection())
+                            {
+                                toastMessage.close();
+                                if(!p_is_marked)
+                                {
+                                    p_is_marked = true;
+                                    buttonIconSource = "../icons/add_to_favourites_on.svg";
+                                    promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                                  {"api": Vars.userMarkProm,
+                                                                   "functionalFlag": "user/mark",
+                                                                   "promo_id": p_id});
+                                }
+                                else
+                                {
+                                    p_is_marked = false;
+                                    buttonIconSource = "../icons/add_to_favourites_off.svg";
+                                    promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                                  {"api": Vars.userUnmarkProm,
+                                                                   "functionalFlag": "user/unmark",
+                                                                   "promo_id": p_id});
+                                }
+                            }
+                            else
+                            {
+                                toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+                            }
                         }
                     }
                 }//addToFavourite
@@ -280,46 +404,107 @@ Page
             ControlButton
             {
                 id: nearestStoreButton
-                buttonWidth: promsImage.width
+                Layout.topMargin: -Vars.pageHeight*0.02
+                buttonWidth: promsImage.width*0.9
                 Layout.alignment: Qt.AlignLeft
                 labelText: Vars.closestAddress
+                fontPixelSize: btnLabelSize
                 backgroundColor: "transparent"
                 buttonClickableArea.onClicked:
                 {
-                    PageNameHolder.push("promotionPage.qml");
-                    promotionPageLoader.setSource("mapPage.qml",
-                                        { "defaultLat": nearestStoreLat,
-                                          "defaultLon": nearestStoreLon,
-                                          "defaultZoomLevel": getZoomLevel(),
-                                          "showingNearestStore": true,
-                                          "locButtClicked": true,
-                                          "nearestPromId": p_id,
-                                          "nearestPromIcon": c_icon
-                                        });
+                    if(EnableLocation.askEnableLocation())
+                    {
+                        console.log("askEnableLocation === true");
+                        positionSource.start();
+
+                        if(network.hasConnection())
+                        {
+                            toastMessage.close();
+                            PageNameHolder.push(pressedFrom);
+
+                            promotionPageLoader.setSource("mapPage.qml",
+                                                { "defaultLat": nearestStoreLat,
+                                                  "defaultLon": nearestStoreLon,
+                                                  "userLat": _userLat,
+                                                  "userLon": _userLon,
+                                                  "defaultZoomLevel": getZoomLevel(),
+                                                  "showingNearestStore": true,
+                                                  "locButtClicked": true,
+                                                  "nearestPromId": p_id,
+                                                  "nearestPromIcon": c_icon
+                                                });
+                        }
+                        else
+                        {
+                            toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+                        }
+                    }
+                    else
+                    {
+                        console.log("askEnableLocation === false");
+                        positionSource.stop();
+                    }
                 }
             }
 
             ControlButton
             {
                 id: companyCardButton
+                Layout.topMargin: -Vars.pageHeight*0.02
+                labelColor: Vars.blackColor
+                borderColor: Vars.blackColor
                 buttonWidth: promsImage.width
                 Layout.alignment: Qt.AlignLeft
                 labelText: Vars.openCompanyCard
+                fontPixelSize: btnLabelSize
                 backgroundColor: "transparent"
                 buttonClickableArea.onClicked:
                 {
-                    PageNameHolder.push("promotionPage.qml");
-                    AppSettings.beginGroup("company");
-                    AppSettings.setValue("id", comp_id);
-                    AppSettings.endGroup();
-                    promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                  { "api": Vars.companyInfo,
-                                                    "functionalFlag": 'company'
-                                                  });
+                    if(network.hasConnection())
+                    {
+                        toastMessage.close();
+                        PageNameHolder.push(pressedFrom);
+                        AppSettings.beginGroup("company");
+                        AppSettings.setValue("id", comp_id);
+                        AppSettings.endGroup();
+                        promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                      { "api": Vars.companyInfo,
+                                                        "functionalFlag": 'company'
+                                                      });
+                    }
+                    else
+                    {
+                        toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+                    }
                 }
             }
         }//middleFieldsColumns
     }//flickableArea
+
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the settingsHelperPopup
+    Rectangle
+    {
+        id: settingsHelperPopupStopper
+        enabled: settingsHelperPopup.isPopupOpened
+        width: parent.width
+        height: settingsHelperPopup.height
+        anchors.bottom: footerButton.top
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: settingsHelperPopupStopper.forceActiveFocus()
+        }
+    }
+
+    SettingsHelperPopup
+    {
+        id: settingsHelperPopup
+        currentPage: pressedFrom
+        parentHeight: parent.height
+    }
 
     Image
     {
@@ -361,7 +546,7 @@ Page
             anchors.top: parent.top
             anchors.topMargin: parent.height*0.3
             anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+            font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
         }
 
         Rectangle
@@ -385,7 +570,7 @@ Page
                 font.weight: Font.Bold
                 anchors.centerIn: parent
                 horizontalAlignment: Text.AlignHCenter
-                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize*2, Vars.dpi)
+                font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize*1.5, Vars.dpr)
             }
         }//codeSubstrate
 
@@ -394,12 +579,12 @@ Page
             id: codeImage
             clip: true
             visible: isUrl()
-            source: p_promo_code
+            source: Helper.adjastPicUrl(p_promo_code);
             anchors.bottom: parent.bottom
             anchors.bottomMargin: parent.height*0.1 + proceedButton.height
             anchors.horizontalCenter: parent.horizontalCenter
-            sourceSize.width: parent.width*0.75
-            sourceSize.height: parent.width*0.75
+            sourceSize.width: Vars.dpr > 2 ? parent.width*0.80 : parent.width*0.75
+            sourceSize.height: Vars.dpr > 2 ? parent.width*0.80 : parent.width*0.75
             fillMode: Image.PreserveAspectFit
         }
 
@@ -412,7 +597,7 @@ Page
             radius: Vars.defaultRadius
             color: "transparent"
             border.color: Vars.whiteColor
-            border.width: Vars.defaultFontPixelSize*0.2
+            border.width: Helper.applyDpr(2, Vars.dpr)
             anchors.bottom: parent.bottom
             anchors.bottomMargin: parent.height*0.05
             anchors.horizontalCenter: parent.horizontalCenter
@@ -422,7 +607,7 @@ Page
                 id: buttonText
                 text: Vars.proceed
                 font.family: regularText.name
-                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize*1.1, Vars.dpi)
+                font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize*1.1, Vars.dpr)
                 color: Vars.whiteColor
                 anchors.centerIn: parent
             }
@@ -440,8 +625,6 @@ Page
         }//proceedButton
     }
 
-    ToastMessage { id: toastMessage }
-
     //back to promotions choose button
     TopControlButton
     {
@@ -451,22 +634,28 @@ Page
         buttonIconSource: "../icons/left_arrow.svg"
         iconAlias.sourceSize.width: height*0.5
         iconAlias.sourceSize.height: height*0.4
-        onClicked: promotionPageLoader.source = "mapPage.qml"
+        onClicked:
+        {
+            if(network.hasConnection()) {
+                toastMessage.close();
+                promotionPageLoader.source = "mapPage.qml"
+            } else {
+                toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+            }
+        }
     }
 
     FooterButtons
     {
-        pressedFromPageName: 'promotionPage.qml'
-        Component.onCompleted: disableAllButtonsSubstrates()
+        id: footerButton
+        pressedFromPageName: pressedFrom
+        Component.onCompleted: showSubstrateForHomeButton()
     }
 
     Component.onCompleted:
     {
         if(allGood)
         {
-            var fpdInJSON = JSON.parse(Vars.fullPromData);
-
-            setNearestStoreCoords(fpdInJSON);
             notifier.visible = false;
             promotionPage.forceActiveFocus();
         }

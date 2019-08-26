@@ -30,12 +30,12 @@ Rectangle
     property int minNumber: 0
     property int maxNumber: 0
     property bool isMonthScroller: false
-    readonly property int itemHeight: Vars.screenHeight*0.1
+    readonly property int itemHeight: Vars.screenHeight*0.1*Vars.iconHeightFactor
 
     signal indexChanged(var t_number)
 
     id: rootRect
-    height: Vars.screenHeight*0.3
+    height: Vars.screenHeight*0.3*Vars.iconHeightFactor
     color: "transparent"
 
     function setDefault(defValue)
@@ -106,7 +106,7 @@ Rectangle
                 text: model.text
                 font.family: regularText.name
                 color: Vars.whiteColor
-                font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+                font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
                 anchors.centerIn: parent
             }
         }

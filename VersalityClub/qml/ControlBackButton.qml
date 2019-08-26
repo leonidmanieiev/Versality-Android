@@ -20,58 +20,50 @@
 **
 ****************************************************************************/
 
-//top button
+//ios back button
 import "../"
 import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import QtQuick.Layouts 1.3
 
 RoundButton
 {
-    property string buttonText: ''
-    property string buttonIconSource
-    property alias iconAlias: topControlButtonIcon
-
     FontLoader
     {
         id: regularText;
         source: Vars.regularFont
     }
 
-    id: topControlButton
-    radius: height*0.5
-    width: row.width*1.2
-    height: Vars.screenHeight*0.05*Vars.iconHeightFactor
+    id: backButton
+    Layout.alignment: Qt.AlignHCenter
     opacity: pressed ? Vars.defaultOpacity : 1
-    anchors.top: parent.top
-    anchors.topMargin: parent.height*0.05
-    anchors.horizontalCenter: parent.horizontalCenter
     contentItem: Item
     {
         Row
         {
             id: row
-            spacing: topControlButton.radius
             anchors.centerIn: parent
-
-            Text
-            {
-                id: buttonTextContent
-                clip: true
-                text: buttonText
-                font.pixelSize: Helper.applyDpr(7, Vars.dpr)
-                font.family: regularText.name
-                color: Vars.whiteColor
-                anchors.verticalCenter: parent.verticalCenter
-            }
+            spacing: Helper.applyDpr(5, Vars.dpr)
 
             Image
             {
-                id: topControlButtonIcon
-                source: buttonIconSource
-                sourceSize.width: topControlButton.radius
-                sourceSize.height: topControlButton.radius
+                id: buttonIcon
+                source: "../icons/left_arrow_2.svg"
+                sourceSize.width: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
+                sourceSize.height: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
                 anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Text
+            {
+                id: buttonText
+                clip: true
+                text: Vars.back
+                color: Vars.purpleTextColor
+                font.family: regularText.name
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
             }
         }
     }
@@ -79,17 +71,8 @@ RoundButton
     {
         id: buttonBackground
         clip: true
-        radius: parent.radius
-        anchors.centerIn: parent
-        /*swaped geometry and rotation is a
-        trick for left to right gradient*/
-        height: parent.width
-        width: parent.height
-        rotation: -90
-        gradient: Gradient
-        {
-            GradientStop { position: 0.0; color: "#852970" }
-            GradientStop { position: 1.0; color: "#5b1a5c" }
-        }
+        color: "transparent"
+        implicitWidth: row.width*1.2
+        implicitHeight: Vars.screenHeight*0.09
     }
 }

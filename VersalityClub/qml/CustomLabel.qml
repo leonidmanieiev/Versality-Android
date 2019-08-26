@@ -45,6 +45,6 @@ Label
     horizontalAlignment: Text.AlignHCenter
     text: labelText
     font.family: mediumText.name
-    font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+    font.pixelSize: Helper.applyDpr(Vars.defaultFontPixelSize, Vars.dpr)
     color: labelColor
 }

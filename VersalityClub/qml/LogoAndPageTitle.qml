@@ -26,6 +26,7 @@ import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
+import Network 0.9
 
 RowLayout
 {
@@ -40,13 +41,19 @@ RowLayout
     width: Vars.screenWidth
     anchors.horizontalCenter: parent.horizontalCenter
 
+    function itemSize() { return Vars.dpr > 2 ? 0.03 : 0.02; }
+
+    ToastMessage { id: toastMessage }
+
+    Network { id: network }
+
     Image
     {
         id: logo
         clip: true
         source: "../icons/logo_white_fill.svg"
-        Layout.preferredWidth: Vars.screenHeight*0.1
-        Layout.preferredHeight: Vars.screenHeight*0.1
+        Layout.preferredWidth: Vars.screenHeight*0.1*Vars.iconHeightFactor
+        Layout.preferredHeight: Vars.screenHeight*0.1*Vars.iconHeightFactor
         Layout.alignment: Qt.AlignHCenter
     }
 
@@ -65,55 +72,14 @@ RowLayout
         Layout.alignment: Qt.AlignLeft
         font.family: boldText.name
         font.bold: true
-        font.pixelSize: Helper.toDp(18, Vars.dpi)
+        font.pixelSize: Helper.applyDpr(9, Vars.dpr)
     }
 
-    Rectangle
+    Item
     {
-        id: infoButtonField
-        visible: showInfoButton
-        width: Vars.screenHeight*0.065
-        height: Vars.screenHeight*0.065
-        Layout.alignment: Qt.AlignTop
-        Layout.topMargin: parent.height*0.25
-        Layout.rightMargin: parent.height*0.25
-        radius: height*0.5
-        color: infoClicked ? Vars.whiteColor : "transparent"
-
-        IconedButton
-        {
-            id: infoButton
-            width: Vars.screenHeight*0.05
-            height: Vars.screenHeight*0.05
-            anchors.centerIn: parent
-            buttonIconSource: infoClicked ? "../icons/app_info_on.svg"
-                                          : "../icons/app_info_off.svg"
-            clickArea.onClicked:
-            {
-                if(infoClicked)
-                {
-                    appWindowLoader.source = 'profileSettingsPage.qml';
-                    infoClicked = false;
-                }
-                else
-                {
-                    if(pressedFromPageName === 'selectCategoryPage.qml')
-                    {
-                        appWindowLoader.setSource("xmlHttpRequest.qml",
-                                                  { "api": Vars.userSelectCats,
-                                                    "functionalFlag": 'user/refresh-cats',
-                                                    "nextPageAfterCatsSave": 'appInfoPage.qml'
-                                                  });
-                    }
-                    else
-                    {
-                        appWindowLoader.source = "appInfoPage.qml";
-                    }
-
-                    PageNameHolder.push('profileSettingsPage.qml')
-                    infoClicked = true;
-                }
-            }
-        }
+        visible: true
+        width: Vars.screenHeight  * Vars.iconHeightFactor * itemSize()
+        height: Vars.screenHeight * Vars.iconHeightFactor * itemSize()
+        Layout.rightMargin: parent.height*0.04
     }
 }

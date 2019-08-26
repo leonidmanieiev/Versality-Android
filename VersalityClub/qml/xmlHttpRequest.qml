@@ -23,9 +23,11 @@
 //http client
 import "../"
 import "../js/helpFunc.js" as Helper
-import CppCall 0.8
+//import OneSignal 1.0
+import CppMethodCall 0.9
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import Network 0.9
 
 Item
 {
@@ -35,6 +37,8 @@ Item
     //depend on request (functionalFlag)
     property string api: ''
     property string nextPageAfterCatsSave: 'profileSettingsPage.qml'
+    property string nextPageAfterSettingsSave: 'mapPage.qml'
+    property string nextPageAfterRetrieveUserCats: ''
     //user data
     property string sex: AppSettings.value("user/sex") === undefined ? "" : AppSettings.value("user/sex")
     property string birthday: AppSettings.value("user/birthday") === undefined ? "" : AppSettings.value("user/birthday")
@@ -59,8 +63,6 @@ Item
     property string promo_desc: AppSettings.value("promo/desc") === undefined ? '' : AppSettings.value("promo/desc")
     //company data
     property string comp_id: AppSettings.value("company/id") === undefined ? '' : AppSettings.value("company/id")
-
-    CppMethodCall { id: cppCall }
 
     //creates params for request
     function makeParams()
@@ -129,6 +131,10 @@ Item
         }
     }
 
+    ToastMessage { id: toastMessage }
+
+    Network { id: network }
+
     function xhr()
     {
         var request = new XMLHttpRequest();
@@ -163,7 +169,8 @@ Item
                                                                { "strCatsJSON": request.responseText });
                                 break;
                             case 'register':
-                                xmlHttpRequestLoader.source = "passwordInputPage.qml";
+                                xmlHttpRequestLoader.setSource("passwordInputPage.qml",
+                                                               { "fromRegistration": true });
                                 break;
                             case 'login':
                                 //saving hash(secret) for further auto authentication
@@ -171,7 +178,8 @@ Item
                                 AppSettings.setValue("hash", request.responseText);
                                 AppSettings.endGroup();
 
-                                cppCall.saveHashToFile();
+                                //QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+                                CppMethodCall.saveHashToFile();
 
                                 if(newUser)
                                 {
@@ -206,9 +214,18 @@ Item
                                         // set only user selected categories - up
                                         for(var i in uInfoRespJSON.categories)
                                             AppSettings.insertCat(uInfoRespJSON.categories[i]);
-                                        xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+
+                                        if(nextPageAfterRetrieveUserCats === 'selectCategoryPage.qml') {
+                                            xmlHttpRequestLoader.setSource("xmlHttpRequest.qml",
+                                                                           {
+                                                                              "api": Vars.allCats,
+                                                                              "functionalFlag": 'categories'
+                                                                           });
+                                        } else {
+                                            xmlHttpRequestLoader.source = "profileSettingsPage.qml";
+                                        }
                                     }
-                                } catch (e) {
+                                } catch (e1) {
                                     toastMessage.setTextAndRun(Vars.smthWentWrong, true);
                                 }
                                 break;
@@ -237,10 +254,19 @@ Item
                                     AppSettings.setValue("hash", uInfoJSON.secret);
                                     AppSettings.endGroup();
 
-                                    cppCall.saveHashToFile();
+                                    //QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+                                    CppMethodCall.saveHashToFile();
 
-                                    xmlHttpRequestLoader.source = "mapPage.qml";
-                                } catch (e) {
+                                    if(nextPageAfterSettingsSave === 'selectCategoryPage.qml') {
+                                        xmlHttpRequestLoader.setSource("xmlHttpRequest.qml",
+                                                                       {
+                                                                          "api": Vars.allCats,
+                                                                          "functionalFlag": 'categories'
+                                                                       });
+                                    } else {
+                                        xmlHttpRequestLoader.source = nextPageAfterSettingsSave;
+                                    }
+                                } catch (e2) {
                                     toastMessage.setTextAndRun(Vars.smthWentWrong, true);
                                 }
                                 break;
@@ -265,11 +291,12 @@ Item
                                         AppSettings.setValue("desc", ppdInJSON[0].desc);
                                         AppSettings.setValue("pic", ppdInJSON[0].pic);
                                         AppSettings.setValue("icon", ppdInJSON[0].icon);
+                                        AppSettings.setValue("comp_logo", ppdInJSON[0].company_logo);
                                         AppSettings.setValue("lat", ppdInJSON[0].lat);
                                         AppSettings.setValue("lon", ppdInJSON[0].lon);
                                         AppSettings.setValue("is_marked", ppdInJSON[0].is_marked);
                                         AppSettings.endGroup();
-                                    } catch (e) {
+                                    } catch (e3) {
                                         allGood = false;
                                     }
                                 }
@@ -299,7 +326,7 @@ Item
                                         AppSettings.setValue("code", fpdInJSON.promo_code);
                                         AppSettings.setValue("is_marked", fpdInJSON.is_marked);
                                         AppSettings.endGroup();
-                                    } catch (e) {
+                                    } catch (e4) {
                                         allGood = false;
                                     }
                                 }
@@ -317,7 +344,8 @@ Item
                                 AppSettings.setValue("hash", request.responseText);
                                 AppSettings.endGroup();
 
-                                cppCall.saveHashToFile();
+                                //QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+                                CppMethodCall.saveHashToFile();
 
                                 xmlHttpRequestLoader.source = "passwordInputPage.qml";
                                 break;
@@ -342,7 +370,7 @@ Item
                                         AppSettings.setValue("website", fсdInJSON.website);
                                         AppSettings.setValue("promos", fсdInJSON.promos);
                                         AppSettings.endGroup();
-                                    } catch (e) {
+                                    } catch (e5) {
                                         allGood = false;
                                     }
                                 }
@@ -354,14 +382,21 @@ Item
                             default: console.log("Unknown functionalFlag"); break;
                         }//switch(functionalFlag)
                     }//if(errorStatus === 'NO_ERROR')
-                    else toastMessage.setTextAndRun(errorStatus, false);
+                    else
+                    {
+                        console.log("errorStatus:", errorStatus);
+                        toastMessage.setTextAndRun(errorStatus, false);
+                    }
                 }//if(request.status === 200)
                 else if(request.status !== null)
-                    toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status), false);
+                {
+                    console.log("request.status:", request.status);
+                    toastMessage.setTextAndRun(Helper.httpErrorDecoder(request.status), true);
+                }
                 else
                 {
                     console.log("xhr()::request.status is null");
-                    toastMessage.setTextAndRun(Vars.smthWentWrong);
+                    toastMessage.setTextAndRun(Vars.smthWentWrong, true);
                 }
             }//if(request.readyState === XMLHttpRequest.DONE)
             else console.log("readyState: " + request.readyState);
@@ -371,9 +406,93 @@ Item
         request.send(params);
     }//function xhr()
 
-    ToastMessage { id: toastMessage }
+    function showIndicator()
+    {
+        // these pages show white screen while loading
+        return (api === Vars.userInfo ||
+                api === Vars.allCats ||
+                api === Vars.userMarkedProms ||
+                api === Vars.userSelectCats ||
+                api === Vars.promFullViewModel);
+    }
 
-    Component.onCompleted: xhr()
+    Rectangle
+    {
+        id: stubBackground
+        anchors.fill: parent
+        visible: showIndicator()
+        color: "#4d1463"
+    }
+
+    BusyIndicator {
+        id: control
+        visible: showIndicator()
+        anchors.centerIn: parent
+
+        contentItem: Item {
+            implicitWidth: 64
+            implicitHeight: 64
+
+            Item {
+                id: item
+                x: parent.width / 2 - 32
+                y: parent.height / 2 - 32
+                width: 64
+                height: 64
+                opacity: control.running ? 1 : 0
+
+                Behavior on opacity {
+                    OpacityAnimator {
+                        duration: 250
+                    }
+                }
+
+                RotationAnimator {
+                    target: item
+                    running: control.visible && control.running
+                    from: 0
+                    to: 360
+                    loops: Animation.Infinite
+                    duration: 1250
+                }
+
+                Repeater {
+                    id: repeater
+                    model: 3
+
+                    Rectangle {
+                        x: item.width / 2 - width / 2
+                        y: item.height / 2 - height / 2
+                        implicitWidth: 10
+                        implicitHeight: 10
+                        radius: 5
+                        color: Vars.whiteColor
+                        transform: [
+                        Translate {
+                            y: -Math.min(item.width, item.height) * 0.5 + 5
+                        },
+                        Rotation {
+                            angle: index / repeater.count * 360
+                            origin.x: 5
+                            origin.y: 5
+                        }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+
+    Component.onCompleted:
+    {
+        if(network.hasConnection()) {
+            toastMessage.close();
+            xhr();
+        } else {
+            toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+            appWindowLoader.source = "mapPage.qml";
+        }
+    }
 
     Loader
     {

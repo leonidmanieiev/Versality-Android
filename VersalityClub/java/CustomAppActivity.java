@@ -22,70 +22,62 @@
 
 package org.versalityclub;
 
-import android.os.Bundle;
-import android.content.Intent;
 import org.pwf.qtonesignal.QOneSignalBinding;
 
-// for permission handling
-import android.widget.Toast;
+import android.os.Bundle;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Handler;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.app.AlertDialog;
 import android.Manifest;
 import android.util.Log;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
-import android.content.pm.PackageManager;
-import android.content.DialogInterface;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
+import android.content.ComponentName;
+import android.net.Uri;
+import android.content.Context;
+import android.provider.Settings;
 
 public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActivity {
 
     private static final String TAG = "CustomAppActivity";
-    private static final String ENABLE_PERMISSION_TEXT = "Что бы пользоваться Versality, включите доступ "+
-                                                         "к Вашему местоположению в настройках.";
-    private static final String ALERT_TITLE = "Почему Versality запрашивает Ваше местоположение";
-    private static final String ALERT_MESSAGE = "Без Ваше местоположения Versality не сможет отображать "+
-                                                "релевантные именно для Вас акции и функционировать корректно. "+
-                                                "\nВы уверены, что хотите запретить доступ к Вашему местоположению?";
-    public static final int LOCATION_PERMISSIONS_REQUEST_CODE = 111;
-    public static boolean reTry = false;
+    private static final String PERMISSION_VIA_MESSINGS =
+        "Если Вы хотите получать уведомления об акциях поблизости, разрешите приложению доступ к Вашей геопозиции в настройках телефона.";
+    private static final String LOCATION_VIA_MESSINGS =
+        "Если Вы хотите получать уведомления об акциях поблизости, включите геопозицию в настройках телефона.";
+    private static final int LOCATION_PERMISSIONS_REQUEST_CODE = 111;
 
-    public void showEnablePermissionToastAndExit()
+    private AlertDialog locationDialog = null;
+    private boolean askForPermission = true;
+
+    public void startLocationService()
     {
-        Toast.makeText(CustomAppActivity.this, ENABLE_PERMISSION_TEXT, Toast.LENGTH_LONG).show();
-
-        // close app, then toast disappears
-        new Handler().postDelayed(new Runnable() {
-          @Override
-          public void run() {
-              System.exit(1);
-          }
-        }, 3500);
+        Log.d(TAG, "startLocationService");
+        Intent serviceIntent = new Intent(this, LocationService.class);
+        startService(serviceIntent);
     }
 
-    public void requestLocationPermission()
-    {
-        // if user denied once
-        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
-        {
-            Log.d(TAG, "requestLocationPermission: shouldShowRequestPermission");
-            showEnablePermissionToastAndExit();
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(locationDialog != null) {
+            locationDialog.dismiss();
         }
-        else
-        {
-            if (ContextCompat.checkSelfPermission(this,
-                                                  Manifest.permission.ACCESS_FINE_LOCATION) !=
-                                                  PackageManager.PERMISSION_GRANTED)
-            {
-                Log.d(TAG, "requestLocationPermission: PERMISSION_DENIED");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                                  LOCATION_PERMISSIONS_REQUEST_CODE);
-            }
-            else
-            {
-                QOneSignalBinding.onCreate(this);
-            }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(!isLocationEnabled()) {
+            askToEnableLocationViaSettigns();
+        } else if(askForPermission) {
+            handleLocationThing();
         }
     }
 
@@ -93,102 +85,131 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
     public void onCreate(Bundle bundle)
     {
         super.onCreate(bundle);
+    }
 
-        if (VERSION.SDK_INT >= VERSION_CODES.M)
+    public void handleLocationThing()
+    {
+        if(VERSION.SDK_INT >= VERSION_CODES.M)
         {
-            // request runtime permission if API LEVEL >= 23
-            Log.d(TAG, "onCreate: API LEVEL >= 23");
+            // request permission on runtime
             requestLocationPermission();
         }
         else
         {
-            if (ContextCompat.checkSelfPermission(this,
-                                                  Manifest.permission.ACCESS_FINE_LOCATION) ==
-                                                  PackageManager.PERMISSION_GRANTED)
+            if(ContextCompat.checkSelfPermission(this,
+                                                 Manifest.permission.ACCESS_FINE_LOCATION) ==
+                                                 PackageManager.PERMISSION_GRANTED)
             {
                 // user granted permission when installed app
-                Log.d(TAG, "onCreate: API LEVEL < 23. permission GRANTED");
-                QOneSignalBinding.onCreate(this);
+                //QOneSignalBinding.onCreate(this);
+                //startLocationService();
             }
             else
             {
                 // user did not grant permission when installed app
-                Log.d(TAG, "onCreate: API LEVEL < 23. permission DENIED");
-                showEnablePermissionToastAndExit();
+                askForPermission = false;
+                askToGrantPermissionViaSettigns();
             }
+        }
+    }
+
+    public void requestLocationPermission()
+    {
+        if(ContextCompat.checkSelfPermission(this,
+                                             Manifest.permission.ACCESS_FINE_LOCATION) !=
+                                             PackageManager.PERMISSION_GRANTED)
+        {
+            // not granted yet
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                              LOCATION_PERMISSIONS_REQUEST_CODE);
+        }
+        else
+        {
+            // granted
+            //QOneSignalBinding.onCreate(this);
+            //startLocationService();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
     {
-        if (requestCode == LOCATION_PERMISSIONS_REQUEST_CODE)
+        if(requestCode == LOCATION_PERMISSIONS_REQUEST_CODE)
         {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
-                // user allowed
-                if (ContextCompat.checkSelfPermission(this,
-                                                      Manifest.permission.ACCESS_FINE_LOCATION) ==
-                                                      PackageManager.PERMISSION_GRANTED)
+                // granted
+                if(ContextCompat.checkSelfPermission(this,
+                                                     Manifest.permission.ACCESS_FINE_LOCATION) ==
+                                                     PackageManager.PERMISSION_GRANTED)
                 {
-                    // user allowed confirmed
-                    Log.d(TAG, "onRequestPermissionsResult: location permission granted CONFIRMED");
-                    QOneSignalBinding.onCreate(this);
+                    // granted confirmed
+                    //QOneSignalBinding.onCreate(this);
+                    //startLocationService();
                 }
-                else
-                {
-                    Log.d(TAG, "onRequestPermissionsResult: location permission granted NOT CONFIRMED");
-                }
+            } else {
+                // denied
+                askForPermission = false;
+                askToGrantPermissionViaSettigns();
             }
-            else
-            {
-              if(reTry)
-              {
-                  // user denied, then press ask permission again, then denied
-                  Log.d(TAG, "onRequestPermissionsResult: user denied > pressed ask again > and denied again");
-                  showEnablePermissionToastAndExit();
-              }
-              else
-              {
-                  // user denied
-                  if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
-                  {
-                      // user denied with "Never ask again"
-                      Log.d(TAG, "onRequestPermissionsResult: user denied WITH Never ask again");
-                      showEnablePermissionToastAndExit();
-                  }
-                  else
-                  {
-                      // user denied without "Never ask again"
-                      Log.d(TAG, "onRequestPermissionsResult: user denied WITHOUT Never ask again");
-                      new AlertDialog.Builder(this)
-                              .setTitle(ALERT_TITLE)
-                              .setMessage(ALERT_MESSAGE)
-                              .setPositiveButton("Повторить", new DialogInterface.OnClickListener() {
-                                  @Override
-                                  public void onClick(DialogInterface dialogInterface, int i) {
-                                      reTry = true;
-                                      ActivityCompat.requestPermissions(CustomAppActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        LOCATION_PERMISSIONS_REQUEST_CODE);
-                                  }
-                              })
-                              .setNegativeButton("Да", new DialogInterface.OnClickListener() {
-                                  @Override
-                                  public void onClick(DialogInterface dialogInterface, int i) {
-                                      showEnablePermissionToastAndExit();
-                                 }
-                              })
-                              .create()
-                              .show();
+        }
+    }
+
+    public boolean isLocationEnabled() {
+        int locationMode = 0;
+
+        try {
+            locationMode = Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE);
+        } catch (Settings.SettingNotFoundException e) {
+            Log.d(TAG, "isLocationEnabled::exception");
+            e.printStackTrace();
+        }
+
+        return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+    }
+
+    public void askToEnableLocationViaSettigns()
+    {
+        locationDialog = new AlertDialog.Builder(this)
+                .setMessage(LOCATION_VIA_MESSINGS)
+                .setPositiveButton("Настройки", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
-                }
-            }
-        }
-        else
-        {
-            Log.d(TAG, "onRequestPermissionsResult: Does not received response for request");
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+                })
+                .setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create();
+
+        locationDialog.show();
+    }
+
+    public void askToGrantPermissionViaSettigns()
+    {
+        new AlertDialog.Builder(this)
+                .setMessage(PERMISSION_VIA_MESSINGS)
+                .setPositiveButton("Настройки", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, 0);
+                        askForPermission = true;
+                    }
+                })
+                .setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        askForPermission = true;
+                    }
+                })
+                .create()
+                .show();
     }
 }

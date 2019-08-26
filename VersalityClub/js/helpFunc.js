@@ -20,12 +20,10 @@
 **
 ****************************************************************************/
 
-//coverts pixels to device-independent pixels using device dpi
-function toDp(px, dpi)
+//apply ratio between physical pixels and device-independent pixels
+function applyDpr(px, dpr)
 {
-    if(dpi < 120)
-        return px;
-    else return Math.round(px*(dpi/160.0));
+    return px*dpr;
 }
 
 //HTTP status code decoder
@@ -43,13 +41,20 @@ function httpErrorDecoder(statusCode)
         default: decodedError = "Неизвестная ошибка"; break;
     }
 
-    return decodedError + ". Попробуйте позже";
+    return decodedError + ".\nПопробуйте позже.";
 }
 
-function isStringAnUrl(str) {
-  var res = str.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-  return (res !== null)
-};
+function isStringAnUrl(str)
+{
+    var res1 = str.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+    var res2 = str.charAt(0) === '/';
+    return (res1 !== null) || res2;
+}
+
+function adjastPicUrl(picUrl)
+{
+    return picUrl.charAt(0) === '/' ? "https://club.versality.ru" + picUrl : picUrl;
+}
 
 /*****************MODELS GENERATION**************/
 

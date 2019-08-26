@@ -37,11 +37,11 @@ Image
     Image
     {
         id: promMarkerIcon
-        sourceSize.width: parent.width*0.7
-        sourceSize.height: parent.width*0.7
+        sourceSize.width: parent.width*0.5
+        sourceSize.height: parent.width*0.5
         smooth: true
         anchors.top: parent.top
-        anchors.topMargin: parent.width*0.1
+        anchors.topMargin: parent.width*0.15
         anchors.horizontalCenter: parent.horizontalCenter
         source: "../icons/cat_"+iconId+".svg"
     }

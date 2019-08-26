@@ -12,9 +12,9 @@ RESOURCES += \
     versalityclub.qrc
 
 HEADERS += \
-    networkinfo.h \
+    enablelocation.h \
+    network.h \
     appsettings.h \
-    geolocationinfo.h \
     promotion.h \
     pagenameholder.h \
     promotionclusters.h \
@@ -28,6 +28,7 @@ DISTFILES += \
     android/gradlew \
     android/res/values/libs.xml \
     android/build.gradle \
+    android/gradle.properties \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat \
     android/res/drawable-hdpi/ic_stat_onesignal_default.png \

@@ -25,6 +25,8 @@ import "../"
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
+import Network 0.9
+import QtQuick.Window 2.11
 
 Page
 {
@@ -33,8 +35,15 @@ Page
     height: Vars.screenHeight
     width: Vars.screenWidth
 
+    function topMarginFactor()
+    {
+        return Vars.dpr === 2 ? 0.32 : 0.3;
+    }
+
+    ToastMessage { id: toastMessage }
+
     //checking internet connetion
-    Network { toastMessage: toastMessage }
+    Network { id: network }
 
     Image
     {
@@ -75,7 +84,10 @@ Page
     {
         id: middleButtonsColumn
         width: parent.width*0.8
-        anchors.centerIn: parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        // to fit between header and footer
+        anchors.topMargin: parent.height*topMarginFactor()
         spacing: parent.height*0.035
 
         ControlButton
@@ -85,8 +97,16 @@ Page
             labelText: Vars.signup
             buttonClickableArea.onClicked:
             {
-                PageNameHolder.push("initialPage.qml");
-                initialPageLoader.source = "signUpPage.qml";
+                if(network.hasConnection())
+                {
+                    toastMessage.close();
+                    PageNameHolder.push("initialPage.qml");
+                    initialPageLoader.source = "signUpPage.qml";
+                }
+                else
+                {
+                    toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+                }
             }
         }
 
@@ -97,13 +117,43 @@ Page
             labelText: Vars.login
             buttonClickableArea.onClicked:
             {
-                PageNameHolder.push("initialPage.qml");
-                initialPageLoader.source = "logInPage.qml";
+                if(network.hasConnection())
+                {
+                    toastMessage.close();
+                    PageNameHolder.push("initialPage.qml");
+                    initialPageLoader.source = "logInPage.qml";
+                }
+                else
+                {
+                    toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+                }
+            }
+        }
+
+        ControlButton
+        {
+            id: guestLogInButton
+            Layout.fillWidth: true
+            labelText: Vars.guestLogIn
+            buttonClickableArea.onClicked:
+            {
+                if(network.hasConnection())
+                {
+                    toastMessage.close();
+                    PageNameHolder.push("initialPage.qml");
+                    Vars.isGuest = true;
+                    AppSettings.beginGroup("user");
+                    AppSettings.setValue("hash", Vars.guestHash);
+                    AppSettings.endGroup();
+                    appWindowLoader.source = "mapPage.qml";
+                }
+                else
+                {
+                    toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+                }
             }
         }
     }//middleButtonsColumn
-
-    ToastMessage { id: toastMessage }
 
     Loader
     {

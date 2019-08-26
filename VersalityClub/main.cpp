@@ -20,27 +20,24 @@
 **
 ****************************************************************************/
 
-#include <QQmlApplicationEngine>
-#include <QtWebView/QtWebView>
-#include <QTextStream>
-#include <QSslSocket>
-#include <QDebug>
-#include <QFile>
-#include <QOperatingSystemVersion>
-#include <QGuiApplication>
-#include <QtAndroid>
-
 #include "appsettings.h"
-#include "networkinfo.h"
-#include "geolocationinfo.h"
+#include "cppmethodcall.h"
+#include "network.h"
 #include "pagenameholder.h"
 #include "promotionclusters.h"
-#include "cppmethodcall.h"
-#include "jni.h"
 #include "qonesignal.h"
 #include "sslsafenetworkfactory.h"
+#include "enablelocation.h"
 
-bool CppMethodCall::locationServiceStarted = false;
+#include <QDebug>
+#include <QFile>
+#include <QGuiApplication>
+#include <QOperatingSystemVersion>
+#include <QQmlApplicationEngine>
+#include <QSslSocket>
+#include <QTextStream>
+#include <QtWebView/QtWebView>
+
 bool AppSettings::needToRemovePromsAndComps = true;
 
 int main(int argc, char *argv[])
@@ -49,13 +46,13 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     QtWebView::initialize();
 
-    QOneSignal::registerQMLTypes();
-    qmlRegisterType<NetworkInfo>("Network", 0, 8, "NetworkInfo");
-    qmlRegisterType<GeoLocationInfo>("GeoLocation", 0, 8, "GeoLocationInfo");
-    qmlRegisterType<CppMethodCall>("CppCall", 0, 8, "CppMethodCall");
+    //QOneSignal::registerQMLTypes();
+    qmlRegisterType<Network>("Network", 0, 9, "Network");
     qmlRegisterType<AppSettings>("org.versalityclub", 0, 8, "AppSettings");
     qmlRegisterType<PageNameHolder>("org.versalityclub", 0, 8, "PageNameHolder");
     qmlRegisterType<PromotionClusters>("org.versalityclub", 0, 8, "PromotionClusters");
+    qmlRegisterSingletonType<CppMethodCall>("CppMethodCall", 0, 9, "CppMethodCall", &CppMethodCall::singletonProvider);
+    qmlRegisterSingletonType<CppMethodCall>("EnableLocation", 0, 9, "EnableLocation", &EnableLocation::singletonProvider);
 
     QQmlApplicationEngine engine;
 
@@ -67,8 +64,7 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    CppMethodCall cppCall;
-    cppCall.saveHashToFile();
+    CppMethodCall::saveHashToFile();
 
     return app.exec();
 }

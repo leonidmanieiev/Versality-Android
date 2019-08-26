@@ -34,9 +34,6 @@ Page
     height: Vars.screenHeight
     width: Vars.screenWidth
 
-    //checking internet connetion
-    Network { toastMessage: toastMessage }
-
     Image
     {
         id: background
@@ -153,7 +150,6 @@ Page
         }//swipePageIndicator
     }//middleItem
 
-
     ControlButton
     {
         id: startUsingAppButton
@@ -175,8 +171,6 @@ Page
                                      });
         }
     }
-
-    ToastMessage { id: toastMessage }
 
     Component.onCompleted: PageNameHolder.clear()
 

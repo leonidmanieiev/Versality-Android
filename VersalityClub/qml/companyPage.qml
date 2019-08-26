@@ -26,7 +26,6 @@ import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
-import QtQuick.Window 2.11
 
 Page
 {
@@ -41,19 +40,37 @@ Page
     readonly property var picsSources: [comp_pictures[0], comp_pictures[1],
                                         comp_pictures[2], comp_pictures[3]]
     property int picInd: 0
+    property int namePhoneSiteTextSize: 6
+    property string pressedFrom: 'companyPage.qml'
     //all good flag
     property bool allGood: AppSettings.value("company/id") === undefined ? false : true
+    //help width
+    property double width_between_buttons: (Vars.screenWidth*0.8 - Vars.headerButtonsHeight*4) / 3
     //alias
-    property alias comp_loader: companyPageLoader
+    property alias shp: settingsHelperPopup
+    property alias fb: footerButton
 
     function setPopupPicAndShow()
     {
-        compPicPopup.picItem.source = picsSources[picInd];
+        settingsHelperPopup.hide();
+        compPicPopup.picItem.source = Helper.adjastPicUrl(picsSources[picInd]);
         compPicPopup.visible = true;
         PageNameHolder.push('popupImage');
     }
 
-    header: HeaderButtons { }
+    function logoSize()
+    {
+        //if(Vars.isXR || Vars.isXSMax)
+        //    return 0.9;
+        return 1;
+    }
+
+    header: HeaderButtons
+    {
+        id: headerButtons
+        gallery: compPicPopup
+        companyLoader: companyPageLoader
+    }
 
     id: companyPage
     enabled: Vars.isConnected
@@ -72,14 +89,11 @@ Page
         source: Vars.boldFont
     }
 
-    //checking internet connetion
-    Network { toastMessage: toastMessage }
-
     background: Rectangle
     {
         id: backgroundColor
         anchors.fill: parent
-        color: Vars.whiteColor
+        color: compPicPopup.visible ? Vars.blackColor : Vars.whiteColor
     }
 
     Flickable
@@ -98,7 +112,7 @@ Page
         ColumnLayout
         {
             id: middleFieldsColumns
-            width: parent.width*0.9
+            width: parent.width*0.8
             spacing: Vars.screenHeight*0.05
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -108,15 +122,19 @@ Page
                 width: parent.width
                 height: Vars.footerButtonsFieldHeight
                 Layout.alignment: Qt.AlignLeft
+                Layout.leftMargin: Vars.dpr > 2 ? 3 : 0
                 spacing: parent.width*0.0625
 
                 Rectangle
                 {
                     id: compLogoField
-                    width: parent.height
-                    height: parent.height
-                    Layout.alignment: Qt.AlignRight
-                    color: "transparent"
+                    //Layout.preferredWidth: Vars.headerButtonsHeight
+                    //Layout.alignment: Qt.AlignTop
+                    //height: Vars.headerButtonsHeight
+                    Layout.preferredWidth: Vars.headerButtonsHeight  * logoSize()
+                    Layout.preferredHeight: Vars.headerButtonsHeight * logoSize()
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                    color: Vars.whiteColor
 
                     ImageRounder
                     {
@@ -126,25 +144,37 @@ Page
                     }
                 }
 
+                /*Rectangle
+                {
+                    id: dummy1
+                    Layout.fillWidth: true
+                    height: Vars.headerButtonsHeight
+                    color: "transparent"
+                }*/
+
                 ColumnLayout
                 {
                     id: namePhoneSite
-                    Layout.alignment: Qt.AlignLeft
+                    //Layout.preferredWidth: Vars.headerButtonsHeight*3 + width_between_buttons*2
+                    Layout.alignment: Qt.AlignLeft//Qt.AlignRight
+                    spacing: 3
 
                     Label
                     {
                         id: compName
+                        color: Vars.blackColor
                         text: comp_name
                         font.family: regularText.name
-                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+                        font.pixelSize: Helper.applyDpr(namePhoneSiteTextSize, Vars.dpr)
                     }
 
                     Label
                     {
                         id: compPhone
+                        color: Vars.blackColor
                         text: comp_phone
                         font.family: regularText.name
-                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+                        font.pixelSize: Helper.applyDpr(namePhoneSiteTextSize, Vars.dpr)
                     }
 
                     Label
@@ -154,7 +184,7 @@ Page
                         text: '<a href="http://'+comp_website+'"'
                               +' style="color: '+Vars.purpleTextColor+'">'
                               +comp_website+'</a>'
-                        font.pixelSize: Helper.toDp(Vars.defaultFontPixelSize, Vars.dpi)
+                        font.pixelSize: Helper.applyDpr(namePhoneSiteTextSize, Vars.dpr)
                         font.family: boldText.name
                         font.bold: true
                         onLinkActivated: Qt.openUrlExternally(link)
@@ -166,9 +196,9 @@ Page
             {
                 id: flicker_image_field
                 clip: true
-                width: Vars.screenWidth
-                height: parent.width*0.4
-                Layout.alignment: Qt.AlignLeft | Qt.AlignRight
+                width: parent.width
+                height: parent.width*0.5
+                Layout.alignment: Qt.AlignLeft
 
                 Flickable
                 {
@@ -191,7 +221,7 @@ Page
                             id: compPicField1
                             width: parent.height
                             height: parent.height
-                            color: "transparent"
+                            color: Vars.whiteColor
 
                             ImageRounder
                             {
@@ -207,7 +237,7 @@ Page
                                 onClicked:
                                 {
                                     picInd = 0;
-                                    setPopupPicAndShow()
+                                    setPopupPicAndShow(picInd);
                                 }
                             }
                         }
@@ -217,7 +247,7 @@ Page
                             id: compPicField2
                             width: parent.height
                             height: parent.height
-                            color: "transparent"
+                            color: Vars.whiteColor
 
                             ImageRounder
                             {
@@ -233,7 +263,7 @@ Page
                                 onClicked:
                                 {
                                     picInd = 1;
-                                    setPopupPicAndShow()
+                                    setPopupPicAndShow(picInd);
                                 }
                             }
                         }
@@ -243,7 +273,7 @@ Page
                             id: compPicField3
                             width: parent.height
                             height: parent.height
-                            color: "transparent"
+                            color: Vars.whiteColor
 
                             ImageRounder
                             {
@@ -259,7 +289,7 @@ Page
                                 onClicked:
                                 {
                                     picInd = 2;
-                                    setPopupPicAndShow()
+                                    setPopupPicAndShow(picInd);
                                 }
                             }
                         }
@@ -269,7 +299,7 @@ Page
                             id: compPicField4
                             width: parent.height
                             height: parent.height
-                            color: "transparent"
+                            color: Vars.whiteColor
 
                             ImageRounder
                             {
@@ -285,7 +315,7 @@ Page
                                 onClicked:
                                 {
                                     picInd = 3;
-                                    setPopupPicAndShow()
+                                    setPopupPicAndShow(picInd);
                                 }
                             }
                         }
@@ -293,9 +323,9 @@ Page
                         Rectangle
                         {
                             id: dummy
-                            width: parent.spacing
+                            width: parent.spacing*2
                             height: parent.height
-                            color: Vars.whiteColor
+                            color: "transparent"
                         }
                     }//picturesRow
                 }//picFlickableArea
@@ -304,6 +334,7 @@ Page
                 {
                     id: pictures_fade_out
                     clip: true
+                    visible: !compPicPopup.visible
                     width: parent.width
                     height: parent.height
                     anchors.right: parent.right
@@ -316,15 +347,15 @@ Page
                 id: textAreaRect
                 width: parent.width
                 height: textArea.height
-                color: Vars.whiteColor
+                color: "transparent"
                 Layout.alignment: Qt.AlignLeft
 
                 Label
                 {
                     id: textArea
                     width: parent.width
-                    text: comp_about
-                    font.pixelSize: Helper.toDp(13, Vars.dpi)
+                    text: comp_about+'\n\n'
+                    font.pixelSize: Helper.applyDpr(7, Vars.dpr)
                     font.family: regularText.name
                     color: Vars.blackColor
                     wrapMode: Label.WordWrap
@@ -339,19 +370,31 @@ Page
 
         id: compPicPopup
         x: 0
-        y: (Vars.companyPageHeight-height)/2
+        y: 0
         width: parent.width
-        height: parent.height*0.35
+        height: parent.height
         padding: 0
-        modal: true
         focus: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        closePolicy: Popup.NoAutoClose
+        onClosed:
+        {
+            headerButtons.isGalleryVisible = false;
+            PageNameHolder.pop();
+        }
+        onOpened: headerButtons.isGalleryVisible = true
+        background: Rectangle { color: Vars.blackColor }
 
-        onClosed: PageNameHolder.pop()
+        // because image is a little larger than popup
+        // so make popup a little larger
+        topInset: -1
+        leftInset: -1
+        rightInset: -1
+        bottomInset: -1
 
         Image
         {
             id: pic
+            fillMode: Image.PreserveAspectFit
             anchors.fill: parent
         }
 
@@ -380,14 +423,14 @@ Page
                     // swipe from left to right
                     canSwipe = false;
                     picInd = picInd-1;
-                    pic.source = picsSources[picInd];
+                    pic.source = Helper.adjastPicUrl(picsSources[picInd]);
                 }
                 else if(picInd < 3 && dist < -15 && canSwipe)
                 {
                     // swipe from right to left
                     canSwipe = false;
                     picInd = picInd+1;
-                    pic.source = picsSources[picInd];
+                    pic.source = Helper.adjastPicUrl(picsSources[picInd]);
                 }
             }
         }
@@ -410,6 +453,32 @@ Page
         source: "../backgrounds/description_fade_out.png"
     }
 
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the settingsHelperPopup
+    Rectangle
+    {
+        id: settingsHelperPopupStopper
+        enabled: settingsHelperPopup.isPopupOpened
+        width: parent.width
+        height: settingsHelperPopup.height
+        anchors.bottom: footerButton.top
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: settingsHelperPopupStopper.forceActiveFocus()
+        }
+    }
+
+    SettingsHelperPopup
+    {
+        id: settingsHelperPopup
+        currentPage: pressedFrom
+        companyFactor: headerButtons.height
+        parentHeight: parent.height + companyFactor
+    }
+
     Image
     {
         id: background
@@ -422,8 +491,9 @@ Page
 
     FooterButtons
     {
-        pressedFromPageName: 'companyPage.qml'
-        Component.onCompleted: disableAllButtonsSubstrates()
+        id: footerButton
+        pressedFromPageName: pressedFrom
+        Component.onCompleted: showSubstrateForHomeButton()
     }
 
     ToastMessage { id: toastMessage }
@@ -438,9 +508,13 @@ Page
 
             //if no pages in sequence
             if(pageName === "")
+            {
                 appWindow.close();
+            }
             else if (pageName === 'popupImage')
+            {
                 compPicPopup.close();
+            }
             else
             {
                 //to avoid not loading bug

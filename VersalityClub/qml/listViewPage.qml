@@ -27,21 +27,29 @@ import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtGraphicalEffects 1.0
 import QtQuick.Layouts 1.3
+import Network 0.9
 
 Page
 {
     property bool allGood: false
     property bool requestFromCompany: false
     property string pressedfrom: requestFromCompany ? 'companyPage.qml' : 'listViewPage.qml'
-    readonly property int promItemHeight: Vars.screenHeight*0.25
+    readonly property int promItemHeight: Vars.screenHeight*0.25*Vars.footerHeightFactor
+    //alias
+    property alias shp: settingsHelperPopup
+    property alias fb: footerButton
 
     id: listViewPage
     enabled: Vars.isConnected
     height: requestFromCompany ? Vars.companyPageHeight : Vars.pageHeight
     width: Vars.screenWidth
 
+    StaticNotifier { id: notifier }
+
+    ToastMessage { id: toastMessage }
+
     //checking internet connetion
-    Network { toastMessage: toastMessage }
+    Network { id: network }
 
     background: Rectangle
     {
@@ -102,10 +110,6 @@ Page
         }
     }
 
-    StaticNotifier { id: notifier }
-
-    ToastMessage { id: toastMessage }
-
     Timer
     {
         id: waitForResponse
@@ -131,24 +135,6 @@ Page
         topMargin: promItemHeight*0.5
         model: ListModel { id: promsModel }
         delegate: promsDelegate
-    }
-
-    Image
-    {
-        id: background
-        clip: true
-        width: parent.width
-        height: Vars.footerButtonsFieldHeight
-        anchors.bottom: parent.bottom
-        source: "../backgrounds/map_f.png"
-    }
-
-    Image
-    {
-        id: background2
-        clip: true
-        anchors.fill: parent
-        source: "../backgrounds/listview_hf.png"
     }
 
     Component
@@ -213,7 +199,7 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
-                        PageNameHolder.push("listViewPage.qml");
+                        PageNameHolder.push(pressedfrom);
                         appWindowLoader.setSource("xmlHttpRequest.qml",
                                                 { "api": Vars.promFullViewModel,
                                                   "functionalFlag": 'user/fullprom',
@@ -227,6 +213,14 @@ Page
         }//column
     }//promsDelegate
 
+    Image
+    {
+        id: background2
+        clip: true
+        anchors.fill: parent
+        source: "../backgrounds/listview_hf.png"
+    }
+
     //switch to mapPage (proms on map view)
     TopControlButton
     {
@@ -236,13 +230,57 @@ Page
         buttonIconSource: "../icons/on_map.svg"
         iconAlias.sourceSize.width: height*0.56
         iconAlias.sourceSize.height: height*0.7
-        onClicked: listViewPageLoader.source = "mapPage.qml"
+        onClicked:
+        {
+            if(network.hasConnection()) {
+                toastMessage.close();
+                listViewPageLoader.source = "mapPage.qml"
+            } else {
+                toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+            }
+        }
+    } // showOnMapButton
+
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the settingsHelperPopup
+    Rectangle
+    {
+        id: settingsHelperPopupStopper
+        enabled: settingsHelperPopup.isPopupOpened
+        width: parent.width
+        height: settingsHelperPopup.height
+        anchors.bottom: footerButton.top
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: settingsHelperPopupStopper.forceActiveFocus()
+        }
+    }
+
+    SettingsHelperPopup
+    {
+        id: settingsHelperPopup
+        currentPage: pressedFrom
+        parentHeight: parent.height
+    }
+
+    Image
+    {
+        id: background
+        clip: true
+        width: parent.width
+        height: Vars.footerButtonsFieldHeight
+        anchors.bottom: parent.bottom
+        source: "../backgrounds/map_f.png"
     }
 
     FooterButtons
     {
+        id: footerButton
         pressedFromPageName: pressedfrom
-        Component.onCompleted: disableAllButtonsSubstrates()
+        Component.onCompleted: showSubstrateForHomeButton()
     }
 
     Keys.onReleased:

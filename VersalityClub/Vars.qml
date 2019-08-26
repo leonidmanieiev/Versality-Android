@@ -50,10 +50,10 @@ QtObject
 
     //OTHERS
     readonly property int defaultDay: 15
-    readonly property int defaultFontPixelSize: 15
-    readonly property int defaultRadius: 20
+    readonly property int defaultFontPixelSize: 8
+    readonly property int defaultRadius: Screen.devicePixelRatio > 2 ? 30 : 20
     readonly property int defaultYear: new Date().getYear()-30
-    readonly property real defaultOpacity: 0.8
+    readonly property real defaultOpacity: 0.7
     readonly property string defaultMonth: '06'
 
     //REGEX
@@ -70,30 +70,33 @@ QtObject
     property string fullCompanyData: ''
 
     //FOOTERBUTTONS CONSTANTS
-    readonly property int footerButtonsFieldHeight: screenHeight*0.125
-    readonly property int footerButtonsHeight: screenHeight*0.08
+    readonly property int footerButtonsFieldHeight: screenHeight*0.125*footerHeightFactor
+    readonly property int footerButtonsHeight: screenHeight*0.07*footerHeightFactor
 
     //HEADERBUTTONS CONSTANTS
-    readonly property int headerButtonsHeight: screenHeight*0.08
+    readonly property int headerButtonsHeight: footerButtonsHeight
 
     //SCREEN CONSTANTS
-    readonly property int dpi: Screen.pixelDensity * 25.4
+    readonly property real dpr: Screen.devicePixelRatio > 2 ? 2 : Screen.devicePixelRatio
+    readonly property real controlHeightFactor: 3
+    readonly property real footerHeightFactor: 1 // Screen.devicePixelRatio > 2 ? 0.9 : 1
+    readonly property real iconHeightFactor: 1 // Screen.devicePixelRatio > 2 ? 0.9 : 1
     readonly property int pageHeight: screenHeight-footerButtonsFieldHeight
     readonly property int companyPageHeight: screenHeight-2*footerButtonsFieldHeight
-    readonly property int screenHeight: Helper.toDp(Screen.height, dpi)
-    readonly property int screenWidth: Helper.toDp(Screen.width, dpi)
+    readonly property int screenHeight: Screen.height
+    readonly property int screenWidth: Screen.width
 
     //LISTVIEW CONSTANTS
     readonly property int listItemRadius: 20
 
     //INTERNET ACCESS FLAG
-    property bool isConnected: false
-
-    //LOCATION ACCESS FLAG
-    property bool isLocated: false
+    property bool isConnected: true
 
     //USER CAME FROM SIGN UP PAGE FLAG
     property bool fromSignUp: false
+
+    //GUEST LOG IN
+    property bool isGuest: false
 
     //API REQUESTS
     readonly property string domen: "https://club.versality.ru"
@@ -116,18 +119,19 @@ QtObject
     readonly property string userUnmarkProm: domen+mobile+"api/user/unmark?"
 
     //POPUP TEXT CONSTS
-    readonly property string estabLocationMethodErr: "Ошибка установки метода определения местоположения"
+    readonly property string estabLocationMethodErr: "Ошибка установки метода определения геопозиции"
+    readonly property string functionalityIsNotAvailable: "Данный функционал не доступен в гостевом режиме.\nДля получения доступа выйдите из гостевого режима и зарегистрируйтесь или войдите в существующий аккаунт."
     readonly property string getCloserToProm: "Подойдите ближе к акции"
     readonly property string nmeaConnectionViaSocketErr: "Ошибка подключения к источнику NMEA через socket"
     readonly property string noFavouriteProms: "У Вас нет избранных акций"
-    readonly property string noInternetConnection: "Нет соединения с интернетом"
-    readonly property string noLocationPrivileges: "Нет привилегий на получение местоположения"
+    readonly property string noInternetConnection: "Нет соединения с интернетом.\nОбновите страницу."
+    readonly property string noLocationPrivileges: "Нет привилегий на получение геопозиции"
     readonly property string noPromsFromCompany: "У компании нет акций"
     readonly property string noSuitablePromsNearby: "Рядом нет подходящих для Вас акций"
     readonly property string smthWentWrong: "Что-то пошло не так, попробуйте позже"
-    readonly property string turnOnLocationAndWait: "Включите определение местоположения и ждите закрытия popup"
-    readonly property string unableToGetLocation: "Невозможно получить местоположение"
-    readonly property string unknownPosSrcErr: "Неизвестная ошибка PositionSource"
+    readonly property string turnOnLocationAndWait: "Включите определение геопозиции и ждите закрытия popup"
+    readonly property string unableToGetLocation: "Невозможно получить геопозицию"
+    readonly property string unknownPosSrcErr: "Невозможно получить геопозицию"
 
     //TEXT CONSTS
     readonly property string activateCoupon: "АКТИВИРОВАТЬ КУПОН"
@@ -136,13 +140,14 @@ QtObject
     readonly property string appInfoTitle: "Информация\nо приложении"
     readonly property string appSiteLink: "https://club.versality.ru"
     readonly property string appSiteName: "club.versality.ru"
+    readonly property string back: "Назад"
     readonly property string backToPromotion: "Назад к акции"
     readonly property string backToPromsPicking: "Назад к выбору акций"
     readonly property string birthday: "Дата рождения:"
     readonly property string birthdayMask: "00.00.0000"
     readonly property string changePass: "Изменить пароль:"
-    readonly property string checkYourEmail: "(ПРОВЕРЬТЕ ВАШУ ПОЧТУ)"
-    readonly property string choose: "ВЫБОР"
+    readonly property string checkYourEmail: "ПРОВЕРЬТЕ ВАШУ ПОЧТУ"
+    readonly property string chooseCategories: "ВЫБОР КАТЕГОРИЙ"
     readonly property string chooseCats: "Выберите\nинтересные Вам категории:"
     readonly property string closestAddress: "БЛИЖАЙШИЙ КО МНЕ АДРЕС"
     readonly property string email: "E-mail:"
@@ -155,9 +160,12 @@ QtObject
     readonly property string everythingIsClearStart: "Все понятно, начать работу!"
     readonly property string firstHelpText: "В самом начале рекомендуем\nперейти в настройки\nи выбрать интересные Вам акции"
     readonly property string forgetPass: "ЗАБЫЛ ПАРОЛЬ"
+    readonly property string guestLogIn: "ГОСТЕВОЙ ВХОД"
+    readonly property string guestHash: "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
     readonly property string incorrectEmail: "Некорректный E-mail"
     readonly property string login: "ВОЙТИ"
     readonly property string logout: "ВЫЙТИ ИЗ АККАУНТА"
+    readonly property string guestLogout: "ВЫЙТИ"
     readonly property string m_f: "М/Ж"
     readonly property string mapPageId: "mapPage"
     readonly property string more: "ПОДРОБНЕЕ"

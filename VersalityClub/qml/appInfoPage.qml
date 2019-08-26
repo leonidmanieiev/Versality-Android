@@ -31,6 +31,9 @@ Page
 {
     property var appInfoText
     property string pressedFrom: 'appInfoPage.qml'
+    //alias
+    property alias shp: settingsHelperPopup
+    property alias fb: footerButton
 
     function getAppInfoText()
     {
@@ -49,9 +52,6 @@ Page
     width: Vars.screenWidth
 
     ToastMessage { id: toastMessage }
-
-    //checking internet connetion
-    Network { toastMessage: toastMessage }
 
     FontLoader
     {
@@ -82,12 +82,12 @@ Page
             readOnly: true
             text: 'Узнайте больше о Versality:<br><br>'+
                   '<a href="'+Vars.appSiteLink+'"'
-                  +' style="color: '+Vars.purpleTextColor+'">'
+                  +' style="color: #631964">'
                   +Vars.appSiteName+'</a><br><br>' + appInfoText
                   +'<br><br><a href="'+Vars.privacyPolicyLink+'"'
-                  +' style="color: '+Vars.purpleTextColor+'">'
+                  +' style="color: #631964">'
                   +'Политика конфиденциальности</a>'
-            font.pixelSize: Helper.toDp(13, Vars.dpi)
+            font.pixelSize: Helper.applyDpr(7, Vars.dpr)
             font.family: regularText.name
             color: Vars.blackColor
             wrapMode: Label.WordWrap
@@ -107,8 +107,8 @@ Page
 
     LogoAndPageTitle
     {
-        showInfoButton: true
-        infoClicked: true
+        //showInfoButton: true
+        //infoClicked: true
         pageTitleText: Vars.profileSettings
     }
 
@@ -116,6 +116,31 @@ Page
     {
         getAppInfoText();
         profileSettingsPage.forceActiveFocus();
+    }
+
+    // this thing does not allow to select/deselect subcat,
+    // when it is under the settingsHelperPopup
+    Rectangle
+    {
+        id: settingsHelperPopupStopper
+        enabled: settingsHelperPopup.isPopupOpened
+        width: parent.width
+        height: settingsHelperPopup.height
+        anchors.bottom: footerButton.top
+        color: "transparent"
+
+        MouseArea
+        {
+            anchors.fill: parent
+            onClicked: settingsHelperPopupStopper.forceActiveFocus()
+        }
+    }
+
+    SettingsHelperPopup
+    {
+        id: settingsHelperPopup
+        currentPage: pressedFrom
+        parentHeight: parent.height
     }
 
     Image
@@ -130,6 +155,7 @@ Page
 
     FooterButtons
     {
+        id: footerButton
         pressedFromPageName: pressedFrom
         Component.onCompleted: showSubstrateForSettingsButton()
     }
