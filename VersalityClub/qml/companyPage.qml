@@ -122,7 +122,7 @@ Page
                 width: parent.width
                 height: Vars.footerButtonsFieldHeight
                 Layout.alignment: Qt.AlignLeft
-                Layout.leftMargin: Vars.dpr > 2 ? 3 : 0
+                //Layout.leftMargin: Vars.dpr === 2 ? 3 : 0
                 spacing: parent.width*0.0625
 
                 Rectangle
@@ -156,7 +156,7 @@ Page
                 {
                     id: namePhoneSite
                     //Layout.preferredWidth: Vars.headerButtonsHeight*3 + width_between_buttons*2
-                    Layout.alignment: Qt.AlignLeft//Qt.AlignRight
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                     spacing: 3
 
                     Label
@@ -226,6 +226,7 @@ Page
                             ImageRounder
                             {
                                 id: compPic1
+                                crop: true
                                 imageSource: picsSources[0]
                                 roundValue: parent.height*0.1
                             }
@@ -252,6 +253,7 @@ Page
                             ImageRounder
                             {
                                 id: compPic2
+                                crop: true
                                 imageSource: picsSources[1]
                                 roundValue: parent.height*0.1
                             }
@@ -278,6 +280,7 @@ Page
                             ImageRounder
                             {
                                 id: compPic3
+                                crop: true
                                 imageSource: picsSources[2]
                                 roundValue: parent.height*0.1
                             }
@@ -304,6 +307,7 @@ Page
                             ImageRounder
                             {
                                 id: compPic4
+                                crop: true
                                 imageSource: picsSources[3]
                                 roundValue: parent.height*0.1
                             }

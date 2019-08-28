@@ -41,7 +41,7 @@ RowLayout
     width: Vars.screenWidth
     anchors.horizontalCenter: parent.horizontalCenter
 
-    function itemSize() { return Vars.dpr > 2 ? 0.03 : 0.02; }
+    function itemSize() { return Vars.dpr === 2 ? 0.03 : 0.02; }
 
     ToastMessage { id: toastMessage }
 

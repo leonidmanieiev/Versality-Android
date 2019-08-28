@@ -92,6 +92,9 @@ QtObject
     //INTERNET ACCESS FLAG
     property bool isConnected: true
 
+    //LOCATION ACCESS FLAG
+    property bool locationGood: false
+
     //USER CAME FROM SIGN UP PAGE FLAG
     property bool fromSignUp: false
 

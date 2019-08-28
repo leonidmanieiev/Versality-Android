@@ -320,12 +320,13 @@ Page
                         {
                             if(EnableLocation.askEnableLocation())
                             {
-                                console.log("askEnableLocation === true");
+                                Vars.locationGood = true;
                                 positionSource.start();
 
                                 if(network.hasConnection())
                                 {
                                     toastMessage.close();
+                                    console.log("minDistToStore:", minDistToStore);
                                     if(minDistToStore < promCloseDist)
                                     {
                                         promoCodePopup.visible = true;
@@ -345,7 +346,7 @@ Page
                             }
                             else
                             {
-                                console.log("askEnableLocation === false");
+                                Vars.locationGood = false;
                                 positionSource.stop();
                             }
                         }
@@ -414,7 +415,7 @@ Page
                 {
                     if(EnableLocation.askEnableLocation())
                     {
-                        console.log("askEnableLocation === true");
+                        Vars.locationGood = true;
                         positionSource.start();
 
                         if(network.hasConnection())
@@ -441,7 +442,7 @@ Page
                     }
                     else
                     {
-                        console.log("askEnableLocation === false");
+                        Vars.locationGood = false;
                         positionSource.stop();
                     }
                 }
@@ -583,8 +584,8 @@ Page
             anchors.bottom: parent.bottom
             anchors.bottomMargin: parent.height*0.1 + proceedButton.height
             anchors.horizontalCenter: parent.horizontalCenter
-            sourceSize.width: Vars.dpr > 2 ? parent.width*0.80 : parent.width*0.75
-            sourceSize.height: Vars.dpr > 2 ? parent.width*0.80 : parent.width*0.75
+            sourceSize.width: Vars.dpr === 2 ? parent.width*0.80 : parent.width*0.75
+            sourceSize.height: Vars.dpr === 2 ? parent.width*0.80 : parent.width*0.75
             fillMode: Image.PreserveAspectFit
         }
 

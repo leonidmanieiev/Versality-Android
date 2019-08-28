@@ -23,7 +23,7 @@
 //http client
 import "../"
 import "../js/helpFunc.js" as Helper
-//import OneSignal 1.0
+import OneSignal 1.0
 import CppMethodCall 0.9
 import QtQuick 2.11
 import QtQuick.Controls 2.4
@@ -178,7 +178,7 @@ Item
                                 AppSettings.setValue("hash", request.responseText);
                                 AppSettings.endGroup();
 
-                                //QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+                                QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
                                 CppMethodCall.saveHashToFile();
 
                                 if(newUser)
@@ -254,7 +254,7 @@ Item
                                     AppSettings.setValue("hash", uInfoJSON.secret);
                                     AppSettings.endGroup();
 
-                                    //QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+                                    QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
                                     CppMethodCall.saveHashToFile();
 
                                     if(nextPageAfterSettingsSave === 'selectCategoryPage.qml') {
@@ -344,7 +344,7 @@ Item
                                 AppSettings.setValue("hash", request.responseText);
                                 AppSettings.endGroup();
 
-                                //QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+                                QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
                                 CppMethodCall.saveHashToFile();
 
                                 xmlHttpRequestLoader.source = "passwordInputPage.qml";

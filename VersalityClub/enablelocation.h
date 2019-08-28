@@ -30,6 +30,7 @@
 #include <QObject>
 #include <QtAndroid>
 #include <QQmlEngine>
+#include <QtAndroidExtras>
 
 class EnableLocation : public QObject
 {
@@ -42,21 +43,16 @@ public:
 
     Q_INVOKABLE static bool askEnableLocation()
     {
-        qDebug() << "EnableLocation::askEnableLocation()";
-
-        /*QAndroidJniObject myActivity("org/versalityclub/CustomAppActivity");
+        jboolean locEnabled = QtAndroid::androidActivity().callMethod<jboolean>("isLocationEnabled");
         auto locPerm = QtAndroid::checkPermission("android.permission.ACCESS_FINE_LOCATION");
 
-        if(locPerm == QtAndroid::PermissionResult::Denied)
-        {
-            myActivity.callMethod<void>("handleLocationThing");
+        if(!locEnabled) {
+            QtAndroid::androidActivity().callMethod<void>("askToEnableLocationWithLooper");
+            return false;
+        } else if (locPerm == QtAndroid::PermissionResult::Denied) {
+            QtAndroid::androidActivity().callMethod<void>("askToGrantPermissionWithLooper");
             return false;
         }
-        else if(!myActivity.callMethod<jboolean>("isLocationEnabled"))
-        {
-            myActivity.callMethod<void>("askToEnableLocationViaSettigns");
-            return false;
-        }*/
 
         return true;
     }

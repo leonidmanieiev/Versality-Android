@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     QtWebView::initialize();
 
-    //QOneSignal::registerQMLTypes();
+    QOneSignal::registerQMLTypes();
     qmlRegisterType<Network>("Network", 0, 9, "Network");
     qmlRegisterType<AppSettings>("org.versalityclub", 0, 8, "AppSettings");
     qmlRegisterType<PageNameHolder>("org.versalityclub", 0, 8, "PageNameHolder");

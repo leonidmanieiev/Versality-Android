@@ -30,7 +30,7 @@ import QtQuick.Controls 2.4
 import QtLocation 5.9
 import QtPositioning 5.12
 import QtQuick.Layouts 1.3
-//import OneSignal 1.0
+import OneSignal 1.0
 import CppMethodCall 0.9
 import Network 0.9
 import EnableLocation 0.9
@@ -80,15 +80,20 @@ Page
 
     function setUserLocationMarker(lat, lon, _zoomLevel, follow)
     {
-        if(locButtClicked)
+        console.log("setUserLocationMarker1");
+        if(locButtClicked || Vars.locationGood)
         {
-            console.log("setUserLocationMarker");
+            console.log("setUserLocationMarker2");
             userLocationMarker.coordinate = QtPositioning.coordinate(lat, lon);
             userLocationMarker.visible = true;
 
             if(follow) mainMap.center = userLocationMarker.coordinate;
 
             if(_zoomLevel !== 0) mainMap.zoomLevel = _zoomLevel;
+
+            mapPositionSource.stop();
+            Vars.locationGood = false;
+            locButtClicked = false;
         }
     }
 
@@ -513,63 +518,20 @@ Page
         active: false
         updateInterval: 1
 
-        onSourceErrorChanged:
+        onPositionChanged:
         {
-            switch(sourceError)
-            {
-                case PositionSource.AccessError:
-                    // hz kogda eto emititsja
-                    locButtClicked = false;
-                    mapPositionSource.stop();
-                    console.log(Vars.noLocationPrivileges); break;
-                case PositionSource.ClosedError:
-                    // lication is off
-                    locButtClicked = false;
-                    mapPositionSource.stop();
-                    console.log(Vars.turnOnLocationAndWait); break;
-                case PositionSource.UnknownSourceError:
-                    // no permission
-                    locButtClicked = false;
-                    mapPositionSource.stop();
-                    console.log(Vars.unknownPosSrcErr); break;
-                default: break;
-            }
-        }
-    }
-
-    //wait for user location to trigger
-    Timer
-    {
-        id: waitForUserLocation
-        running: !showingNearestStore &&
-                 (!isNaN(mapPositionSource.position.coordinate.latitude) ||
-                  AppSettings.value("user/lat") !== undefined)
-        interval: 1
-        onTriggered: saveUserLocationAndShowIcon()
-    }
-
-    function saveUserLocationAndShowIcon()
-    {
-        console.log("saveUserLocationAndShowIcon");
-        var userLat = AppSettings.value("user/lat");
-        var userLon = AppSettings.value("user/lon");
-
-        if(!isNaN(mapPositionSource.position.coordinate.latitude)) {
-            userLat = mapPositionSource.position.coordinate.latitude;
-            userLon = mapPositionSource.position.coordinate.longitude;
-
             AppSettings.beginGroup("user");
-            AppSettings.setValue("lat", userLat);
-            AppSettings.setValue("lon", userLon);
+            AppSettings.setValue("lat", position.coordinate.latitude);
+            AppSettings.setValue("lon", position.coordinate.longitude);
             AppSettings.endGroup();
         }
 
-        if(locButtClicked)
+        onSourceErrorChanged:
         {
-            setUserLocationMarker(userLat, userLon, fromButtonZoomLevel, true)
-            // user has seen his location, know we can stop getting updates
-            mapPositionSource.stop();
-            waitForUserLocation.running = false;
+            if(Vars.locationGood && sourceError != PositionSource.NoError) {
+                console.log("reload");
+                appWindowLoader.reload();
+            }
         }
     }
 
@@ -587,20 +549,22 @@ Page
         {
             if(EnableLocation.askEnableLocation())
             {
-                console.log("askEnableLocation === true");
-                locButtClicked = true;
+                Vars.locationGood = true;
                 mapPositionSource.start();
 
-                // force saveUserLocationAndShowIcon
-                // because positionUpdate can be waited for too long
-                if(!isNaN(mapPositionSource.position.coordinate.latitude) ||
-                   AppSettings.value("user/lat") !== undefined) {
-                    saveUserLocationAndShowIcon();
+                if(!isNaN(mapPositionSource.position.coordinate.latitude))
+                {
+                    console.log("!isNaN");
+                    Vars.locationGood = false;
+                    locButtClicked = true;
+                    setUserLocationMarker(mapPositionSource.position.coordinate.latitude,
+                                          mapPositionSource.position.coordinate.longitude,
+                                          fromButtonZoomLevel, true);
                 }
             }
             else
             {
-                console.log("askEnableLocation === false");
+                Vars.locationGood = false;
                 mapPositionSource.stop();
             }
         }
@@ -713,21 +677,23 @@ Page
             if(!showingNearestStore)
             {
                 PageNameHolder.clear();
+                //start capturing user location and getting all promotions
+                mapPageLoader.source = "userLocation.qml";
             }
             else
             {
+                mapPageLoader.setSource("userLocation.qml",
+                                        { "nearestStoreRequest": true }
+                                       );
                 mainMap.center = QtPositioning.coordinate(defaultLat, defaultLon);
-                setUserLocationMarker(userLat, userLon, defaultZoomLevel, false);
+                //setUserLocationMarker(userLat, userLon, defaultZoomLevel, false);
             }
-
-            //start capturing user location and getting all promotions
-            mapPageLoader.source = "userLocation.qml";
         }
     }
 
     function runParsing()
     {
-        //QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
+        QOneSignal.sendTag("hash", AppSettings.value("user/hash"));
         CppMethodCall.saveHashToFile();
 
         if(showingNearestStore)

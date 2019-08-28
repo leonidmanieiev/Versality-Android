@@ -22,36 +22,40 @@
 
 //Rounding image
 import "../"
+import "../js/helpFunc.js" as Helper
 import QtQuick 2.11
 import QtGraphicalEffects 1.0
 
-Item
+// thanks goes to BaCaRoZzo from stackoverflow
+Image
 {
     property string imageSource: ''
     property int roundValue: 0
+    property bool rounded: true
+    property bool adapt: true
+    property bool crop: false
 
-    id: item
+    id: img
+    width:  parent.width
     height: parent.height
-    width: parent.width
+    fillMode: crop ? Image.PreserveAspectCrop : Image.Stretch
+    source: Helper.adjastPicUrl(imageSource)
 
-    Image
+    layer.enabled: rounded
+    layer.effect: OpacityMask
     {
-        id: image
-        source: imageSource.charAt(0) === '/' ? Vars.domen + imageSource : imageSource
-        width: parent.width
-        height: parent.height
-        anchors.fill: parent
-        fillMode: Image.PreserveAspectCrop
-        layer.enabled: true
-        layer.effect: OpacityMask { maskSource: imgMask }
-    }
+        maskSource: Item
+        {
+            width:  img.width
+            height: img.height
 
-    Rectangle
-    {
-        id: imgMask
-        width: parent.width
-        height: parent.height
-        radius: roundValue
-        visible: false
+            Rectangle
+            {
+                anchors.centerIn: parent
+                width: img.adapt ? img.width : Math.min(img.width, img.height)
+                height: img.adapt ? img.height : width
+                radius: roundValue
+            }
+        }
     }
 }

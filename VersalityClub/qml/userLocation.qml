@@ -31,11 +31,54 @@ import Network 0.9
 Item
 {
     property string callFromPageName: 'mapPage'
+    property string secret: AppSettings.value("user/hash")
     property string api: Vars.allPromsTilesModel
     property bool isTilesApi: true
+    property bool nearestStoreRequest: false
 
     id: userLocationItem
     enabled: true
+
+    //request promotion info
+    function requestForPromotions()
+    {
+        if(network.hasConnection())
+        {
+            toastMessage.close();
+
+            var request = new XMLHttpRequest();
+            var params = 'secret='+secret;
+
+            console.log(api + params);
+
+            request.open('POST', api);
+            request.onreadystatechange = function()
+            {
+                if(request.readyState === XMLHttpRequest.DONE)
+                {
+                    if(request.status === 200)
+                    {
+                        notifier.visible = false;
+
+                        //saving response for further using
+                        if(isTilesApi) Vars.allPromsData = request.responseText;
+                        else Vars.allUniquePromsData = request.responseText;
+                    }
+                    else notifier.visible = true;
+                }
+                else console.log("readyState: " + request.readyState);
+            }
+
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            request.send(params);
+        }
+        else
+        {
+            toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+        }
+    }//function requestForPromotions()
+
+    Component.onCompleted: requestForPromotions();
 
     StaticNotifier
     {
@@ -49,63 +92,30 @@ Item
 
     PositionSource
     {
-        property bool initialCoordSet: false
-        property string secret: AppSettings.value("user/hash")
         property real lat: position.coordinate.latitude
         property real lon: position.coordinate.longitude
 
         id: userLocation
         active: true
-        updateInterval: 1000
-
-        //request promotion info
-        function requestForPromotions()
-        {
-            if(network.hasConnection())
-            {
-                toastMessage.close();
-
-                var request = new XMLHttpRequest();
-                var params = 'secret='+secret;
-
-                console.log(api + params);
-
-                request.open('POST', api);
-                request.onreadystatechange = function()
-                {
-                    if(request.readyState === XMLHttpRequest.DONE)
-                    {
-                        if(request.status === 200)
-                        {
-                            notifier.visible = false;
-
-                            //saving response for further using
-                            if(isTilesApi) Vars.allPromsData = request.responseText;
-                            else Vars.allUniquePromsData = request.responseText;
-                        }
-                        else notifier.visible = true;
-                    }
-                    else console.log("readyState: " + request.readyState);
-                }
-
-                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                request.send(params);
-            }
-            else
-            {
-                toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
-            }
-        }//function requestForPromotions()
+        updateInterval: 1
 
         onPositionChanged:
         {
+            console.log("userLocation::onPositionChanged. lat:", position.coordinate.latitude);
+
             AppSettings.beginGroup("user");
             AppSettings.setValue("lat", position.coordinate.latitude);
             AppSettings.setValue("lon", position.coordinate.longitude);
             AppSettings.endGroup();
-        }
 
-        Component.onCompleted: requestForPromotions();
+            if(Vars.locationGood) {
+                console.log("userLocation::if(Vars.locationGood)");
+                parent.parent.parent.setUserLocationMarker(position.coordinate.latitude,
+                                                           position.coordinate.longitude,
+                                                           16, !nearestStoreRequest);
+                userLocation.active = false;
+            }
+        }
     }//PositionSource
 
     Loader

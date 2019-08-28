@@ -42,5 +42,12 @@ ApplicationWindow
         //whether user was not signed(loged) in
         source: AppSettings.value("user/hash") === undefined ?
                      "qml/initialPage.qml" : "qml/mapPage.qml"
+
+        function reload()
+        {
+            var oldSource = source;
+            source = "";
+            source = oldSource;
+        }
     }
 }

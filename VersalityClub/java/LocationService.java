@@ -39,7 +39,7 @@ import android.os.IBinder;
 public class LocationService extends QtService
 {
     private static final String TAG = "LocationService";
-    private static final long  LOCATION_INTERVAL = 300000L; // 5 minutes
+    private static final long  LOCATION_INTERVAL = 60000L; // 5 minutes
     private static final float LOCATION_DISTANCE = 1000.0f; //200.0f;  // 200 meters
 
     private LocationManager  mLocationManager = null;
@@ -65,12 +65,12 @@ public class LocationService extends QtService
     {
         private final String TAG = "LocationListener";
         private Location mLastLocation;
-        //boolean mInitialLocationSet;
+        boolean mInitialLocationSet;
 
         public LocationListener(String provider)
         {
             mLastLocation = new Location(provider);
-            //mInitialLocationSet = true;
+            mInitialLocationSet = true;
         }
 
         @Override
@@ -79,17 +79,17 @@ public class LocationService extends QtService
             float dist = mLastLocation.distanceTo(location);
             long  time = location.getTime() - mLastLocation.getTime();
 
-            //if(mInitialLocationSet)
-            //{
-            //    HttpURLCon.sendLog("Init location service", getApplicationContext());
-            //    mInitialLocationSet = false;
-            //}
-            //else
-            //{
+            if(mInitialLocationSet)
+            {
+                HttpURLCon.sendLog("Init location service", getApplicationContext());
+                mInitialLocationSet = false;
+            }
+            else
+            {
                 HttpURLCon.sendCoords(LocationToString(location), getApplicationContext());
                 HttpURLCon.sendLog("dist. delta: "+Float.toString(dist)+" | time delta: "+Long.toString(time),
                                    getApplicationContext());
-            //}
+            }
 
             mLastLocation = location;
             Log.i(TAG, "LocationChanged: "+location);

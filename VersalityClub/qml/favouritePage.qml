@@ -146,18 +146,18 @@ Page
                 {
                     id: companyLogoItem
                     height: parent.width*0.2
-                    width: height
+                    width:  parent.width*0.2
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: -height*0.5
                     radius: height*0.5
                     color: "transparent"
 
-                    //rounding company logo item background image
+                    //rounding company logo
                     ImageRounder
                     {
                         imageSource: company_logo
-                        roundValue: parent.height*0.5
+                        roundValue: parent.radius
                     }
                 }
 

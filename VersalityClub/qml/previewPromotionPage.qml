@@ -175,19 +175,18 @@ Page
                 {
                     id: companyLogoItem
                     height: parent.width*0.2
-                    width: height
+                    width:  parent.width*0.2
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: -height*0.5
                     radius: height*0.5
                     color: "transparent"
 
-                    //rounding company logo item background image
+                    //rounding company logo
                     ImageRounder
                     {
-                        //because when requesting from company page, where is no logo in promos array
-                        imageSource: Helper.adjastPicUrl(c_logo)
-                        roundValue: parent.height*0.5
+                        imageSource: c_logo
+                        roundValue: parent.radius
                     }
                 }
             }
