@@ -76,6 +76,7 @@ public class HttpURLCon {
 
     static void sendLog(String log, Context context) {
         String userHash = getUserHash(context);
+        //String userHash = "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG";
 
         if(userHash != null) {
             try {
@@ -99,11 +100,11 @@ public class HttpURLCon {
         protected Object doInBackground(Object[] objects) {
             try {
                 String url = api;
-                Log.d(TAG, "doInBackground: url = "+url);
+                //Log.d(TAG, "doInBackground: url = "+url);
                 HttpURLConnection con =
                     (HttpURLConnection) new URL(url).openConnection();
                 int responseCode = con.getResponseCode();
-                Log.d(TAG, "doInBackground: responseCode = "+String.valueOf(responseCode));
+                //Log.d(TAG, "doInBackground: responseCode = "+String.valueOf(responseCode));
             } catch (Exception e) {
                 Log.d(TAG, "doInBackground: faild to request "+api);
                 e.printStackTrace();

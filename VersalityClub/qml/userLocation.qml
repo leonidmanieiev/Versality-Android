@@ -27,6 +27,7 @@ import QtQml 2.2
 import QtPositioning 5.12
 import QtLocation 5.9
 import Network 0.9
+import QtQuick.Controls 2.12
 
 Item
 {
@@ -35,6 +36,7 @@ Item
     property string api: Vars.allPromsTilesModel
     property bool isTilesApi: true
     property bool nearestStoreRequest: false
+    property Page thisParent: undefined
 
     id: userLocationItem
     enabled: true
@@ -78,7 +80,7 @@ Item
         }
     }//function requestForPromotions()
 
-    Component.onCompleted: requestForPromotions();
+    Component.onCompleted: requestForPromotions()
 
     StaticNotifier
     {
@@ -101,22 +103,29 @@ Item
 
         onPositionChanged:
         {
-            console.log("userLocation::onPositionChanged. lat:", position.coordinate.latitude);
-
-            AppSettings.beginGroup("user");
-            AppSettings.setValue("lat", position.coordinate.latitude);
-            AppSettings.setValue("lon", position.coordinate.longitude);
-            AppSettings.endGroup();
-
-            if(Vars.locationGood) {
-                console.log("userLocation::if(Vars.locationGood)");
-                parent.parent.parent.setUserLocationMarker(position.coordinate.latitude,
-                                                           position.coordinate.longitude,
-                                                           16, !nearestStoreRequest);
-                userLocation.active = false;
+            if(!isNaN(position.coordinate.latitude)) {
+                AppSettings.beginGroup("user");
+                AppSettings.setValue("lat", position.coordinate.latitude);
+                AppSettings.setValue("lon", position.coordinate.longitude);
+                AppSettings.endGroup();
             }
         }
     }//PositionSource
+
+    Timer
+    {
+        id: waitForLocationUpdate
+        interval: 1
+        running: Vars.locationGood && !isNaN(userLocation.position.coordinate.latitude)
+        onTriggered: {
+            thisParent.setUserLocationMarker(userLocation.position.coordinate.latitude,
+                                             userLocation.position.coordinate.longitude,
+                                             Vars.defaultUserLocationZoomLevel,
+                                             !nearestStoreRequest);
+            userLocation.active = false;
+            running = false;
+        }
+    }
 
     Loader
     {

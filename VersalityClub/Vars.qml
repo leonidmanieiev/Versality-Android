@@ -55,6 +55,7 @@ QtObject
     readonly property int defaultYear: new Date().getYear()-30
     readonly property real defaultOpacity: 0.7
     readonly property string defaultMonth: '06'
+    readonly property int defaultUserLocationZoomLevel: 16
 
     //REGEX
     readonly property var emailRegEx: /^[A-Za-z0-9]+([.|-]*[A-Za-z0-9])*@{1}([A-Za-z0-9]+[A-Za-z0-9-]*[A-Za-z0-9]+[.])*([A-Za-z0-9]+[A-Za-z0-9-]*[A-Za-z0-9]+)+$/
@@ -100,6 +101,12 @@ QtObject
 
     //GUEST LOG IN
     property bool isGuest: false
+
+    //ACTIVATE COUPON REQUEST
+    property bool activeCouponRequest: false
+
+    //RELOADED
+    property bool reloaded: false
 
     //API REQUESTS
     readonly property string domen: "https://club.versality.ru"

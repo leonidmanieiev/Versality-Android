@@ -57,7 +57,6 @@ Page
                                                +'copyright" style="color: '+Vars.purpleTextColor+'">'
                                                +'OpenStreetMap</a>'
     readonly property int markerSize: Vars.screenWidth*0.15
-    readonly property int fromButtonZoomLevel: 16
     readonly property int promsTilesItemHeight: popupWindow.height/3
 
     //popup window vars
@@ -83,6 +82,9 @@ Page
         console.log("setUserLocationMarker1");
         if(locButtClicked || Vars.locationGood)
         {
+            // close "ожидайте" message
+            toastMessage.close();
+
             console.log("setUserLocationMarker2");
             userLocationMarker.coordinate = QtPositioning.coordinate(lat, lon);
             userLocationMarker.visible = true;
@@ -529,7 +531,8 @@ Page
         onSourceErrorChanged:
         {
             if(Vars.locationGood && sourceError != PositionSource.NoError) {
-                console.log("reload");
+                // need reload because mapPositionSource still think
+                // that i have no permission for user location
                 appWindowLoader.reload();
             }
         }
@@ -559,7 +562,7 @@ Page
                     locButtClicked = true;
                     setUserLocationMarker(mapPositionSource.position.coordinate.latitude,
                                           mapPositionSource.position.coordinate.longitude,
-                                          fromButtonZoomLevel, true);
+                                          Vars.defaultUserLocationZoomLevel, true);
                 }
             }
             else
@@ -676,17 +679,20 @@ Page
         {
             if(!showingNearestStore)
             {
+                if(Vars.locationGood) {
+                    toastMessage.setTextNoAutoClose("Ожидайте");
+                }
+
                 PageNameHolder.clear();
                 //start capturing user location and getting all promotions
-                mapPageLoader.source = "userLocation.qml";
+                mapPageLoader.setSource("userLocation.qml",
+                                        { "thisParent": mapPage });
+
             }
             else
             {
-                mapPageLoader.setSource("userLocation.qml",
-                                        { "nearestStoreRequest": true }
-                                       );
                 mainMap.center = QtPositioning.coordinate(defaultLat, defaultLon);
-                //setUserLocationMarker(userLat, userLon, defaultZoomLevel, false);
+                setUserLocationMarker(userLat, userLon, defaultZoomLevel, false);
             }
         }
     }

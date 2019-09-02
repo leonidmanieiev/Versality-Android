@@ -24,6 +24,7 @@ import '.' //QTBUG-34418, singletons require explicit import to load qmldir file
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Window 2.11
+import PushNotifier 0.9
 
 ApplicationWindow
 {
@@ -32,6 +33,42 @@ ApplicationWindow
     width: Vars.screenWidth
     height: Vars.screenHeight
     color: Vars.whiteColor
+
+    Connections {
+        target: PushNotifier
+        onPromoIdChanged: {
+            appWindowLoader.setSource("qml/xmlHttpRequest.qml",
+            {
+                "api": Vars.promFullViewModel,
+                "functionalFlag": 'user/fullprom',
+                "promo_id": pid
+            });
+        }
+    }
+
+    function runPageSelection()
+    {
+        // if user tap on push -> open corresponding promotion
+        if(AppSettings.getPID())
+        {
+            appWindowLoader.setSource("qml/xmlHttpRequest.qml",
+            {
+                "api": Vars.promFullViewModel,
+                "functionalFlag": 'user/fullprom',
+                "promo_id": AppSettings.getPID()
+            });
+        }
+        // if user doesn't have hash -> he doesn't have account -> open initialPage
+        else if(AppSettings.value("user/hash") === undefined)
+        {
+            appWindowLoader.source = "qml/initialPage.qml";
+        }
+        // otherwise open mapPage
+        else
+        {
+            appWindowLoader.source = "qml/mapPage.qml"
+        }
+    }
 
     Loader
     {
@@ -49,5 +86,14 @@ ApplicationWindow
             source = "";
             source = oldSource;
         }
+    }
+
+    Timer
+    {
+        running: true
+        // wait for AppSettings.value("push/open")
+        // to be set in qonesignal_android::cppNotificationOpened
+        interval: 1
+        onTriggered: runPageSelection()
     }
 }

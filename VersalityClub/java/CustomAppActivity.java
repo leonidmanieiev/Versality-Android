@@ -24,57 +24,63 @@ package org.versalityclub;
 
 import org.pwf.qtonesignal.QOneSignalBinding;
 
-import android.os.Bundle;
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.os.Bundle;
 import android.os.Handler;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.app.AlertDialog;
-import android.Manifest;
-import android.util.Log;
-import android.widget.Toast;
-import android.content.ComponentName;
-import android.net.Uri;
-import android.content.Context;
 import android.provider.Settings;
-import android.content.SharedPreferences;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
-public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActivity {
+public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActivity
+{
+    private static final String TAG                = CustomAppActivity.class.getSimpleName();
+    private static final String IF_YOU_WANT_PUSH   = "Если Вы хотите получать уведомления об акциях поблизости,";
+    private static final String IN_PHONE_SETTINGS  = "в настройках телефона.";
+    private static final String TO_ACCESS_FUNCTION = "Для доступа к этой функции приложения";
 
-    private static final String TAG = "CustomAppActivity";
-    private static final String IF_YOU_WANT_PUSH =
-        "Если Вы хотите получать уведомления об акциях поблизости, ";
-    private static final String IN_PHONE_SETTINGS = "в настройках телефона.";
+    private static final int    LOCATION_PERMISSIONS_REQUEST_CODE = 34;
+
     private static final String PERMISSION_VIA_SETTINGS_MESSAGE =
-        IF_YOU_WANT_PUSH + "разрешите приложению доступ к Вашей геопозиции " + IN_PHONE_SETTINGS;
-    private static final String LOCATION_VIA_SETTINGS_MESSAGE =
-        IF_YOU_WANT_PUSH + "включите геопозицию " + IN_PHONE_SETTINGS;
-    private static final String FUNCTION_ACCESS_GRANT_PERMISSION_MESSAGE =
-        "Для доступа к этой функции приложения разрешите доступ к Вашей геопозиции.";
-    private static final String FUNCTION_ACCESS_GRANT_PERMISSION_NEVER_MESSAGE =
-        "Для доступа к этой функции приложения разрешите доступ к Вашей геопозиции " + IN_PHONE_SETTINGS;
-    private static final String FUNCTION_ACCESS_ENABLE_LOCATION_MESSAGE =
-        "Для доступа к этой функции приложения включите геопозицию.";
-    private static final int LOCATION_PERMISSIONS_REQUEST_CODE = 111;
+        IF_YOU_WANT_PUSH + " разрешите приложению доступ к Вашей геопозиции " + IN_PHONE_SETTINGS;
 
-    private AlertDialog locationDialog = null;
+    private static final String LOCATION_VIA_SETTINGS_MESSAGE =
+        IF_YOU_WANT_PUSH + " включите геопозицию " + IN_PHONE_SETTINGS;
+
+    private static final String FUNCTION_ACCESS_GRANT_PERMISSION_MESSAGE =
+        TO_ACCESS_FUNCTION + " разрешите доступ к Вашей геопозиции.";
+
+    private static final String FUNCTION_ACCESS_GRANT_PERMISSION_NEVER_MESSAGE =
+        TO_ACCESS_FUNCTION + " разрешите доступ к Вашей геопозиции " + IN_PHONE_SETTINGS;
+
+    private static final String FUNCTION_ACCESS_ENABLE_LOCATION_MESSAGE =
+        TO_ACCESS_FUNCTION + " включите геопозицию.";
+
+    private AlertDialog locationDialog      = null;
     private AlertDialog batterySavingDialog = null;
-    private boolean askForPermission = true;
-    private boolean dontAskAfterDenie = false;
-    private boolean chinaBrand = false;
-    private boolean userOpenedSettings = false;
+
+    private boolean askForPermission   = true;
+    private boolean dontAskAfterDenie  = false;
+    private boolean chinaBrand         = false;
 
     private static final String XIAOMI_BATTERY_SAVING_MESSAGE =
-        IF_YOU_WANT_PUSH + "включите «автозапуск» приложения " + IN_PHONE_SETTINGS;
+        IF_YOU_WANT_PUSH + " включите «автозапуск» приложения " + IN_PHONE_SETTINGS;
     private static final String SAMSUNG_BATTERY_SAVING_MESSAGE =
-        IF_YOU_WANT_PUSH + "добавьте приложение в список «неконтролируемых приложений» " + IN_PHONE_SETTINGS;
+        IF_YOU_WANT_PUSH + " добавьте приложение в список «неконтролируемых приложений» " + IN_PHONE_SETTINGS;
     private static final String HUAWEI_BATTERY_SAVING_MESSAGE =
-        IF_YOU_WANT_PUSH + "добавьте приложение в список «защищенных приложений» или включите «автозапуск» " + IN_PHONE_SETTINGS;
+        IF_YOU_WANT_PUSH + " добавьте приложение в список «защищенных приложений» или включите «автозапуск» " + IN_PHONE_SETTINGS;
+
+    private int newIntentIndex = -1;
 
     private static final Intent[] POWERMANAGER_INTENTS = {
         new Intent().setComponent(new ComponentName("com.asus.mobilemanager","com.asus.mobilemanager.autostart.AutoStartActivity")),
@@ -95,12 +101,17 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
         new Intent().setComponent(new ComponentName("com.meizu.safe", "com.meizu.safe.security.SHOW_APPSEC")),
         new Intent().setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity")),
         new Intent().setComponent(new ComponentName("com.miui.securitycenter", "com.miui.powercenter.PowerSettings")),
+        new Intent().setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsEditorActivity")),
+        new Intent().setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.PermissionsEditorActivity")),
         new Intent().setComponent(new ComponentName("com.oppo.safe", "com.oppo.safe.permission.startup.StartupAppListActivity")),
         new Intent().setComponent(new ComponentName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity")),
         new Intent().setComponent(new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"))
     };
 
     public boolean isChinaBrand() {
+        Log.d(TAG, "MANUFACTURER - " + Build.MANUFACTURER);
+        HttpURLCon.sendLog(TAG+": MANUFACTURER - " + Build.MANUFACTURER, getApplicationContext());
+
         return Build.MANUFACTURER.equalsIgnoreCase("xiaomi")  ||
                Build.MANUFACTURER.equalsIgnoreCase("honor")   ||
                Build.MANUFACTURER.equalsIgnoreCase("huawei")  ||
@@ -121,16 +132,11 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                Build.MANUFACTURER.equalsIgnoreCase("tecno");
     }
 
-    public void startLocationService()
-    {
-        Log.d(TAG, "startLocationService");
-        Intent serviceIntent = new Intent(this, LocationService.class);
-        startService(serviceIntent);
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause");
+        HttpURLCon.sendLog(TAG+": onPause", getApplicationContext());
 
         if(locationDialog != null) {
             locationDialog.dismiss();
@@ -144,16 +150,27 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
+        HttpURLCon.sendLog(TAG+": onResume", getApplicationContext());
+
+        if(chinaBrand || isChinaBrand()) {
+            Log.d(TAG, "china brand");
+            HttpURLCon.sendLog(TAG+": china brand", getApplicationContext());
+
+            chinaBrand = true;
+            SharedPreferences settings = getSharedPreferences("ProtectedApps", MODE_PRIVATE);
+            int intentIndex = settings.getInt("intentIndex", 0);
+
+            if(intentIndex < POWERMANAGER_INTENTS.length) {
+                askToAddAppToProtectedListViaSettigns();
+            }
+        }
 
         if(dontAskAfterDenie) {
             dontAskAfterDenie = false;
         } else {
             if(!isLocationEnabled()) {
                 askToEnableLocationViaSettigns(LOCATION_VIA_SETTINGS_MESSAGE);
-            } else if (chinaBrand || isChinaBrand()) {
-                chinaBrand = true;
-                Log.d(TAG, "china brand");
-                askToAddAppToProtectedListViaSettigns();
             } else if(askForPermission) {
                 handleLocationThing();
             }
@@ -161,68 +178,98 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
     }
 
     @Override
-    public void onCreate(Bundle bundle)
-    {
-        super.onCreate(bundle);
+    public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
+        HttpURLCon.sendLog(TAG+": onCreate", getApplicationContext());
+
+        super.onCreate(savedInstanceState);
     }
 
     public void handleLocationThing()
     {
-        if(VERSION.SDK_INT >= VERSION_CODES.M)
-        {
+        if(VERSION.SDK_INT >= VERSION_CODES.M) {
             // request permission on runtime
             requestLocationPermission();
-        }
-        else
-        {
-            if(ContextCompat.checkSelfPermission(this,
-                                                 Manifest.permission.ACCESS_FINE_LOCATION) ==
-                                                 PackageManager.PERMISSION_GRANTED)
-            {
+        } else {
+            if(checkPermissions()) {
                 // user granted permission when installed app
+                Log.d(TAG, "user granted permission when installed app");
+                HttpURLCon.sendLog(TAG+": user granted permission when installed app", getApplicationContext());
+
                 QOneSignalBinding.onCreate(this);
                 startLocationService();
-            }
-            else
-            {
+            } else {
                 // user did not grant permission when installed app
+                Log.d(TAG, "user did not grant permission when installed app");
+                HttpURLCon.sendLog(TAG+": user did not grant permission when installed app", getApplicationContext());
+
                 askForPermission = false;
                 askToGrantPermissionViaSettigns(PERMISSION_VIA_SETTINGS_MESSAGE);
             }
         }
     }
 
+    public void startLocationService() {
+        Log.d(TAG, "startService");
+        HttpURLCon.sendLog(TAG+": startService", getApplicationContext());
+
+        Intent serviceIntent = new Intent(this, LocationService.class);
+
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+    }
+
+    private boolean checkPermissions() {
+        Log.d(TAG, "checkPermissions");
+        HttpURLCon.sendLog(TAG+": checkPermissions", getApplicationContext());
+
+        return  PackageManager.PERMISSION_GRANTED ==
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
     public void requestLocationPermission()
     {
-        if(ContextCompat.checkSelfPermission(this,
-                                             Manifest.permission.ACCESS_FINE_LOCATION) !=
-                                             PackageManager.PERMISSION_GRANTED)
-        {
+        Log.d(TAG, "requestLocationPermission");
+        HttpURLCon.sendLog(TAG+": requestLocationPermission", getApplicationContext());
+
+        if(!checkPermissions()) {
             // not granted yet
+            Log.d(TAG, "not granted yet");
+            HttpURLCon.sendLog(TAG+": not granted yet", getApplicationContext());
+
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                               LOCATION_PERMISSIONS_REQUEST_CODE);
-        }
-        else
-        {
+        } else {
             // granted
+            Log.d(TAG, "granted");
+            HttpURLCon.sendLog(TAG+": granted", getApplicationContext());
+
             QOneSignalBinding.onCreate(this);
             startLocationService();
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Log.i(TAG, "onRequestPermissionResult");
+        HttpURLCon.sendLog(TAG+": onRequestPermissionResult", getApplicationContext());
+
         if(requestCode == LOCATION_PERMISSIONS_REQUEST_CODE)
         {
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 // granted
-                if(ContextCompat.checkSelfPermission(this,
+                if(ActivityCompat.checkSelfPermission(this,
                                                      Manifest.permission.ACCESS_FINE_LOCATION) ==
                                                      PackageManager.PERMISSION_GRANTED)
                 {
                     // granted confirmed
+                    Log.d(TAG, "Permission was granted");
+                    HttpURLCon.sendLog(TAG+": Permission was granted", getApplicationContext());
+
                     QOneSignalBinding.onCreate(this);
                     startLocationService();
                 }
@@ -284,60 +331,6 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                 askToEnableLocationViaSettigns(FUNCTION_ACCESS_ENABLE_LOCATION_MESSAGE);
             }
         });
-    }
-
-    public void askToAddAppToProtectedListViaSettigns()
-    {
-        SharedPreferences settings = getSharedPreferences("ProtectedApps", MODE_PRIVATE);
-        boolean skipMessage = settings.getBoolean("skipProtectedAppCheck", false);
-
-        if(!skipMessage)
-        {
-            Log.d(TAG, "!skipMessage");
-            final SharedPreferences.Editor editor = settings.edit();
-
-            for(Intent intent : POWERMANAGER_INTENTS)
-            {
-                if(getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null)
-                {
-                    Log.d(TAG, "POWERMANAGER_INTENT FOUND");
-                    String msg = HUAWEI_BATTERY_SAVING_MESSAGE;
-                    final Intent final_intent = new Intent(intent);
-
-                    if(Build.MANUFACTURER.equalsIgnoreCase("xiaomi")) {
-                        msg = XIAOMI_BATTERY_SAVING_MESSAGE;
-                    } else if(Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
-                        msg = SAMSUNG_BATTERY_SAVING_MESSAGE;
-                    }
-
-                    batterySavingDialog = new AlertDialog.Builder(this)
-                        .setMessage(msg)
-                        .setPositiveButton("Настройки", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                userOpenedSettings = true;
-                                startActivity(final_intent);
-                            }
-                        })
-                        .setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        })
-                        .create();
-                    batterySavingDialog.show();
-
-                    break;
-                }
-            }
-
-            if(userOpenedSettings) {
-                Log.d(TAG, "WILL NOT SHOW AGAIN");
-                editor.putBoolean("skipProtectedAppCheck", true);
-                editor.apply();
-            }
-        }
     }
 
     public void askToGrantPermissionViaSettigns(String message)
@@ -405,5 +398,65 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                 })
                 .create()
                 .show();
+    }
+
+    // for china phones
+    public void askToAddAppToProtectedListViaSettigns()
+    {
+        SharedPreferences settings = getSharedPreferences("ProtectedApps", MODE_PRIVATE);
+        int intentIndex = settings.getInt("intentIndex", 0);
+
+        if(intentIndex < POWERMANAGER_INTENTS.length)
+        {
+            Log.d(TAG, "not all of intents checked yet");
+            HttpURLCon.sendLog(TAG+": not all of intents checked yet", getApplicationContext());
+
+            for(int i = intentIndex; i < POWERMANAGER_INTENTS.length; i++)
+            {
+                if(getPackageManager().resolveActivity(POWERMANAGER_INTENTS[i],
+                                                       PackageManager.MATCH_DEFAULT_ONLY) != null)
+                {
+                    String si = "" + i;
+                    Log.d(TAG, "POWERMANAGER_INTENT FOUND. INDEX: " + si);
+                    HttpURLCon.sendLog(TAG+": POWERMANAGER_INTENT FOUND. INDEX: "+si, getApplicationContext());
+
+                    String msg = HUAWEI_BATTERY_SAVING_MESSAGE;
+                    final Intent final_intent = new Intent(POWERMANAGER_INTENTS[i]);
+
+                    if(Build.MANUFACTURER.equalsIgnoreCase("xiaomi")) {
+                        msg = XIAOMI_BATTERY_SAVING_MESSAGE;
+                    } else if(Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
+                        msg = SAMSUNG_BATTERY_SAVING_MESSAGE;
+                    }
+
+                    batterySavingDialog = new AlertDialog.Builder(this)
+                        .setMessage(msg)
+                        .setPositiveButton("Настройки", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                newIntentIndex = i;
+                                startActivity(final_intent);
+                            }
+                        })
+                        .setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                newIntentIndex = -1;
+                            }
+                        })
+                        .create();
+                    batterySavingDialog.show();
+                    break;
+                } else {
+                    newIntentIndex = i;
+                }
+            }
+
+            if(newIntentIndex != -1) {
+                final SharedPreferences.Editor editor = settings.edit();
+                editor.putInt("intentIndex", newIntentIndex);
+                editor.apply();
+            }
+        }
     }
 }

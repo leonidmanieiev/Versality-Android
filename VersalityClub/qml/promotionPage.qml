@@ -50,16 +50,13 @@ Page
     readonly property int promCloseDist: 250
     //other
     property bool parsed: false
-    property real nearestStoreLat
-    property real nearestStoreLon
-    property real minDistToStore: 5000000
+    property real nearestStoreLat: 0.0
+    property real nearestStoreLon: 0.0
+    property real minDistToStore: 5000000 // 5000 km
     //alias
     property alias prom_loader: promotionPageLoader
     property alias shp: settingsHelperPopup
     property alias fb: footerButton
-    //user coords
-    property real _userLat
-    property real _userLon
 
     //setting lat and lon of the nearest to user store
     function setNearestStoreCoords(promJSON)
@@ -82,12 +79,16 @@ Page
                 }
             }
             parsed = true;
+            // close "ожидайте" message
+            toastMessage.close();
         }
     }
 
     //get zoomLevel depends on distance between user and nearestStore
     function getZoomLevel()
     {
+        if(minDistToStore === 5000000) return -1;
+
         var zoomLevelToDist = [25600, 12800, 6400, 3200, 1600, 800, 400, 200, 100, 50];
         var diff = Math.abs(zoomLevelToDist[0] - minDistToStore), closestDistIndex = 0;
 
@@ -142,6 +143,8 @@ Page
 
     ToastMessage { id: toastMessage }
 
+    ToastMessage { id: comeCloaserToastMessage }
+
     //checking internet connetion
     Network { id: network }
 
@@ -156,62 +159,102 @@ Page
     PositionSource
     {
         id: positionSource
-        active: false
+        active: Vars.locationGood
         updateInterval: 1
+
+        onPositionChanged:
+        {
+            if(!isNaN(position.coordinate.latitude)) {
+                AppSettings.beginGroup("user");
+                AppSettings.setValue("lat", position.coordinate.latitude);
+                AppSettings.setValue("lon", position.coordinate.longitude);
+                AppSettings.endGroup();
+            }
+        }
 
         onSourceErrorChanged:
         {
-            switch(sourceError)
-            {
-                case PositionSource.AccessError:
-                    // hz kogda eto emititsja
-                    positionSource.stop();
-                    console.log(Vars.noLocationPrivileges); break;
-                case PositionSource.ClosedError:
-                    // lication is off
-                    positionSource.stop();
-                    console.log(Vars.turnOnLocationAndWait); break;
-                case PositionSource.UnknownSourceError:
-                    // no permission
-                    positionSource.stop();
-                    console.log(Vars.unknownPosSrcErr); break;
-                default: break;
+            if(Vars.locationGood && sourceError != PositionSource.NoError && !Vars.reloaded) {
+                // need reload because positionSource still think
+                // that i have no permission for user location
+                console.log("reload");
+                Vars.reloaded = true;
+                promotionPageLoader.source = "";
+                promotionPageLoader.source = "promotionPage.qml";
             }
         }
     }
 
-    //wait for user location to trigger
+    // wait for user location
     Timer
     {
         id: waitForUserLocation
-        running: !isNaN(positionSource.position.coordinate.latitude) ||
-                 AppSettings.value("user/lat") !== undefined
         interval: 1
-        onTriggered: saveUserLocationAndParse()
+        running: !isNaN(positionSource.position.coordinate.latitude)
+        onTriggered: setNearestStoreCoords(JSON.parse(Vars.fullPromData));
     }
 
-    function saveUserLocationAndParse()
+    function proceedCouponActivation()
     {
-        var userLat = AppSettings.value("user/lat");
-        var userLon = AppSettings.value("user/lon");
-
-        if(!isNaN(positionSource.position.coordinate.latitude)) {
-            userLat = positionSource.position.coordinate.latitude;
-            userLon = positionSource.position.coordinate.longitude;
-
-            AppSettings.beginGroup("user");
-            AppSettings.setValue("lat", userLat);
-            AppSettings.setValue("lon", userLon);
-            AppSettings.endGroup();
+        Vars.locationGood = false; // to stop repeating execution
+        console.log("minDistToStore:", minDistToStore);
+        if(minDistToStore < promCloseDist)
+        {
+            promoCodePopup.visible = true;
+            flickableArea.enabled = false;
+            //inform server about coupon was activated
+            promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                          {"api": Vars.userActivateProm,
+                                           "functionalFlag": "user/activate",
+                                           "promo_id": p_id});
         }
+        else
+        {
+            toastMessage.close();
+            comeCloaserToastMessage.setTextAndRun(Vars.getCloserToProm, false);
+        }
+    }
 
-        _userLat = userLat;
-        _userLon = userLon;
+    function proceedNearestStoreShowing()
+    {
+        promotionPageLoader.setSource("mapPage.qml",
+                            { "defaultLat": nearestStoreLat,
+                              "defaultLon": nearestStoreLon,
+                              "userLat": AppSettings.value("user/lat"),
+                              "userLon": AppSettings.value("user/lon"),
+                              "defaultZoomLevel": getZoomLevel(),
+                              "showingNearestStore": true,
+                              "locButtClicked": true,
+                              "nearestPromId": p_id,
+                              "nearestPromIcon": c_icon
+                            });
+    }
 
-        setNearestStoreCoords(JSON.parse(Vars.fullPromData));
-        // got user location, know we can stop getting updates
-        positionSource.stop();
-        waitForUserLocation.running = false;
+    // wait for user nearest store or active coupon request
+    // and parsing end
+    Timer
+    {
+        id: waitForUserLocationAndAsk
+        interval: 1
+        running: Vars.locationGood && parsed
+        onTriggered:
+        {
+            if(network.hasConnection())
+            {
+                toastMessage.close();
+                PageNameHolder.push(pressedFrom);
+
+                if(Vars.activeCouponRequest) {
+                    proceedCouponActivation();
+                } else {
+                    proceedNearestStoreShowing();
+                }
+            }
+            else
+            {
+                toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+            }
+        }
     }
 
     Flickable
@@ -321,32 +364,13 @@ Page
                             if(EnableLocation.askEnableLocation())
                             {
                                 Vars.locationGood = true;
+                                Vars.activeCouponRequest = true;
                                 positionSource.start();
-
-                                if(network.hasConnection())
-                                {
-                                    toastMessage.close();
-                                    console.log("minDistToStore:", minDistToStore);
-                                    if(minDistToStore < promCloseDist)
-                                    {
-                                        promoCodePopup.visible = true;
-                                        flickableArea.enabled = false;
-                                        //inform server about coupon was activated
-                                        promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                                      {"api": Vars.userActivateProm,
-                                                                       "functionalFlag": "user/activate",
-                                                                       "promo_id": p_id});
-                                    }
-                                    else toastMessage.setTextAndRun(Vars.getCloserToProm, false);
-                                }
-                                else
-                                {
-                                    toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
-                                }
                             }
                             else
                             {
                                 Vars.locationGood = false;
+                                Vars.reloaded = false;
                                 positionSource.stop();
                             }
                         }
@@ -416,33 +440,13 @@ Page
                     if(EnableLocation.askEnableLocation())
                     {
                         Vars.locationGood = true;
+                        Vars.activeCouponRequest = false;
                         positionSource.start();
-
-                        if(network.hasConnection())
-                        {
-                            toastMessage.close();
-                            PageNameHolder.push(pressedFrom);
-
-                            promotionPageLoader.setSource("mapPage.qml",
-                                                { "defaultLat": nearestStoreLat,
-                                                  "defaultLon": nearestStoreLon,
-                                                  "userLat": _userLat,
-                                                  "userLon": _userLon,
-                                                  "defaultZoomLevel": getZoomLevel(),
-                                                  "showingNearestStore": true,
-                                                  "locButtClicked": true,
-                                                  "nearestPromId": p_id,
-                                                  "nearestPromIcon": c_icon
-                                                });
-                        }
-                        else
-                        {
-                            toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
-                        }
                     }
                     else
                     {
                         Vars.locationGood = false;
+                        Vars.reloaded = false;
                         positionSource.stop();
                     }
                 }
@@ -655,12 +659,16 @@ Page
 
     Component.onCompleted:
     {
-        if(allGood)
-        {
+        if(allGood) {
+            if(Vars.locationGood) {
+                toastMessage.setTextNoAutoClose("Ожидайте");
+            }
+
             notifier.visible = false;
             promotionPage.forceActiveFocus();
+        } else {
+            notifier.visible = true;
         }
-        else notifier.visible = true;
     }
 
     StaticNotifier

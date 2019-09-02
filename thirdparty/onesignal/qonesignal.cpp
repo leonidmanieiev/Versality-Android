@@ -18,6 +18,7 @@
  * ********************************************************************** */
 
 #include "qonesignal.h"
+#include "pushnotifier.h"
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -57,9 +58,8 @@ QString QOneSignal::notificationOpen() {
 }
 
 void QOneSignal::setNotificationOpen(const QString message) {
-    if (message != m_notificationOpen) {
-        m_notificationOpen = message;
-        emit notificationOpenChanged(m_notificationOpen);
-    }
+    m_notificationOpen = message;
+    PushNotifier::instance()->setPromoId(message);
+    emit notificationOpenChanged(m_notificationOpen);
 }
 

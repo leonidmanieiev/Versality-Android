@@ -19,8 +19,11 @@
 #ifdef __ANDROID__
 
 #include "qonesignal.h"
+#include "appsettings.h"
+
 #include <jni.h>
 #include <QtAndroidExtras>
+#include <QDebug>
 
 const QString activityClass(".QOneSignalBinding");
 const QString packageName("org.pwf.qtonesignal");
@@ -58,9 +61,15 @@ static void cppNotificationReceived(JNIEnv *, jclass /*clazz*/, jstring s)
 static void cppNotificationOpened(JNIEnv *, jclass /*clazz*/, jstring s)
 {
     QAndroidJniObject javaRetObj = s;
+    QString promotionId = javaRetObj.toString();
+    AppSettings::PID = promotionId;
 
-    QString javastring = javaRetObj.toString();
-    emit QOneSignal::instance()->setNotificationOpen(javastring);
+    if(AppSettings::appRunning)
+    {
+        // app is running so just notify ApplicationWindow about push
+        // and load promotionPage with promotionId
+        emit QOneSignal::instance()->setNotificationOpen(promotionId);
+    }
 }
 
 static JNINativeMethod methods[] = {

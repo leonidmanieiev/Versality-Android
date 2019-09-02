@@ -28,11 +28,11 @@
 #include <QGuiApplication>
 #include <QSettings>
 #include <QSet>
+#include <QDebug>
 
 class AppSettings : public QSettings
 {
     Q_OBJECT
-
 public:
     explicit AppSettings(QObject *parent = nullptr) :
         QSettings(QSettings::IniFormat, QSettings::UserScope,
@@ -40,7 +40,6 @@ public:
         QCoreApplication::instance()->applicationName(),
         parent)
     {
-
         //clears promotions and company cache on each app launch
         if(needToRemovePromsAndComps)
         {
@@ -54,6 +53,10 @@ public:
     }
 
     static bool needToRemovePromsAndComps;
+    static bool appRunning;
+    static QString PID;
+
+    Q_INVOKABLE QString getPID() { return PID; }
 
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
     { QSettings::setValue(key, value); }

@@ -28,6 +28,7 @@
 #include "qonesignal.h"
 #include "sslsafenetworkfactory.h"
 #include "enablelocation.h"
+#include "pushnotifier.h"
 
 #include <QDebug>
 #include <QFile>
@@ -39,9 +40,13 @@
 #include <QtWebView/QtWebView>
 
 bool AppSettings::needToRemovePromsAndComps = true;
+bool AppSettings::appRunning = false;
+QString AppSettings::PID = "";
 
 int main(int argc, char *argv[])
 {
+    AppSettings::appRunning = true;
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
     QtWebView::initialize();
@@ -52,7 +57,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<PageNameHolder>("org.versalityclub", 0, 8, "PageNameHolder");
     qmlRegisterType<PromotionClusters>("org.versalityclub", 0, 8, "PromotionClusters");
     qmlRegisterSingletonType<CppMethodCall>("CppMethodCall", 0, 9, "CppMethodCall", &CppMethodCall::singletonProvider);
-    qmlRegisterSingletonType<CppMethodCall>("EnableLocation", 0, 9, "EnableLocation", &EnableLocation::singletonProvider);
+    qmlRegisterSingletonType<EnableLocation>("EnableLocation", 0, 9, "EnableLocation", &EnableLocation::singletonProvider);
+    qmlRegisterSingletonType<PushNotifier>("PushNotifier", 0, 9, "PushNotifier", &PushNotifier::singletonProvider);
 
     QQmlApplicationEngine engine;
 

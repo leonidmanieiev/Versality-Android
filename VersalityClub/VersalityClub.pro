@@ -6,7 +6,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     promotion.cpp \
-    promotionclusters.cpp
+    promotionclusters.cpp \
+    pushnotifier.cpp
 
 RESOURCES += \
     versalityclub.qrc
@@ -19,6 +20,7 @@ HEADERS += \
     pagenameholder.h \
     promotionclusters.h \
     cppmethodcall.h \
+    pushnotifier.h \
     sslsafenetworkaccessmanager.h \
     sslsafenetworkfactory.h
 
