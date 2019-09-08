@@ -206,7 +206,7 @@ Item
                                         xmlHttpRequestLoader.setSource("xmlHttpRequest.qml",
                                                                        { "api": Vars.userSelectCats,
                                                                          "functionalFlag": 'user/refresh-cats',
-                                                                         "nextPageAfterCatsSave": 'profileSettingsPage.qml'
+                                                                         "nextPageAfterCatsSave": 'selectCategoryPage.qml'
                                                                        });
                                     }
                                     else
@@ -240,6 +240,14 @@ Item
                                 else if(nextPageAfterCatsSave === 'appInfoPage.qml')
                                 {
                                     appWindowLoader.source = nextPageAfterCatsSave;
+                                }
+                                else if(nextPageAfterCatsSave === 'selectCategoryPage.qml')
+                                {
+                                    xmlHttpRequestLoader.setSource("xmlHttpRequest.qml",
+                                                                   {
+                                                                      "api": Vars.allCats,
+                                                                      "functionalFlag": 'categories'
+                                                                   });
                                 }
                                 else
                                 {

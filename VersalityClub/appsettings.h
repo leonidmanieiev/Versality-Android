@@ -57,6 +57,7 @@ public:
     static QString PID;
 
     Q_INVOKABLE QString getPID() { return PID; }
+    Q_INVOKABLE void resetPID() { PID.clear(); }
 
     Q_INVOKABLE void setValue(const QString& key, const QVariant& value)
     { QSettings::setValue(key, value); }

@@ -99,9 +99,6 @@ QtObject
     //USER CAME FROM SIGN UP PAGE FLAG
     property bool fromSignUp: false
 
-    //GUEST LOG IN
-    property bool isGuest: false
-
     //ACTIVATE COUPON REQUEST
     property bool activeCouponRequest: false
 
@@ -170,12 +167,9 @@ QtObject
     readonly property string everythingIsClearStart: "Все понятно, начать работу!"
     readonly property string firstHelpText: "В самом начале рекомендуем\nперейти в настройки\nи выбрать интересные Вам акции"
     readonly property string forgetPass: "ЗАБЫЛ ПАРОЛЬ"
-    readonly property string guestLogIn: "ГОСТЕВОЙ ВХОД"
-    readonly property string guestHash: "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
     readonly property string incorrectEmail: "Некорректный E-mail"
     readonly property string login: "ВОЙТИ"
     readonly property string logout: "ВЫЙТИ ИЗ АККАУНТА"
-    readonly property string guestLogout: "ВЫЙТИ"
     readonly property string m_f: "М/Ж"
     readonly property string mapPageId: "mapPage"
     readonly property string more: "ПОДРОБНЕЕ"

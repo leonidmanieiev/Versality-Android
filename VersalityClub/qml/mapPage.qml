@@ -79,13 +79,11 @@ Page
 
     function setUserLocationMarker(lat, lon, _zoomLevel, follow)
     {
-        console.log("setUserLocationMarker1");
         if(locButtClicked || Vars.locationGood)
         {
             // close "ожидайте" message
             toastMessage.close();
 
-            console.log("setUserLocationMarker2");
             userLocationMarker.coordinate = QtPositioning.coordinate(lat, lon);
             userLocationMarker.visible = true;
 
@@ -557,7 +555,6 @@ Page
 
                 if(!isNaN(mapPositionSource.position.coordinate.latitude))
                 {
-                    console.log("!isNaN");
                     Vars.locationGood = false;
                     locButtClicked = true;
                     setUserLocationMarker(mapPositionSource.position.coordinate.latitude,
@@ -675,7 +672,7 @@ Page
         //setting active focus for key capturing
         mapPage.forceActiveFocus();
 
-        if(!requestFromCompany)
+        if(!requestFromCompany && !AppSettings.getPID())
         {
             if(!showingNearestStore)
             {

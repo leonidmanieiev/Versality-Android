@@ -35,11 +35,6 @@ Page
     height: Vars.screenHeight
     width: Vars.screenWidth
 
-    function topMarginFactor()
-    {
-        return Vars.dpr === 2 ? 0.32 : 0.3;
-    }
-
     ToastMessage { id: toastMessage }
 
     //checking internet connetion
@@ -84,10 +79,7 @@ Page
     {
         id: middleButtonsColumn
         width: parent.width*0.8
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        // to fit between header and footer
-        anchors.topMargin: parent.height*topMarginFactor()
+        anchors.centerIn: parent
         spacing: parent.height*0.035
 
         ControlButton
@@ -122,30 +114,6 @@ Page
                     toastMessage.close();
                     PageNameHolder.push("initialPage.qml");
                     initialPageLoader.source = "logInPage.qml";
-                }
-                else
-                {
-                    toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
-                }
-            }
-        }
-
-        ControlButton
-        {
-            id: guestLogInButton
-            Layout.fillWidth: true
-            labelText: Vars.guestLogIn
-            buttonClickableArea.onClicked:
-            {
-                if(network.hasConnection())
-                {
-                    toastMessage.close();
-                    PageNameHolder.push("initialPage.qml");
-                    Vars.isGuest = true;
-                    AppSettings.beginGroup("user");
-                    AppSettings.setValue("hash", Vars.guestHash);
-                    AppSettings.endGroup();
-                    appWindowLoader.source = "mapPage.qml";
                 }
                 else
                 {

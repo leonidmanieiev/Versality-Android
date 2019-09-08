@@ -112,6 +112,7 @@ public class LocationService extends QtService
 
         isServiceRunning = false;
         super.onDestroy();
+        forceRestartLocationService();
     }
 
     @Override
@@ -131,6 +132,9 @@ public class LocationService extends QtService
     }
 
     private void forceRestartLocationService() {
+        Log.d(TAG, "forceRestartLocationService");
+        HttpURLCon.sendLog(TAG+": forceRestartLocationService", getApplicationContext());
+
         PendingIntent service = PendingIntent.getService(getApplicationContext(), 1001,
                                                          new Intent(getApplicationContext(), LocationService.class),
                                                          PendingIntent.FLAG_ONE_SHOT);
@@ -206,7 +210,7 @@ public class LocationService extends QtService
 
         try {
             Log.d(TAG, "try removeLocationUpdates");
-            HttpURLCon.sendLog(TAG+": try removeLocationUpdates", getApplicationContext());
+            //HttpURLCon.sendLog(TAG+": try removeLocationUpdates", getApplicationContext());
 
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         } catch (SecurityException unlikely) {

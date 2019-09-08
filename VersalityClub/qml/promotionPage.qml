@@ -139,8 +139,6 @@ Page
         source: Vars.boldFont
     }
 
-    GuestToastMessage { id: guestToastMessage }
-
     ToastMessage { id: toastMessage }
 
     ToastMessage { id: comeCloaserToastMessage }
@@ -354,25 +352,17 @@ Page
                     fontPixelSize: btnLabelSize
                     buttonClickableArea.onClicked:
                     {
-                        // functionality is disable if guest loged in
-                        if(Vars.isGuest || AppSettings.value("user/hash") === Vars.guestHash)
+                        if(EnableLocation.askEnableLocation())
                         {
-                            guestToastMessage.setGuestText(Vars.functionalityIsNotAvailable);
+                            Vars.locationGood = true;
+                            Vars.activeCouponRequest = true;
+                            positionSource.start();
                         }
                         else
                         {
-                            if(EnableLocation.askEnableLocation())
-                            {
-                                Vars.locationGood = true;
-                                Vars.activeCouponRequest = true;
-                                positionSource.start();
-                            }
-                            else
-                            {
-                                Vars.locationGood = false;
-                                Vars.reloaded = false;
-                                positionSource.stop();
-                            }
+                            Vars.locationGood = false;
+                            Vars.reloaded = false;
+                            positionSource.stop();
                         }
                     }
                 }
@@ -388,39 +378,31 @@ Page
                                       "../icons/add_to_favourites_off.svg"
                     clickArea.onClicked:
                     {
-                        // functionality is disable if guest loged in
-                        if(Vars.isGuest || AppSettings.value("user/hash") === Vars.guestHash)
+                        if(network.hasConnection())
                         {
-                            guestToastMessage.setGuestText(Vars.functionalityIsNotAvailable);
-                        }
-                        else
-                        {
-                            if(network.hasConnection())
+                            toastMessage.close();
+                            if(!p_is_marked)
                             {
-                                toastMessage.close();
-                                if(!p_is_marked)
-                                {
-                                    p_is_marked = true;
-                                    buttonIconSource = "../icons/add_to_favourites_on.svg";
-                                    promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                                  {"api": Vars.userMarkProm,
-                                                                   "functionalFlag": "user/mark",
-                                                                   "promo_id": p_id});
-                                }
-                                else
-                                {
-                                    p_is_marked = false;
-                                    buttonIconSource = "../icons/add_to_favourites_off.svg";
-                                    promotionPageLoader.setSource("xmlHttpRequest.qml",
-                                                                  {"api": Vars.userUnmarkProm,
-                                                                   "functionalFlag": "user/unmark",
-                                                                   "promo_id": p_id});
-                                }
+                                p_is_marked = true;
+                                buttonIconSource = "../icons/add_to_favourites_on.svg";
+                                promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                              {"api": Vars.userMarkProm,
+                                                               "functionalFlag": "user/mark",
+                                                               "promo_id": p_id});
                             }
                             else
                             {
-                                toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
+                                p_is_marked = false;
+                                buttonIconSource = "../icons/add_to_favourites_off.svg";
+                                promotionPageLoader.setSource("xmlHttpRequest.qml",
+                                                              {"api": Vars.userUnmarkProm,
+                                                               "functionalFlag": "user/unmark",
+                                                               "promo_id": p_id});
                             }
+                        }
+                        else
+                        {
+                            toastMessage.setTextNoAutoClose(Vars.noInternetConnection);
                         }
                     }
                 }//addToFavourite
@@ -659,6 +641,10 @@ Page
 
     Component.onCompleted:
     {
+        if(AppSettings.getPID()) {
+            AppSettings.resetPID();
+        }
+
         if(allGood) {
             if(Vars.locationGood) {
                 toastMessage.setTextNoAutoClose("Ожидайте");
