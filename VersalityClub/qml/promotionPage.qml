@@ -339,7 +339,7 @@ Page
                 width: promsImage.width
                 Layout.alignment: Qt.AlignLeft
                 Layout.topMargin: -Vars.pageHeight*0.03
-                spacing: parent.width*0.055
+                spacing: parent.width*0.04//0.055
 
                 ControlButton
                 {

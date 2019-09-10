@@ -445,9 +445,10 @@ Page
         Column
         {
             id: column
-            width: popupWindow.width
+            width: popupWindow.width*0.8
             anchors.horizontalCenter: parent.horizontalCenter
             bottomPadding: markerSize*0.15
+
             Rectangle
             {
                 id: parentCategoryIcon
@@ -465,19 +466,20 @@ Page
                     sourceSize.width: markerSize*0.6
                     sourceSize.height: markerSize*0.6
                     anchors.left: parent.left
-                    anchors.leftMargin: parent.width*0.09
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Label
                 {
                     id: promotionTitle
+                    width: parent.width-icon.width*1.5
                     anchors.left: icon.right
                     anchors.leftMargin: icon.width*0.5
                     anchors.verticalCenter: parent.verticalCenter
                     text: ctitle
                     font.pixelSize: Helper.applyDpr(9, Vars.dpr)
                     font.family: boldText.name
+                    wrapMode: Label.WordWrap
                     color: Vars.whiteColor
                 }
 

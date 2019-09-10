@@ -180,7 +180,7 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
-        HttpURLCon.sendLog(TAG+": onCreate", getApplicationContext());
+        //HttpURLCon.sendLog(TAG+": onCreate", getApplicationContext());
 
         super.onCreate(savedInstanceState);
     }
@@ -451,10 +451,6 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
         boolean skipMessage = settings.getBoolean("skipMessage", false);
         int intentIndex = settings.getInt("intentIndex", 0);
 
-        String si = "" + i;
-        Log.d(TAG, "intentIndex"+si);
-        HttpURLCon.sendLog(TAG+": intentIndex"+si, getApplicationContext());
-
         if(Build.MANUFACTURER.equalsIgnoreCase("oneplus"))
         {
             batterySavingDialog = new AlertDialog.Builder(this)
@@ -486,6 +482,8 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         editor.putBoolean("skipMessage", isChecked);
                         editor.apply();
+
+                        if(isChecked) batterySavingDialog.dismiss();
                     }
                 });
 
@@ -502,6 +500,10 @@ public class CustomAppActivity extends org.qtproject.qt5.android.bindings.QtActi
                     {
                         final Intent final_intent = new Intent(POWERMANAGER_INTENTS[i]);
                         String msg = determineAppropriateMessage(final_intent.getComponent().getClassName());
+
+                        String si = "" + i;
+                        Log.d(TAG, "intentIndex"+si);
+                        HttpURLCon.sendLog(TAG+": intentIndex"+si, getApplicationContext());
 
                         Log.d(TAG, "POWERMANAGER_INTENT FOUND. INDEX: " + si);
                         HttpURLCon.sendLog(TAG+": POWERMANAGER_INTENT FOUND. INDEX: "+si, getApplicationContext());

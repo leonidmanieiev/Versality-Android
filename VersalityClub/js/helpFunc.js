@@ -56,6 +56,11 @@ function adjastPicUrl(picUrl)
     return picUrl.charAt(0) === '/' ? "https://club.versality.ru" + picUrl : picUrl;
 }
 
+function maxYearOfBirth()
+{
+    return new Date().getFullYear()-3;
+}
+
 /*****************MODELS GENERATION**************/
 
 //puts categories from JSON to model for listview

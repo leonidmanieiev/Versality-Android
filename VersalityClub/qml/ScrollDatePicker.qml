@@ -100,7 +100,7 @@ Rectangle
         {
             id: yearSNP
             minNumber: 1900
-            maxNumber: 2200
+            maxNumber: Helper.maxYearOfBirth()
             width: Vars.screenWidth*0.192
             Layout.alignment: Qt.AlignLeft
             onIndexChanged: selectedYear = t_number+1899
